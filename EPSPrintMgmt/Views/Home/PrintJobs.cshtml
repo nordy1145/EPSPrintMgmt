@@ -1,0 +1,72 @@
+﻿@model IEnumerable<EPSPrintMgmt.Models.PrintJob>
+
+@{
+    ViewBag.Title = "PrintJobs";
+}
+
+<h2>PrintJobs</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Server)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Printer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintJobName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintDriver)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeSubmitted)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PagesPrinted)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalPages)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Server)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Printer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PrintJobName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PrintDriver)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeSubmitted)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PagesPrinted)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalPages)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.PrintJobID}) |
+            @Html.ActionLink("Details", "Details", new { id=item.PrintJobID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.PrintJobID })
+        </td>
+    </tr>
+}
+
+</table>

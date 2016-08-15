@@ -1,0 +1,93 @@
+﻿@model IEnumerable<EPSPrintMgmt.Models.PrintJob>
+
+@{
+    ViewBag.Title = "PrintJobs";
+}
+@section AdditionalMeta
+{
+    <meta http-equiv="refresh" content="180">
+}
+
+<h2>Print Jobs</h2>
+<p>Print jobs may still show up after deleting.  Refresh page to verify it has been deleted.  If job continues to display, you will have to look at the server directly.</p>
+<table class="table table-responsive table-hover">
+    <tr>
+        <th></th>
+        <th>
+                @Html.DisplayNameFor(model => model.Server)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Printer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintJobName)
+        </th>
+        <th>
+                @Html.DisplayNameFor(model => model.PrintDriver)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeSubmitted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PagesPrinted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPages)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HostPrintQueue)
+            </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Owner)
+        </th>
+        <th></th>
+    </tr>
+    @{int theCount = 0; }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @(theCount+=1)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Server)
+                </td>
+                <td>
+                    <a href="http://@Html.DisplayFor(modelItem => item.Printer)" target="_blank">@Html.DisplayFor(modelItem => item.Printer)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrintJobName)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.PrintDriver)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeSubmitted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PagesPrinted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPages)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HostPrintQueue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Owner)
+                </td>
+            <td>
+@*                @Html.ActionLink("Details", "Details", new { id = item.PrintJobID, printServer = item.Server, printer = item.Printer }) |*@
+                @Html.ActionLink("Delete", "Delete", new { id = item.PrintJobID, printServer = item.Server, printer = item.Printer}, new { @class = "btn btn-default" })
+            
+            </td>
+        </tr>
+    }
+
+</table>

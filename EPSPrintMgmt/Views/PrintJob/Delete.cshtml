@@ -1,0 +1,78 @@
+﻿@model EPSPrintMgmt.Models.PrintJob
+
+@{
+    ViewBag.Title = "PrintJobs";
+}
+
+<h2>Delete Print Job</h2>
+
+<table class="table">
+    <tr>
+        <th>
+                @Html.DisplayNameFor(model => model.Server)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Printer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrintJobName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrintDriver)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeSubmitted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PagesPrinted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPages)
+            </th>
+        <th></th>
+    </tr>
+
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => modelItem.Server)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.Printer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.PrintJobName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.PrintDriver)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.TimeSubmitted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.PagesPrinted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => modelItem.TotalPages)
+                </td>
+            <td>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(s=>s.Server)
+                    @Html.HiddenFor(s=>s.PrintJobID)
+                    @Html.HiddenFor(s=>s.PrintJobName)
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Delete" class="btn btn-default" />
+                        @Html.ActionLink("Back to List", "Index","",new { @class = "btn btn-default" })
+                    </div>
+                }
+            </td>
+        </tr>
+
+</table>

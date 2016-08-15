@@ -1,0 +1,61 @@
+﻿@model EPSPrintMgmt.Models.Printer
+
+@{
+    ViewBag.Title = "Options";
+}
+
+<h2>Printer Options</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model=>model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Driver)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintServer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NumberJobs)
+        </th>
+        <th></th>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Driver)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.PrintServer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.NumberJobs)
+        </td>
+        <td>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(s => s.Name)
+                @Html.HiddenFor(s => s.PrintServer)
+                <div class="form-actions no-color">
+                    <input type="submit" value="Purge Queue" class="btn btn-default" />
+                   @if (Session["IsEPSServer"].ToString() == "True"){
+                    @Html.ActionLink("Edit EPS Printer", "Edit", new { printer = Model.Name }, new { @class = "btn btn-default" })
+                   }
+                   else
+                   {
+                    @*@Html.ActionLink("Edit Enterprise Printer", "EditEnterprisePrinter", new { printer = Model.Name,printServer=Model.PrintServer.TrimStart('\\') }, new { @class = "btn btn-default" })*@
+                   }
+                    @Html.ActionLink("Back to List", "Index",new {PrintServer=Model.PrintServer.TrimStart('\\') }, new { @class = "btn btn-default" })
+                </div>
+            }
+            
+        </td>
+    </tr>
+
+</table>

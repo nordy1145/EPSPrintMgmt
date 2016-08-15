@@ -1,0 +1,114 @@
+﻿@model EPSPrintMgmt.Models.AddPrinterClass
+
+@{
+    ViewBag.Title = "Add EPS Printer";
+}
+
+<h2>Add EPS Printer</h2>
+
+@using (Html.BeginForm("CreatePrinterJSON","Printer",FormMethod.Post, new { encType = "multipart/form-data", id = "myform", name = "myform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <p>Verify DNS and printer are setup before adding to EPS.</p>
+        <p>The page may continue to load for a few minutes.  Pleae give it some time to finish.</p>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.DeviceID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DeviceID, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DeviceID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DriverName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DriverName, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DriverName", new SelectList((System.Collections.IEnumerable)ViewData["printDrivers"]))
+                @Html.ValidationMessageFor(model => model.DriverName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.Active, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Active)
+                        @Html.ValidationMessageFor(model => model.Active, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+<div id="divProcessing">
+    <p>Processing, please wait . . . <img src="../../Content/ajax-loader.gif"></p>
+</div>
+<div id="divResult">
+
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+
+        $(document).ready(function () {
+
+            // Hide the "busy" Gif at load:
+            $("#divProcessing").hide();
+            $("#divResult").text("");
+
+            $("#myform").on("submit", function (event) {
+                event.preventDefault();
+
+                // Show the "busy" Gif:
+                $("#divProcessing").show();
+                $("#divResult").text("");
+                var url = $(this).attr("action");
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: formData,
+                    dataType: "json",
+                    success: function (resp) {
+
+                        // Hide the "busy" gif:
+                        $("#divProcessing").hide();
+
+                        // Do something useful with the data:
+                        //$("<h3>" + resp[0].FirstName + " " + resp[0].LastName + "</h3>").appendTo("#divResult");
+                        //var list = resp;
+
+                        //$.each(list, function (key, value) {
+                        //    $("<h3>" + value[FirstName] + " " + Value[LastName] + "</h3>").appendTo("#divResult");
+                        //});
+                        for (var i = 0; i < resp.length; i++) {
+                            var mess = resp[i];
+                            $("<h3>"+mess+"</h3>").appendTo("#divResult");
+                        }
+
+                    }
+                })
+            });
+        });
+</script>
+}

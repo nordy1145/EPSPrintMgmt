@@ -1,0 +1,69 @@
+﻿@model IEnumerable<EPSPrintMgmt.Models.Printer>
+
+@{
+    ViewBag.Title = "Printers";
+}
+    <h2>Printers - @Session["currentPrintServerLookup"].ToString().ToUpper()</h2>
+    <p>It can take some time to load a printer.  Please be patient while it loads all the printers directly from the server.</p>
+<div>
+    @Html.DropDownList("PrintServer", new SelectList((System.Collections.IEnumerable)ViewData["printServers"]), new {@class = "pull-right" , @onchange = "CallChangeFunc(this.value)" })
+    @Html.ActionLink("Create New EPS Printer", "Create","", new { @class = "btn btn-default pull-left" })
+</div>
+<table class="table table-responsive table-hover">
+    <tr>
+        <th>
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Name)*@
+            @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm,printServer= Session["currentPrintServerLookup"] })
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Driver)*@
+            @Html.ActionLink("Print Driver", "Index", new { sortOrder = ViewBag.DriverSortParm, printServer = Session["currentPrintServerLookup"] })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintServer)
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.NumberJobs)*@
+            @Html.ActionLink("Number of Jobs", "Index", new { sortOrder = ViewBag.JobsSortParm, printServer = Session["currentPrintServerLookup"] })
+        </th>
+        <th></th>
+
+    </tr>
+    @{ int theCount = 0;}
+    @foreach (var item in Model)
+{
+        <tr>
+            <td>@(theCount+=1)</td>
+            <td>
+                <a href="http://@Html.DisplayFor(modelItem => item.Name)" target="_blank">@Html.DisplayFor(modelItem => item.Name)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Driver)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrintServer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberJobs)
+            </td>
+            <td>
+                @Html.ActionLink("Options","Options",new { printer=item.Name,printServer=item.PrintServer})
+            @*    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                  @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                  @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+
+            *@
+            </td>
+        </tr>
+    }
+
+</table>
+<script>
+    function CallChangeFunc(val) {
+        //window.location.href="/PrintMgmt/Printer/Index?printServer=" + val;
+        window.location.href = "@Url.Action("Index", "Printer")" + "?printServer=" + val;
+        //window.location.href="/Printer/Index?printServer=" + val;
+            }
+</script>

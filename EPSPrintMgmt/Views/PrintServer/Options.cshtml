@@ -1,0 +1,41 @@
+﻿@model EPSPrintMgmt.Models.MyPrintServer
+
+@{
+    ViewBag.Title = "Options";
+}
+
+<h2>Printer Options</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IP)
+        </th>
+        <th></th>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.IP)
+        </td>
+
+        <td>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(s => s.Name)
+                <div class="form-actions no-color">
+                    <input type="submit" value="Clear DNS" class="btn btn-default" />
+                    @Html.ActionLink("Back to List", "Index", "", new { @class = "btn btn-default" })
+                </div>
+            }
+        </td>
+    </tr>
+
+</table>
