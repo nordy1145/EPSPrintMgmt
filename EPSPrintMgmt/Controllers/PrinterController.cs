@@ -24,14 +24,20 @@ namespace EPSPrintMgmt.Controllers
         [OutputCache(Duration = 300, VaryByParam = "PrintServer;sortOrder")]
         public ActionResult Index(string printServer, string sortOrder)
         {
+            //Following params are used to determine the sort order of the list of printers.
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
             ViewBag.JobsSortParm = sortOrder == "Jobs" ? "Jobs" : "Jobs_desc";
             ViewBag.DriverSortParm = sortOrder == "Driver" ? "Driver_desc" : "Driver";
+
+            //initialize the list of printers
             List<Printer> printers;
+            
+            //initlize some strings used throughout
             string theFirstEPSSErver = GetEPSServers().First();
             string checkPrintServer;
-            string currentEPSServer ="";
+            string currentEPSServer = "";
 
+            //Define checkPrintServer to determine if a print server param has been passed in or not.
             if (Session["currentPrintServerLookup"] != null)
             {
                 checkPrintServer = Session["currentPrintServerLookup"].ToString();
@@ -41,31 +47,40 @@ namespace EPSPrintMgmt.Controllers
                 checkPrintServer = null;
             }
 
+            //This will determine what print server to actually use
             if (printServer == null)
             {
+                //If no printer is passed in, return the first from the list.
+                //The list pulls directly from the web.config file EPSServers section.
                 if (checkPrintServer == null)
                 {
                     Session["currentPrintServerLookup"] = theFirstEPSSErver;
                     currentEPSServer = theFirstEPSSErver;
                     printers = GetPrinters(theFirstEPSSErver);
                 }
+                //Checks to see if it's not the first EPS server in list, then returns the actual one.
                 else if (checkPrintServer != theFirstEPSSErver)
                 {
                     printers = GetPrinters(checkPrintServer);
                 }
+                //returns the first one if it's actually a passed in param.
                 else
                 {
                     printers = GetPrinters(theFirstEPSSErver);
                 }
             }
             else
+            //sets the session print server to be passed back when going back and forth between views.
+            //Returns the print server passed into the view.
             {
                 Session["currentPrintServerLookup"] = printServer;
                 currentEPSServer = printServer;
                 printers = GetPrinters(printServer);
             }
+            // Gets all the print servers for the drop down option in the Index View of this controller.
             ViewData["printServers"] = GetAllPrintServers();
 
+            //Switch statement to determine the sort order of the view.
             switch (sortOrder)
             {
                 case "Name_desc":
@@ -88,13 +103,15 @@ namespace EPSPrintMgmt.Controllers
                     break;
             }
 
+            //Used to determine if the options tab will include specific edit options for EPS servers only.
             Session["IsEPSServer"] = GetEPSServers().Exists(s => s == currentEPSServer).ToString();
-            var testingstuff = GetEPSServers().Exists(s => s == currentEPSServer).ToString();
 
+            //return the list of printers one way or another.
             return View(printers);
         }
         public ActionResult Error()
         {
+            //Pass an error message from other views if there is some sort of error on the PrinterController.
             ViewBag.RedirectError = TempData["RedirectToError"];
             return View();
         }
@@ -104,15 +121,20 @@ namespace EPSPrintMgmt.Controllers
         }
         public ActionResult Create()
         {
+            //Pass the print drivers from the Web.config file to the view
             ViewData["printDrivers"] = GetAllPrintDrivers();
             return View();
         }
 
+        //This is used for AJAX version of creating a new EPS printer.
         public ActionResult CreateJsonRequest()
         {
             ViewData["printDrivers"] = GetAllPrintDrivers();
             return View();
         }
+
+        //old non AJAX and non Parallel way of adding printers.
+        //This should not be referenced by anything anymore.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "DeviceID,DriverName")]AddPrinterClass theNewPrinter)
@@ -147,13 +169,19 @@ namespace EPSPrintMgmt.Controllers
             return RedirectToAction("Error");
 
         }
+
+        //Used for parallel and AJAX processing of new EPS printer creation.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult CreatePrinterJSON([Bind(Include = "DeviceID,DriverName")]AddPrinterClass theNewPrinter)
         {
+            //Initialize list to display to end users if it completes or not.
             List<string> outcome = new List<string>();
+
+            //Make sure incoming data is good to go.
             if (ModelState.IsValid)
             {
+                //Validate the printer exists in DNS.
                 if (ValidHostname(theNewPrinter.DeviceID) == true)
                 {
 
@@ -234,7 +262,7 @@ namespace EPSPrintMgmt.Controllers
             ViewData["printDrivers"] = GetAllPrintDrivers();
             return View(myPrinter);
         }
-        public ActionResult EditEnterprisePrinter(string printer,string printServer)
+        public ActionResult EditEnterprisePrinter(string printer, string printServer)
         {
             var myPrinter = GetPrinter(printServer, printer);
             ViewData["printDrivers"] = GetAllPrintDrivers();
@@ -300,28 +328,28 @@ namespace EPSPrintMgmt.Controllers
                 if (ValidHostname(theNewPrinter.Name) == true)
                 {
 
-                        CimSession mySession = CimSession.Create(theNewPrinter.PrintServer);
-                        var testtheConnection = mySession.TestConnection();
-                        if (testtheConnection == true)
+                    CimSession mySession = CimSession.Create(theNewPrinter.PrintServer);
+                    var testtheConnection = mySession.TestConnection();
+                    if (testtheConnection == true)
+                    {
+                        if (ExistingPrinterPort(theNewPrinter.Name, theNewPrinter.PrintServer) == false)
                         {
-                            if (ExistingPrinterPort(theNewPrinter.Name, theNewPrinter.PrintServer) == false)
-                            {
-                                AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.Name, HostAddress = theNewPrinter.Name, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
-                                AddNewPrinterPort(AddThePort, theNewPrinter.PrintServer);
-                            }
-                            else
-                            {
-
-                            }
-                            outcome.Add(DeletePrinter(theNewPrinter.Name, theNewPrinter.PrintServer));
-                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.Name, Published = false, Shared = false };
-                            outcome.Add(AddNewPrinterStringReturn(newPrinter, theNewPrinter.PrintServer));
-
+                            AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.Name, HostAddress = theNewPrinter.Name, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                            AddNewPrinterPort(AddThePort, theNewPrinter.PrintServer);
                         }
                         else
                         {
-                            outcome.Add(theNewPrinter.PrintServer + "Is not a valid server.  Please contact the creator of this thing and have them check the web.config for valid EPS servers.");
+
                         }
+                        outcome.Add(DeletePrinter(theNewPrinter.Name, theNewPrinter.PrintServer));
+                        AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.Name, Published = false, Shared = false };
+                        outcome.Add(AddNewPrinterStringReturn(newPrinter, theNewPrinter.PrintServer));
+
+                    }
+                    else
+                    {
+                        outcome.Add(theNewPrinter.PrintServer + "Is not a valid server.  Please contact the creator of this thing and have them check the web.config for valid EPS servers.");
+                    }
 
                     SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, the printer updated correctly!  Enjoy your day.";
@@ -478,16 +506,16 @@ namespace EPSPrintMgmt.Controllers
                 foreach (ManagementObject i in col)
                 {
                     i.Delete();
-                    return "Successfully deleted: "+i["Name"].ToString()+" on server: "+server;
+                    return "Successfully deleted: " + i["Name"].ToString() + " on server: " + server;
                 }
 
             }
             catch
             {
-                return "Delete failed on server: "+server+".  Try catch failed";
+                return "Delete failed on server: " + server + ".  Try catch failed";
 
             }
-            return "Delete failed on server: "+server+". Returned failed at the end of the method.";
+            return "Delete failed on server: " + server + ". Returned failed at the end of the method.";
         }
         static private bool ClearPrintQueue(string printer, string server)
         {
@@ -560,38 +588,5 @@ namespace EPSPrintMgmt.Controllers
             }
             return true;
         }
-        //static public void AddPrinter(Printer printer)
-        //{
-        //    List<PrintJob> printJobs = new List<PrintJob>();
-        //    string Namespace = @"root\cimv2";
-        //    string OSQuery = "SELECT * FROM Win32_Printer";
-        //    string className = "Win32_Printer";
-        //    CimInstance newPrinter = new CimInstance(className, Namespace);
-        //    newPrinter.CimInstanceProperties.Add(CimProperty.Create("Drivername", "HP Universal Printing PCL 5 (v5.5.0)",CimFlags.Any));
-        //    newPrinter.CimInstanceProperties.Add(CimProperty.Create("PortName", "PBLMCISXEROX",CimFlags.Any));
-        //    newPrinter.CimInstanceProperties.Add(CimProperty.Create("Shared", false, CimFlags.Any));
-        //    newPrinter.CimInstanceProperties.Add(CimProperty.Create("Published", false, CimFlags.Any));
-        //    newPrinter.CimInstanceProperties.Add(CimProperty.Create("EnableBIDI", false, CimFlags.Any));
-        //    newPrinter.CimInstanceProperties.Add(CimProperty.Create("DeviceID", "TestingStuff", CimFlags.Key));
-
-        //    CimSession mySession = CimSession.Create("ryan-pc");
-
-
-
-        //    //CimInstance printInstance = new CimInstance(className, Namespace);
-        //    //CimInstance updateInstance = mySession.CreateInstance(Namespace,printInstance);
-        //    //updateInstance.CimInstanceProperties.Add();
-        //    //updateInstance.
-
-        //    //IEnumerable<CimInstance> queryInstance = mySession.QueryInstances(Namespace, "WQL", OSQuery);
-        //    //foreach (var props in queryInstance)
-        //    //{
-        //    //    var jobID = Int32.Parse(props.CimInstanceProperties["JobID"].Value.ToString());
-        //    //    var printName = props.CimInstanceProperties["Name"].ToString();
-        //    //    printJobs.Add(new PrintJob { PrintJobID = jobID, PrintJobName = printName });
-        //    //}
-
-        //    //return (printJobs);
-        //}
     }
 }
