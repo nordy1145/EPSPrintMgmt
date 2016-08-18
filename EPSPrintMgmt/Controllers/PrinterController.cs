@@ -274,53 +274,70 @@ namespace EPSPrintMgmt.Controllers
             TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
             return RedirectToAction("Error");
         }
-
+        //Returns view to Edit a specific EPS Printer
         public ActionResult Edit(string printer)
         {
+            //Just uses the first EPS print server to get the properties.
             var myPrinter = GetPrinter(GetEPSServers().First(), printer);
+            //Return a list of available print drivers from web.config
             ViewData["printDrivers"] = GetAllPrintDrivers();
+            //return view with printer info.
             return View(myPrinter);
         }
+        //Will be used at some point to edit non EPS printers, potentially...
         public ActionResult EditEnterprisePrinter(string printer, string printServer)
         {
             var myPrinter = GetPrinter(printServer, printer);
             ViewData["printDrivers"] = GetAllPrintDrivers();
             return View(myPrinter);
         }
+        //AJAX Json response for editing an EPS Printer.
+        //Currently deletes 
         public JsonResult EditPrinterJSON([Bind(Include = "Name,Driver")]Printer theNewPrinter)
         {
+            //Initialize string for the output.
             List<string> outcome = new List<string>();
+
             if (ModelState.IsValid)
             {
+                //Verify the printer name is still correct.
                 if (ValidHostname(theNewPrinter.Name) == true)
                 {
-
+                    //Start parallel processing on each EPS server.
                     Parallel.ForEach(GetEPSServers(), (server) =>
                     {
+                        //Verify a Cim Session can be created before calling methods that use it... Maybe a bit backwards.
                         CimSession mySession = CimSession.Create(server);
                         var testtheConnection = mySession.TestConnection();
                         if (testtheConnection == true)
                         {
+                            //Continue on if a session can be created
                             if (ExistingPrinterPort(theNewPrinter.Name, server) == false)
                             {
+                                //Check to see if port doesn't exist and create it if it does not exist.
                                 AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.Name, HostAddress = theNewPrinter.Name, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
                                 AddNewPrinterPort(AddThePort, server);
                             }
                             else
                             {
-
+                                //don't do anything if port is actually there.
                             }
+                            //Need to delete out the old printer first, since I haven't found a good way to change print drivers/properities.
                             outcome.Add(DeletePrinter(theNewPrinter.Name, server));
+                            //create the new printer object with the correct props.
                             AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.Name, Published = false, Shared = false };
+                            //Try and add the printer back in after it's been deleted.
                             outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
 
                         }
                         else
                         {
+                            //Print server doesn't exist or is done.  Need to check web.config currently.
                             outcome.Add(server + "Is not a valid server.  Please contact the creator of this thing and have them check the web.config for valid EPS servers.");
                         }
 
                     });
+                    //Finish the Parallel loop and return the results.
                     SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, the printer updated correctly!  Enjoy your day.";
                     return Json(outcome, JsonRequestBehavior.AllowGet);
@@ -384,54 +401,80 @@ namespace EPSPrintMgmt.Controllers
             return Json(outcome, JsonRequestBehavior.AllowGet);
 
         }
+        //Method to return all printers from a specified print server
         static public List<Printer> GetPrinters(string server)
         {
+            //Currently using the PrintServer class instead of a WMI query.
+            //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
+            //PrintServer class requires the 2 wacks in the server name.
             PrintServer printServer = new PrintServer(@"\\" + server);
+            //Make a pretty ordered list by name.
             var myPrintQueues = printServer.GetPrintQueues().OrderBy(t => t.Name);
+            //Create an empty list to return.
             List<Printer> printerList = new List<Printer>();
+            //Loop through and add all items to the custom class.
             foreach (PrintQueue pq in myPrintQueues)
             {
                 //pq.Refresh();
                 printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), NumberJobs = pq.NumberOfJobs });
             }
+            //return the printers added to the custom class.
             return (printerList);
         }
+        //Get details for a specific printer.
         static public Printer GetPrinter(string server, string printer)
         {
+            //Currently using the PrintServer class instead of a WMI query.
+            //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
+            //PrintServer class requires the 2 wacks in the server name.
             PrintServer printServer = new PrintServer(@"\\" + server);
+            //Get the one print queue from the print server.
             var myPrintQueues = printServer.GetPrintQueue(printer);
+            //refresh and add the print queue to the custom class.
             myPrintQueues.Refresh();
             Printer printerList = new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = myPrintQueues.HostingPrintServer.Name, NumberJobs = myPrintQueues.NumberOfJobs };
             return (printerList);
         }
-
-
+        //Return a true/false if printer port is active.  Need to know when adding a printer.
         static private bool ExistingPrinterPort(string portName, string serverName)
         {
+            //This uses Powershell CimSession and WMI to query the information from the server.
             string Namespace = @"root\cimv2";
             string OSQuery = "SELECT * FROM Win32_TCPIPPrinterPort";
             CimSession mySession = CimSession.Create(serverName);
+            //Verify the session created correctly, otherwise it will error out if it fails to connect.
             var testtheConnection = mySession.TestConnection();
             if (testtheConnection == true)
             {
+                //Query WMI for Printer Ports on the server.
                 IEnumerable<CimInstance> queryInstance = mySession.QueryInstances(Namespace, "WQL", OSQuery);
+                //Check to see if it exists in the query response.
                 var exist = queryInstance.Where(p => p.CimInstanceProperties["Name"].Value.Equals(portName));
+                //If the port exists, then return true.
                 if (exist.FirstOrDefault() != null)
                 {
+                    //return true and exit.
                     return true;
                 }
             }
             else
             {
+                //session didn't connect.  Return False
                 return false;
             }
+            //if you've gotten this far, something went really wrong.
             return false;
         }
 
+        //Add a printer port to a server.
+        //Assumes you have verified the print server and ip/dns entries are valid.
         static private void AddNewPrinterPort(AddPrinterPortClass theNewPrinterPort, string thePrintServer)
         {
+            //Uses Powershell and WMI to create the new printer port.
             string Namespace = @"root\cimv2";
             string className = "Win32_TCPIPPrinterPort";
+
+            //Create the CimInstance for the new printer port. Items for a WMI query really.
             CimInstance newPrinter = new CimInstance(className, Namespace);
             newPrinter.CimInstanceProperties.Add(CimProperty.Create("Name", theNewPrinterPort.Name, CimFlags.Any));
             newPrinter.CimInstanceProperties.Add(CimProperty.Create("SNMPEnabled", theNewPrinterPort.SNMPEnabled, CimFlags.Any));
@@ -439,12 +482,17 @@ namespace EPSPrintMgmt.Controllers
             newPrinter.CimInstanceProperties.Add(CimProperty.Create("PortNumber", theNewPrinterPort.PortNumber, CimFlags.Any));
             newPrinter.CimInstanceProperties.Add(CimProperty.Create("HostAddress", theNewPrinterPort.HostAddress, CimFlags.Any));
 
+            //Create the Cimsession to the print server.
             CimSession Session = CimSession.Create(thePrintServer);
+            //Actually create the printer port on the print server.
             CimInstance myPrinter = Session.CreateInstance(Namespace, newPrinter);
+            //Cleanup
             myPrinter.Dispose();
             Session.Dispose();
         }
 
+        //This shouldn't be used anymore.
+        //old method for adding a printer.
         static private void AddNewPrinter(AddPrinterClass theNewPrinter, string thePrintServer)
         {
 
@@ -459,8 +507,6 @@ namespace EPSPrintMgmt.Controllers
             printProps.Add("EnableBIDI", BIDI);
             printProps.Add("Published", published);
             String[] port = new String[] { theNewPrinter.DeviceID };
-
-
             try
             {
                 PrintQueue AddingPrinterHere = printServer.InstallPrintQueue(theNewPrinter.DeviceID, theNewPrinter.DriverName, port, "WinPrint", printProps);
@@ -468,13 +514,12 @@ namespace EPSPrintMgmt.Controllers
             }
             catch (System.Printing.PrintSystemException e)
             {
-
             }
             //printServer.Commit();
             printServer.Dispose();
-
-
         }
+
+        //Add a printer and return success or failure in a string.
         static private string AddNewPrinterStringReturn(AddPrinterClass theNewPrinter, string thePrintServer)
         {
 
