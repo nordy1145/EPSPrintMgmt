@@ -12,7 +12,7 @@
 
     <div class="form-horizontal">
         <p>Verify DNS and printer are setup before adding to EPS.</p>
-        <p>The page may continue to load for a few minutes.  Pleae give it some time to finish.</p>
+        <p>The page may continue to load for a few minutes.  Please give it some time to finish.</p>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -22,6 +22,22 @@
                 @Html.ValidationMessageFor(model => model.DeviceID, "", new { @class = "text-danger" })
             </div>
         </div>
+
+        @if (ViewData["useIP"].ToString() == "True")
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.PortName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.PortName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PortName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <input type="hidden" id="PortName" name="PortName" />
+        }
+
 
         @*<div class="form-group">
                 @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -38,17 +54,6 @@
                 @Html.ValidationMessageFor(model => model.DriverName, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        @*<div class="form-group">
-                @Html.LabelFor(model => model.Active, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        @Html.EditorFor(model => model.Active)
-                        @Html.ValidationMessageFor(model => model.Active, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>*@
-
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -82,6 +87,13 @@
                 // Show the "busy" Gif:
                 $("#divProcessing").show();
                 $("#divResult").text("");
+                var UseIP = "@ViewData["useIP"]";
+
+                if (UseIP == "False")
+                {
+                    document.getElementById("PortName").value = document.getElementById("DeviceID").value;
+                }
+
                 var url = $(this).attr("action");
                 var formData = $(this).serialize();
                 $.ajax({
@@ -93,14 +105,6 @@
 
                         // Hide the "busy" gif:
                         $("#divProcessing").hide();
-
-                        // Do something useful with the data:
-                        //$("<h3>" + resp[0].FirstName + " " + resp[0].LastName + "</h3>").appendTo("#divResult");
-                        //var list = resp;
-
-                        //$.each(list, function (key, value) {
-                        //    $("<h3>" + value[FirstName] + " " + Value[LastName] + "</h3>").appendTo("#divResult");
-                        //});
                         for (var i = 0; i < resp.length; i++) {
                             var mess = resp[i];
                             $("<h3>"+mess+"</h3>").appendTo("#divResult");

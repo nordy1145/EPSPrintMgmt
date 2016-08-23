@@ -18,6 +18,9 @@
             @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm,printServer= Session["currentPrintServerLookup"] })
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.PortName)
+        </th>
+        <th>
             @*@Html.DisplayNameFor(model => model.Driver)*@
             @Html.ActionLink("Print Driver", "Index", new { sortOrder = ViewBag.DriverSortParm, printServer = Session["currentPrintServerLookup"] })
         </th>
@@ -38,6 +41,9 @@
             <td>@(theCount+=1)</td>
             <td>
                 <a href="http://@Html.DisplayFor(modelItem => item.Name)" target="_blank">@Html.DisplayFor(modelItem => item.Name)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PortName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Driver)

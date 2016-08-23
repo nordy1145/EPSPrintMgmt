@@ -10,15 +10,23 @@ namespace EPSPrintMgmt.Models
 {
     public class Printer
     {
+        [DisplayName("Printer")]
         public string Name { get; set; }
+        [DisplayName("Print Driver")]
         public string Driver { get; set; }
+        [DisplayName("Print Server")]
         public string PrintServer { get; set; }
+        [DisplayName("Number of Jobs")]
         public int NumberJobs { get; set; }
+        [DisplayName("Port Name")]
+        public string PortName { get; set; }
     }
 
     public class AddPrinterClass
     {
+        [DisplayName("Driver Name")]
         public string DriverName { get; set; }
+        [DisplayName("Port Name")]
         public string PortName { get; set; }
         public string Location { get; set; }
         public string Comment { get; set; }

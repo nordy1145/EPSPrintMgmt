@@ -15,6 +15,7 @@ using System.Printing.IndexedProperties;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web.Caching;
+using System.Net;
 
 namespace EPSPrintMgmt.Controllers
 {
@@ -32,7 +33,7 @@ namespace EPSPrintMgmt.Controllers
             //initialize the list of printers
             List<Printer> printers;
 
-            //initlize some strings used throughout
+            //initialize some strings used throughout
             string theFirstEPSSErver = GetEPSServers().First();
             string checkPrintServer;
             string currentEPSServer = "";
@@ -123,6 +124,7 @@ namespace EPSPrintMgmt.Controllers
         {
             //Pass the print drivers from the Web.config file to the view
             ViewData["printDrivers"] = GetAllPrintDrivers();
+            ViewData["useIP"] = UsePrinterIPAddr();
             return View();
         }
 
@@ -137,7 +139,7 @@ namespace EPSPrintMgmt.Controllers
         //This should not be referenced by anything anymore.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "DeviceID,DriverName")]AddPrinterClass theNewPrinter)
+        public ActionResult Create([Bind(Include = "DeviceID,DriverName,PortName")]AddPrinterClass theNewPrinter)
         {
             if (ModelState.IsValid)
             {
@@ -173,7 +175,7 @@ namespace EPSPrintMgmt.Controllers
         //Used for parallel and AJAX processing of new EPS printer creation.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult CreatePrinterJSON([Bind(Include = "DeviceID,DriverName")]AddPrinterClass theNewPrinter)
+        public JsonResult CreatePrinterJSON([Bind(Include = "DeviceID,DriverName,PortName")]AddPrinterClass theNewPrinter)
         {
             //Initialize list to display to end users if it completes or not.
             List<string> outcome = new List<string>();
@@ -181,8 +183,9 @@ namespace EPSPrintMgmt.Controllers
             //Make sure incoming data is good to go.
             if (ModelState.IsValid)
             {
-                //Validate the printer exists in DNS.
-                if (ValidHostname(theNewPrinter.DeviceID) == true)
+                //Validate the printer exists in DNS or Valid IP Address
+                //Web.Config determines if it is really used or not.
+                if (ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //kick off multiple threads to install printers quickly
                     Parallel.ForEach(GetEPSServers(), (server) =>
@@ -194,10 +197,10 @@ namespace EPSPrintMgmt.Controllers
                         {
                             //Start the process of installing a printer.
                             //Checks to see if the Printer port already exists on the server.
-                            if (ExistingPrinterPort(theNewPrinter.DeviceID, server) == false)
+                            if (ExistingPrinterPort(theNewPrinter.PortName, server) == false)
                             {
                                 //Adds printer port, currently just using the name of the printer for the port name.  So DNS must be setup first in order to add printer port.
-                                AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.DeviceID, HostAddress = theNewPrinter.DeviceID, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                                AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
                                 AddNewPrinterPort(AddThePort, server);
                             }
                             else
@@ -206,7 +209,7 @@ namespace EPSPrintMgmt.Controllers
                             }
                             //Try to add the printer now the port is defined on the server.
                             //first setup the props of the printer
-                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.DeviceID, Published = false, Shared = false };
+                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
                             //Use the string return function to determine if the printer was successfully added or not.
                             outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
                         }
@@ -225,9 +228,9 @@ namespace EPSPrintMgmt.Controllers
                     return Json(outcome, JsonRequestBehavior.AllowGet);
                 }
                 //Send email and return results if DNS does not exist for the printer.
-                SendEmail("Failed EPS Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup." + Environment.NewLine + "By user: " + User.Identity.Name);
-                TempData["RedirectToError"] = "Hostname of the Printer does not exist.  Please try again.";
-                outcome.Add("Hostname of the Printer does not exist.  Please try again.");
+                SendEmail("Failed EPS Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
+                TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.";
+                outcome.Add("Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.");
                 return Json(outcome, JsonRequestBehavior.AllowGet);
             }
             //Return error message that 
@@ -281,6 +284,8 @@ namespace EPSPrintMgmt.Controllers
             var myPrinter = GetPrinter(GetEPSServers().First(), printer);
             //Return a list of available print drivers from web.config
             ViewData["printDrivers"] = GetAllPrintDrivers();
+            //Determines if an PortName field should be returned to users.
+            ViewData["useIP"] = UsePrinterIPAddr();
             //return view with printer info.
             return View(myPrinter);
         }
@@ -293,7 +298,7 @@ namespace EPSPrintMgmt.Controllers
         }
         //AJAX Json response for editing an EPS Printer.
         //Currently deletes 
-        public JsonResult EditPrinterJSON([Bind(Include = "Name,Driver")]Printer theNewPrinter)
+        public JsonResult EditPrinterJSON([Bind(Include = "Name,Driver,PortName")]Printer theNewPrinter)
         {
             //Initialize string for the output.
             List<string> outcome = new List<string>();
@@ -315,7 +320,7 @@ namespace EPSPrintMgmt.Controllers
                             if (ExistingPrinterPort(theNewPrinter.Name, server) == false)
                             {
                                 //Check to see if port doesn't exist and create it if it does not exist.
-                                AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.Name, HostAddress = theNewPrinter.Name, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                                AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
                                 AddNewPrinterPort(AddThePort, server);
                             }
                             else
@@ -325,7 +330,7 @@ namespace EPSPrintMgmt.Controllers
                             //Need to delete out the old printer first, since I haven't found a good way to change print drivers/properities.
                             outcome.Add(DeletePrinter(theNewPrinter.Name, server));
                             //create the new printer object with the correct props.
-                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.Name, Published = false, Shared = false };
+                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
                             //Try and add the printer back in after it's been deleted.
                             outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
 
@@ -343,9 +348,9 @@ namespace EPSPrintMgmt.Controllers
                     return Json(outcome, JsonRequestBehavior.AllowGet);
 
                 }
-                SendEmail("Failed EPS Edit", "Printer: " + theNewPrinter.Name + " failed the DNS lookup." + Environment.NewLine + "By user: " + User.Identity.Name);
-                TempData["RedirectToError"] = "Hostname of the Printer does not exist.  Please try again.";
-                outcome.Add("Hostname of the Printer does not exist.  Please try again.");
+                SendEmail("Failed EPS Edit", "Printer: " + theNewPrinter.Name + " failed the DNS lookup or IP address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
+                TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is not a valid IP address.  Please try again.";
+                outcome.Add("Hostname of the Printer does not exist or it is not a valid IP address.  Please try again.");
                 return Json(outcome, JsonRequestBehavior.AllowGet);
             }
             TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
@@ -416,7 +421,7 @@ namespace EPSPrintMgmt.Controllers
             foreach (PrintQueue pq in myPrintQueues)
             {
                 //pq.Refresh();
-                printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), NumberJobs = pq.NumberOfJobs });
+                printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), NumberJobs = pq.NumberOfJobs,PortName=pq.QueuePort.Name });
             }
             //return the printers added to the custom class.
             return (printerList);
@@ -432,7 +437,7 @@ namespace EPSPrintMgmt.Controllers
             var myPrintQueues = printServer.GetPrintQueue(printer);
             //refresh and add the print queue to the custom class.
             myPrintQueues.Refresh();
-            Printer printerList = new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = myPrintQueues.HostingPrintServer.Name, NumberJobs = myPrintQueues.NumberOfJobs };
+            Printer printerList = new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = myPrintQueues.HostingPrintServer.Name, NumberJobs = myPrintQueues.NumberOfJobs,PortName=myPrintQueues.QueuePort.Name };
             return (printerList);
         }
         //Return a true/false if printer port is active.  Need to know when adding a printer.
@@ -527,13 +532,21 @@ namespace EPSPrintMgmt.Controllers
             PrintServer printServer = new PrintServer(@"\\" + thePrintServer);
             PrintPropertyDictionary printProps = new PrintPropertyDictionary { };
             // Share the new printer using Remove/Add methods
-            PrintBooleanProperty shared = new PrintBooleanProperty("IsShared", false);
+            PrintBooleanProperty shared = new PrintBooleanProperty("IsShared", true);
             PrintBooleanProperty BIDI = new PrintBooleanProperty("EnableBIDI", false);
+            PrintBooleanProperty isBIDI = new PrintBooleanProperty("IsBidiEnabled", false);
             PrintBooleanProperty published = new PrintBooleanProperty("Published", false);
+            PrintBooleanProperty direct = new PrintBooleanProperty("IsDirect", false);
+            PrintBooleanProperty spoolFirst = new PrintBooleanProperty("ScheduleCompletedJobsFirst", true);
+            PrintBooleanProperty doComplete = new PrintBooleanProperty("DoCompleteFirst", true);
             printProps.Add("IsShared", shared);
             printProps.Add("EnableBIDI", BIDI);
+            printProps.Add("IsBidiEnabled", isBIDI);
             printProps.Add("Published", published);
-            String[] port = new String[] { theNewPrinter.DeviceID };
+            printProps.Add("IsDirect", direct);
+            printProps.Add("DoCompleteFirst", doComplete);
+            printProps.Add("ScheduleCompletedJobsFirst", spoolFirst);
+            String[] port = new String[] { theNewPrinter.PortName };
 
 
             try
@@ -629,6 +642,15 @@ namespace EPSPrintMgmt.Controllers
             string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailFrom")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
             return (relayServer);
         }
+        static public bool UsePrinterIPAddr()
+        {
+            string useIPAddr = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UsePrinterIPAddress")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(useIPAddr,"true",true)==0)
+            {
+                return true;
+            }
+            return false;
+        }
         private static void SendEmail(string subject, string body)
         {
             MailMessage message = new MailMessage(GetEmailFrom(), GetEmailTo(), subject, body);
@@ -636,9 +658,30 @@ namespace EPSPrintMgmt.Controllers
             SmtpClient mailClient = new SmtpClient(GetRelayServer());
             mailClient.Send(message);
         }
+
+        //Currently checks to validate it's an actual IP address or a valid DNS entry.
+        //Doesn't Ping the IP address, just makes sure it's a valid IPV4 or IPV6 address.
         private static bool ValidHostname(string hostname)
         {
-            System.Net.IPHostEntry host;
+            IPHostEntry host;
+            IPAddress address;
+
+            if (IPAddress.TryParse(hostname, out address))
+            {
+                switch (address.AddressFamily)
+                {
+                    case System.Net.Sockets.AddressFamily.InterNetwork:
+                        return true;
+                        
+                    case System.Net.Sockets.AddressFamily.InterNetworkV6:
+                        return true;
+                        
+                    default:
+                        // umm... yeah... I'm going to need to take your red packet and...
+                        return false;
+                }
+            }
+
 
             try
             {
