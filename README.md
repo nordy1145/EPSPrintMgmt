@@ -3,9 +3,13 @@ Some requirements to run this project.
 Requires PowerShell 3+ installed on all servers, including web and print servers.
 WinRM must be enabled on EPS and Print Servers.
 On the web server, IIS is required with the following features:
+  
   Security - URL Authorization
+  
   Security - Windows Authentication
+  
   Application Development - .NET Extensibility 4.5
+  
   Application Development - ASP.NET 4.5
   
 Copy the extracted compiled version to the wwwroot directory or a virtual application on the IIS server.
