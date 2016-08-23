@@ -1,4 +1,7 @@
 # EPSPrintMgmt
+
+Download the "Compiled (date)".zip if you would like the precompiled version. 
+
 Some requirements to run this project.
 Requires PowerShell 3+ installed on all servers, including web and print servers.
 WinRM must be enabled on EPS and Print Servers.
