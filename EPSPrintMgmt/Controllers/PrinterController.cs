@@ -207,11 +207,18 @@ namespace EPSPrintMgmt.Controllers
                             {
                                 //If printer port already exists, don't do anything!
                             }
-                            //Try to add the printer now the port is defined on the server.
-                            //first setup the props of the printer
-                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
-                            //Use the string return function to determine if the printer was successfully added or not.
-                            outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                            if (CheckCurrentPrinter(theNewPrinter.DeviceID, server))
+                            {
+                                outcome.Add(theNewPrinter.DeviceID + " already exists on " + server);
+                            }
+                            else
+                            {
+                                //Try to add the printer now the port is defined on the server.
+                                //first setup the props of the printer
+                                AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
+                                //Use the string return function to determine if the printer was successfully added or not.
+                                outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                            }
                         }
                         //Cannot connect to the server, so send a message back to the user about it.
                         else
@@ -421,7 +428,7 @@ namespace EPSPrintMgmt.Controllers
             foreach (PrintQueue pq in myPrintQueues)
             {
                 //pq.Refresh();
-                printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), NumberJobs = pq.NumberOfJobs,PortName=pq.QueuePort.Name });
+                printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), NumberJobs = pq.NumberOfJobs, PortName = pq.QueuePort.Name });
             }
             //return the printers added to the custom class.
             return (printerList);
@@ -437,7 +444,7 @@ namespace EPSPrintMgmt.Controllers
             var myPrintQueues = printServer.GetPrintQueue(printer);
             //refresh and add the print queue to the custom class.
             myPrintQueues.Refresh();
-            Printer printerList = new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = myPrintQueues.HostingPrintServer.Name, NumberJobs = myPrintQueues.NumberOfJobs,PortName=myPrintQueues.QueuePort.Name };
+            Printer printerList = new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = myPrintQueues.HostingPrintServer.Name, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name };
             return (printerList);
         }
         //Return a true/false if printer port is active.  Need to know when adding a printer.
@@ -609,6 +616,27 @@ namespace EPSPrintMgmt.Controllers
                 return false;
             }
         }
+        static public bool CheckCurrentPrinter(string printer, string printserver)
+        {
+            //PrintServer class requires the 2 wacks in the server name.
+            PrintServer checkprintServer = new PrintServer(@"\\" + printserver);
+            //Get the one print queue from the print server.
+            try
+            {
+                var myPrintQueues = checkprintServer.GetPrintQueue(printer);
+                //myPrintQueues.Refresh();
+
+            }
+            catch
+            {
+                checkprintServer.Dispose();
+                return false;
+            }
+            //refresh and add the print queue to the custom class.
+            //Printer printerList = new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = myPrintQueues.HostingPrintServer.Name, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name };
+            //return (printerList);
+            return true;
+        }
 
         static public List<string> GetEPSServers()
         {
@@ -645,7 +673,7 @@ namespace EPSPrintMgmt.Controllers
         static public bool UsePrinterIPAddr()
         {
             string useIPAddr = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UsePrinterIPAddress")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(useIPAddr,"true",true)==0)
+            if (string.Compare(useIPAddr, "true", true) == 0)
             {
                 return true;
             }
@@ -672,10 +700,10 @@ namespace EPSPrintMgmt.Controllers
                 {
                     case System.Net.Sockets.AddressFamily.InterNetwork:
                         return true;
-                        
+
                     case System.Net.Sockets.AddressFamily.InterNetworkV6:
                         return true;
-                        
+
                     default:
                         // umm... yeah... I'm going to need to take your red packet and...
                         return false;
