@@ -22,7 +22,7 @@ namespace EPSPrintMgmt.Controllers
     public class PrinterController : Controller
     {
         // GET: Printer
-        [OutputCache(Duration = 300, VaryByParam = "PrintServer;sortOrder")]
+        //[OutputCache(Duration = 300, VaryByParam = "PrintServer;sortOrder")]
         public ActionResult Index(string printServer, string sortOrder)
         {
             //Following params are used to determine the sort order of the list of printers.
@@ -529,6 +529,41 @@ namespace EPSPrintMgmt.Controllers
             }
             //printServer.Commit();
             printServer.Dispose();
+
+            //This uses Powershell CimSession and WMI to query the information from the server.
+            //Used to change printer props
+            string Namespace = @"root\cimv2";
+            string OSQuery = "SELECT * FROM Win32_Printer";
+            CimSession mySession = CimSession.Create(thePrintServer);
+            //Verify the session created correctly, otherwise it will error out if it fails to connect.
+            var testtheConnection = mySession.TestConnection();
+            if (testtheConnection == true)
+            {
+                //Query WMI for Printer Ports on the server.
+                IEnumerable<CimInstance> queryInstance = mySession.QueryInstances(Namespace, "WQL", OSQuery);
+                //Check to see if it exists in the query response.
+                CimInstance exist = queryInstance.Where(p => p.CimInstanceProperties["Name"].Value.Equals(theNewPrinter.DeviceID)).FirstOrDefault();
+                //If the port exists, then return true.
+                if (exist != null)
+                {
+                    //return true and exit.
+                    exist.CimInstanceProperties["EnableBIDI"].Value = false;
+                    exist.CimInstanceProperties["DoCompleteFirst"].Value = true;
+                    exist.CimInstanceProperties["RawOnly"].Value = true;
+                    mySession.ModifyInstance(Namespace, exist);
+                    mySession.Dispose();
+                }
+                else
+                {
+                    //item doesn't exist...
+                    mySession.Dispose();
+                }
+            }
+            else
+            {
+                //session didn't connect.  Return False
+            }
+            //if you've gotten this far, something went really wrong.
         }
 
         //Add a printer and return success or failure in a string.
@@ -539,7 +574,7 @@ namespace EPSPrintMgmt.Controllers
             PrintServer printServer = new PrintServer(@"\\" + thePrintServer);
             PrintPropertyDictionary printProps = new PrintPropertyDictionary { };
             // Share the new printer using Remove/Add methods
-            PrintBooleanProperty shared = new PrintBooleanProperty("IsShared", true);
+            PrintBooleanProperty shared = new PrintBooleanProperty("IsShared", false);
             PrintBooleanProperty BIDI = new PrintBooleanProperty("EnableBIDI", false);
             PrintBooleanProperty isBIDI = new PrintBooleanProperty("IsBidiEnabled", false);
             PrintBooleanProperty published = new PrintBooleanProperty("Published", false);
@@ -560,15 +595,62 @@ namespace EPSPrintMgmt.Controllers
             {
                 PrintQueue AddingPrinterHere = printServer.InstallPrintQueue(theNewPrinter.DeviceID, theNewPrinter.DriverName, port, "WinPrint", printProps);
                 printServer.Commit();
+                printServer.Dispose();
             }
             catch (System.Printing.PrintSystemException e)
             {
                 printServer.Dispose();
                 return (theNewPrinter.DeviceID + " failed to install on " + thePrintServer + " with error message " + e.Message);
             }
-            //printServer.Commit();
-            printServer.Dispose();
-            return (theNewPrinter.DeviceID + " was added successfully on " + thePrintServer);
+
+            //Have to change some printer properties that are not modified in installation.
+            System.Threading.Thread.Sleep(3000);
+            //This uses PowerShell CimSession and WMI to query the information from the server.
+            //Used to change printer props
+            string Namespace = @"root\cimv2";
+            string OSQuery = "SELECT * FROM Win32_Printer";
+            CimSession mySession = CimSession.Create(thePrintServer);
+            //Verify the session created correctly, otherwise it will error out if it fails to connect.
+            var testtheConnection = mySession.TestConnection();
+            if (testtheConnection == true)
+            {
+                //Query WMI for Printer Ports on the server.
+                IEnumerable<CimInstance> queryInstance = mySession.QueryInstances(Namespace, "WQL", OSQuery);
+                //Check to see if it exists in the query response.
+                CimInstance exist = queryInstance.Where(p => p.CimInstanceProperties["Name"].Value.Equals(theNewPrinter.DeviceID)).FirstOrDefault();
+                //If the port exists, then return true.
+                if (exist != null)
+                {
+                    //return true and exit.
+                    exist.CimInstanceProperties["EnableBIDI"].Value = false;
+                    exist.CimInstanceProperties["DoCompleteFirst"].Value = true;
+                    exist.CimInstanceProperties["RawOnly"].Value = true;
+                    try
+                    {
+                        mySession.ModifyInstance(Namespace, exist);
+                        mySession.Dispose();
+                        return (theNewPrinter.DeviceID + " was added successfully on " + thePrintServer);
+                    }
+                    catch
+                    {
+                        mySession.Dispose();
+                        return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + thePrintServer);
+                    }
+                }
+                else
+                {
+                    //item doesn't exist...
+                    mySession.Dispose();
+                    return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + thePrintServer);
+                }
+            }
+            else
+            {
+                //session didn't connect.  Return False
+                return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + thePrintServer);
+            }
+
+            //return (theNewPrinter.DeviceID + " was added successfully on " + thePrintServer);
 
         }
         static private string DeletePrinter(string printer, string server)
