@@ -306,7 +306,7 @@ namespace EPSPrintMgmt.Controllers
             if (ModelState.IsValid)
             {
                 //Verify the printer name is still correct.
-                if (ValidHostname(theNewPrinter.Name) == true)
+                if (ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //Start parallel processing on each EPS server.
                     Parallel.ForEach(GetEPSServers(), (server) =>
@@ -317,7 +317,7 @@ namespace EPSPrintMgmt.Controllers
                         if (testtheConnection == true)
                         {
                             //Continue on if a session can be created
-                            if (ExistingPrinterPort(theNewPrinter.Name, server) == false)
+                            if (ExistingPrinterPort(theNewPrinter.PortName, server) == false)
                             {
                                 //Check to see if port doesn't exist and create it if it does not exist.
                                 AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
