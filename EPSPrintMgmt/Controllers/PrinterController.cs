@@ -107,6 +107,9 @@ namespace EPSPrintMgmt.Controllers
             //Used to determine if the options tab will include specific edit options for EPS servers only.
             Session["IsEPSServer"] = GetEPSServers().Exists(s => s == currentEPSServer).ToString();
 
+            //Used to determine if the view should have links for the Printer name aka DNS or Printer IP aka Printer Port
+            ViewData["useIP"] = UsePrinterIPAddr();
+
             //return the list of printers one way or another.
             return View(printers);
         }
