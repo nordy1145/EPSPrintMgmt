@@ -6,7 +6,7 @@
 <h2>Printers - @Session["currentPrintServerLookup"].ToString().ToUpper()</h2>
 <p>It can take some time to load a printer.  Please be patient while it loads all the printers directly from the server.</p>
 <div>
-    @Html.DropDownList("PrintServer", new SelectList((System.Collections.IEnumerable)ViewData["printServers"]), new { @class = "pull-right", @onchange = "CallChangeFunc(this.value)" })
+    @Html.DropDownList("PrintServer", new SelectList((System.Collections.IEnumerable)ViewData["printServers"]),"-- Select Print Server --", new { @class = "pull-right", @onchange = "CallChangeFunc(this.value)" })
     @Html.ActionLink("Create New EPS Printer", "Create", "", new { @class = "btn btn-default pull-left" })
 </div>
 <table class="table table-responsive table-hover">

@@ -117,7 +117,15 @@ namespace EPSPrintMgmt.Controllers
             MailMessage message = new MailMessage(GetEmailFrom(), GetEmailTo(), subject, body);
 
             SmtpClient mailClient = new SmtpClient(GetRelayServer());
-            mailClient.Send(message);
+            try
+            {
+                mailClient.Send(message);
+                mailClient.Dispose();
+            }
+            catch
+            {
+                //do something useful some day...
+            }
         }
 
 

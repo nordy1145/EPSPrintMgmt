@@ -421,20 +421,29 @@ namespace EPSPrintMgmt.Controllers
         {
             //Currently using the PrintServer class instead of a WMI query.
             //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
-            //PrintServer class requires the 2 wacks in the server name.
-            PrintServer printServer = new PrintServer(@"\\" + server);
-            //Make a pretty ordered list by name.
-            var myPrintQueues = printServer.GetPrintQueues().OrderBy(t => t.Name);
-            //Create an empty list to return.
-            List<Printer> printerList = new List<Printer>();
-            //Loop through and add all items to the custom class.
-            foreach (PrintQueue pq in myPrintQueues)
+
+            try
             {
-                //pq.Refresh();
-                printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), NumberJobs = pq.NumberOfJobs, PortName = pq.QueuePort.Name });
+                //PrintServer class requires the 2 wacks in the server name.
+                PrintServer printServer = new PrintServer(@"\\" + server);
+                //Make a pretty ordered list by name.
+                var myPrintQueues = printServer.GetPrintQueues().OrderBy(t => t.Name);
+                //Create an empty list to return.
+                List<Printer> printerList = new List<Printer>();
+                //Loop through and add all items to the custom class.
+                foreach (PrintQueue pq in myPrintQueues)
+                {
+                    //pq.Refresh();
+                    printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), NumberJobs = pq.NumberOfJobs, PortName = pq.QueuePort.Name });
+                }
+                //return the printers added to the custom class.
+                return (printerList);
             }
-            //return the printers added to the custom class.
-            return (printerList);
+            catch
+            {
+                List<Printer> printerList = new List<Printer>();
+                return (printerList);
+            }
         }
         //Get details for a specific printer.
         static public Printer GetPrinter(string server, string printer)
@@ -769,7 +778,15 @@ namespace EPSPrintMgmt.Controllers
             MailMessage message = new MailMessage(GetEmailFrom(), GetEmailTo(), subject, body);
 
             SmtpClient mailClient = new SmtpClient(GetRelayServer());
-            mailClient.Send(message);
+            try
+            {
+                mailClient.Send(message);
+                mailClient.Dispose();
+            }
+            catch
+            {
+                //do something useful some day...
+            }
         }
 
         //Currently checks to validate it's an actual IP address or a valid DNS entry.
