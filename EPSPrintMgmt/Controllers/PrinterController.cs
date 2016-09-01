@@ -16,6 +16,8 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web.Caching;
 using System.Net;
+using System.IO;
+using System.Xml;
 
 namespace EPSPrintMgmt.Controllers
 {
@@ -128,6 +130,8 @@ namespace EPSPrintMgmt.Controllers
             //Pass the print drivers from the Web.config file to the view
             ViewData["printDrivers"] = GetAllPrintDrivers();
             ViewData["useIP"] = UsePrinterIPAddr();
+            ViewData["useTrays"] = UsePrintTrays();
+            ViewData["getTrays"] = GetTrays();
             return View();
         }
 
@@ -178,7 +182,7 @@ namespace EPSPrintMgmt.Controllers
         //Used for parallel and AJAX processing of new EPS printer creation.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult CreatePrinterJSON([Bind(Include = "DeviceID,DriverName,PortName")]AddPrinterClass theNewPrinter)
+        public JsonResult CreatePrinterJSON([Bind(Include = "DeviceID,DriverName,PortName,Tray")]AddPrinterClass theNewPrinter)
         {
             //Initialize list to display to end users if it completes or not.
             List<string> outcome = new List<string>();
@@ -188,7 +192,7 @@ namespace EPSPrintMgmt.Controllers
             {
                 //Validate the printer exists in DNS or Valid IP Address
                 //Web.Config determines if it is really used or not.
-                if (ValidHostname(theNewPrinter.PortName) == true)
+                if (!ValidatePrinterDNS() || ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //kick off multiple threads to install printers quickly
                     Parallel.ForEach(GetEPSServers(), (server) =>
@@ -221,6 +225,10 @@ namespace EPSPrintMgmt.Controllers
                                 AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
                                 //Use the string return function to determine if the printer was successfully added or not.
                                 outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                                if (UsePrintTrays())
+                                {
+                                    outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, server, theNewPrinter.Tray));
+                                }
                             }
                         }
                         //Cannot connect to the server, so send a message back to the user about it.
@@ -296,6 +304,9 @@ namespace EPSPrintMgmt.Controllers
             ViewData["printDrivers"] = GetAllPrintDrivers();
             //Determines if an PortName field should be returned to users.
             ViewData["useIP"] = UsePrinterIPAddr();
+            ViewData["useTrays"] = UsePrintTrays();
+            ViewData["getTrays"] = GetTrays();
+
             //return view with printer info.
             return View(myPrinter);
         }
@@ -308,7 +319,7 @@ namespace EPSPrintMgmt.Controllers
         }
         //AJAX Json response for editing an EPS Printer.
         //Currently deletes 
-        public JsonResult EditPrinterJSON([Bind(Include = "Name,Driver,PortName")]Printer theNewPrinter)
+        public JsonResult EditPrinterJSON([Bind(Include = "Name,Driver,PortName,Tray")]Printer theNewPrinter)
         {
             //Initialize string for the output.
             List<string> outcome = new List<string>();
@@ -316,7 +327,7 @@ namespace EPSPrintMgmt.Controllers
             if (ModelState.IsValid)
             {
                 //Verify the printer name is still correct.
-                if (ValidHostname(theNewPrinter.PortName) == true)
+                if (!ValidatePrinterDNS() || ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //Start parallel processing on each EPS server.
                     Parallel.ForEach(GetEPSServers(), (server) =>
@@ -343,6 +354,10 @@ namespace EPSPrintMgmt.Controllers
                             AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
                             //Try and add the printer back in after it's been deleted.
                             outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                            if (UsePrintTrays())
+                            {
+                                outcome.Add(SetPrinterTray(theNewPrinter.Name, server, theNewPrinter.Tray));
+                            }
 
                         }
                         else
@@ -375,7 +390,7 @@ namespace EPSPrintMgmt.Controllers
             List<string> outcome = new List<string>();
             if (ModelState.IsValid)
             {
-                if (ValidHostname(theNewPrinter.Name) == true)
+                if (!ValidatePrinterDNS() || ValidHostname(theNewPrinter.Name) == true)
                 {
 
                     CimSession mySession = CimSession.Create(theNewPrinter.PrintServer);
@@ -421,6 +436,12 @@ namespace EPSPrintMgmt.Controllers
         {
             //Currently using the PrintServer class instead of a WMI query.
             //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
+
+            if (server == "")
+            {
+                List<Printer> printerList = new List<Printer>();
+                return (printerList);
+            }
 
             try
             {
@@ -731,6 +752,80 @@ namespace EPSPrintMgmt.Controllers
             //return (printerList);
             return true;
         }
+        static public string GetCurrentPrintTray(string printer, string printserver)
+        {
+            string thePrintTray = null;
+            //PrintServer class requires the 2 wacks in the server name.
+            PrintServer printServer = new PrintServer(@"\\" + printserver);
+            //Get the one print queue from the print server.
+            var myPrintQueues = printServer.GetPrintQueue(printer);
+            //PrintTicket someTicket = myPrintQueues.DefaultPrintTicket;
+            MemoryStream myTicket = myPrintQueues.DefaultPrintTicket.GetXmlStream();
+            XmlDocument myXmlDoc = new XmlDocument();
+            myXmlDoc.Load(myTicket);
+            XmlNode node;
+            node = myXmlDoc.DocumentElement;
+            foreach (XmlNode node1 in node.ChildNodes)
+                foreach (XmlNode node2 in node1.ChildNodes)
+                {
+                    if (node1.Attributes["name"].Value.Contains("JobInputBin"))  //This is looking for psk:JobInputBin.  Works for HP UPD for now....
+                    {
+                        //tray must be of pskAutoSelect ns0000:Tray1 ns0000:Tray2 ns0000:Tray3
+                        thePrintTray = node2.Attributes["name"].Value;
+
+                    }
+                }
+
+            int posA = thePrintTray.LastIndexOf(":");
+            string search = ":";
+            int adjustedPosA = posA + search.Length;
+            string finalTray = thePrintTray.Substring(adjustedPosA);
+            return (finalTray);
+        }
+        static public string SetPrinterTray(string printer, string printserver, string printtray)
+        {
+            string printTray = null;
+            if (printtray.Contains("AutoSelect"))
+            {
+                printTray = "psk:AutoSelect";
+            }
+            else if (printtray.Contains("Tray"))
+            {
+                printTray = "ns0000:" + printtray;
+            }
+            else
+            {
+                return ("Printer Tray is not a valid or undefined.  Using default print tray.");
+            }
+
+            //PrintServer class requires the 2 wacks in the server name.
+            PrintServer printServer = new PrintServer(@"\\" + printserver);
+            //Get the one print queue from the print server.
+            PrintQueue myPrintQueues = printServer.GetPrintQueue(printer);
+            //PrintTicket someTicket = myPrintQueues.DefaultPrintTicket;
+            MemoryStream myTicket = myPrintQueues.DefaultPrintTicket.GetXmlStream();
+            XmlDocument myXmlDoc = new XmlDocument();
+            myXmlDoc.Load(myTicket);
+            XmlNode node;
+            node = myXmlDoc.DocumentElement;
+            foreach (XmlNode node1 in node.ChildNodes)
+                foreach (XmlNode node2 in node1.ChildNodes)
+                {
+                    if (node1.Attributes["name"].Value.Contains("JobInputBin"))  //This is looking for psk:JobInputBin.  Works for HP UPD for now....
+                    {
+                        //tray must be of pskAutoSelect ns0000:Tray1 ns0000:Tray2 ns0000:Tray3
+                        node2.Attributes["name"].Value = printTray;
+                    }
+                }
+            MemoryStream xmlStream = new MemoryStream();
+            myXmlDoc.Save(xmlStream);
+            xmlStream.Position = 0;
+            PrintQueue pqAdmin = new PrintQueue(printServer, printer, PrintSystemDesiredAccess.AdministratePrinter);
+            PrintTicket newPrintTicket = new PrintTicket(xmlStream);
+            pqAdmin.DefaultPrintTicket = newPrintTicket;
+            pqAdmin.Commit();
+            return ("Printer Tray: "+ printtray +" has been set on printer: " + printer +" on print server: "+ printserver);
+        }
 
         static public List<string> GetEPSServers()
         {
@@ -748,6 +843,33 @@ namespace EPSPrintMgmt.Controllers
             List<string> printDrivers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("PrintDriver")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
             return (printDrivers);
         }
+        static public List<string> GetTrays()
+        {
+            List<string> trays = new List<string>(new string[] { "AutoSelect", "Tray1", "Tray2", "Tray3" });
+            return (trays);
+        }
+        static public bool UsePrintTrays()
+        {
+            string usePrintTrays = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UsePrintTrays")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(usePrintTrays, "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        static public bool ValidatePrinterDNS()
+        {
+            string validDNS = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ValidatePrinterDNS")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(validDNS, "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+
+
         static public string GetRelayServer()
         {
             string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("MailRelay")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();

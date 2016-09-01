@@ -20,6 +20,7 @@ namespace EPSPrintMgmt.Models
         public int NumberJobs { get; set; }
         [DisplayName("Port Name")]
         public string PortName { get; set; }
+        public string Tray { get; set; }
     }
 
     public class AddPrinterClass
@@ -35,6 +36,7 @@ namespace EPSPrintMgmt.Models
         public Boolean Shared { get; set; }
         public Boolean Published { get; set; }
         public Boolean EnableBIDI { get; set; }
+        public string Tray { get; set; }
 
     }
 

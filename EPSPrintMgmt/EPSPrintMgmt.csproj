@@ -167,6 +167,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\EPS Server.pubxml" />
     <None Include="Properties\PublishProfiles\Local Host Push.pubxml" />
+    <None Include="Properties\PublishProfiles\mcd-epic-prtmgmt TEST.pubxml" />
     <None Include="Properties\PublishProfiles\mcd-epic-prtmgmt.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
