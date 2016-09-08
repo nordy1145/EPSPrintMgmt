@@ -21,6 +21,10 @@ namespace EPSPrintMgmt.Models
         [DisplayName("Port Name")]
         public string PortName { get; set; }
         public string Tray { get; set; }
+        public bool IsEPS { get; set; }
+        public string Status { get; set; }
+        public string Comments { get; set; }
+        public string Location { get; set; }
     }
 
     public class AddPrinterClass
@@ -37,7 +41,7 @@ namespace EPSPrintMgmt.Models
         public Boolean Published { get; set; }
         public Boolean EnableBIDI { get; set; }
         public string Tray { get; set; }
-
+        public bool IsEPS { get; set; }
     }
 
     public class AddPrinterPortClass

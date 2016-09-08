@@ -1,0 +1,54 @@
+﻿@model IEnumerable<EPSPrintMgmt.Models.Printer>
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Printer Options</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Driver)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintServer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NumberJobs)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tray)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th></th>
+    </tr>
+   @foreach (var item in Model)
+   {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Driver)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PrintServer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberJobs)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tray)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+    </tr>
+   }
+</table>

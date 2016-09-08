@@ -210,9 +210,9 @@
     <Content Include="Views\PrintServer\Index.cshtml" />
     <Content Include="Views\PrintServer\Options.cshtml" />
     <Content Include="Views\PrintServer\Success.cshtml" />
-    <Content Include="Views\Printer\CreateJsonRequest.cshtml" />
     <Content Include="Views\Printer\Edit.cshtml" />
     <Content Include="Views\Printer\EditEnterprisePrinter.cshtml" />
+    <Content Include="Views\Printer\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
