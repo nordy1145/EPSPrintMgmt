@@ -741,7 +741,6 @@ namespace EPSPrintMgmt.Controllers
                     }
                     catch
                     {
-                        mySession.Dispose();
                         return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + thePrintServer);
                     }
                 }
@@ -896,23 +895,6 @@ namespace EPSPrintMgmt.Controllers
             {
                 return false;
             }
-            return false;
-            //PrintServer printServer = new PrintServer(@"\\" + server, PrintSystemDesiredAccess.AdministrateServer);
-            //PrintQueue pq = new PrintQueue(printServer, printer, PrintSystemDesiredAccess.AdministratePrinter);
-            ////var myPrintQueues = printServer.GetPrintQueue(printer);
-            //try
-            //{
-            //    pq.Purge();
-            //    pq.Dispose();
-            //    printServer.Dispose();
-
-            //    //myPrintQueues.Purge();
-            //    return true;
-            //}
-            //catch
-            //{
-            //    return false;
-            //}
         }
         static public bool CheckCurrentPrinter(string printer, string printserver)
         {
@@ -981,7 +963,6 @@ namespace EPSPrintMgmt.Controllers
             {
                 return (e.Message);
             }
-            return ("Shouldn't get this far...");
         }
         //Returns the current print tray a print queue is using.
         static public string GetCurrentPrintTray(PrintQueue myPrintQueues)
@@ -1261,7 +1242,7 @@ namespace EPSPrintMgmt.Controllers
             {
                 host = System.Net.Dns.GetHostEntry(hostname);
             }
-            catch (System.Net.Sockets.SocketException e)
+            catch //(System.Net.Sockets.SocketException e)
             {
                 //Console.WriteLine(e.Message);
                 return false;
