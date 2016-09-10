@@ -60,6 +60,8 @@ namespace EPSPrintMgmt.Controllers
                     Session["currentPrintServerLookup"] = theFirstEPSSErver;
                     currentEPSServer = theFirstEPSSErver;
                     printers = GetPrinters(theFirstEPSSErver);
+                    //Used to determine if the options tab will include specific edit options for EPS servers only.
+                    Session["IsEPSServer"] = GetEPSServers().Exists(s => s == currentEPSServer).ToString();
                 }
                 //Checks to see if it's not the first EPS server in list, then returns the actual one.
                 else if (checkPrintServer != theFirstEPSSErver)
@@ -79,6 +81,8 @@ namespace EPSPrintMgmt.Controllers
                 Session["currentPrintServerLookup"] = printServer;
                 currentEPSServer = printServer;
                 printers = GetPrinters(printServer);
+                //Used to determine if the options tab will include specific edit options for EPS servers only.
+                Session["IsEPSServer"] = GetEPSServers().Exists(s => s == currentEPSServer).ToString();
             }
             // Gets all the print servers for the drop down option in the Index View of this controller.
             ViewData["printServers"] = GetAllPrintServers();
@@ -219,10 +223,34 @@ namespace EPSPrintMgmt.Controllers
         }
         //Used to get options for a specific printer on a server.
         //The view currently allows to edit a print driver and clear a print queue.
-        public ActionResult Details(string printer)
+        public ActionResult Details(string printer, string printserver)
         {
+            //used to determine if the print server in question is an EPS server.
+            //Only limited functionality for non EPS servers is currently defined.
+            ViewData["thePrinter"] = printer;
+            ViewData["isEPSServer"] = GetEPSServers().Exists(s => s == printserver).ToString();
             //Return the printer for the View.
             return View(GetPrinterOnAllEPSServers(printer));
+        }
+
+        //Used to purge print queues from all EPS Servers.
+        public JsonResult PurgePrintQueueAllServers([Bind(Include = "Name")]Printer theNewPrinter)
+        {
+            List<string> outcome = new List<string>();
+            Parallel.ForEach(GetEPSServers(), server =>
+            {
+
+                try
+                {
+                    ClearPrintQueue(theNewPrinter.Name, server);
+                    outcome.Add("Successfully purged " + theNewPrinter.Name + " on server " + server);
+                }
+                catch
+                {
+                    outcome.Add("Failed to purge " + theNewPrinter.Name + " on server " + server);
+                }
+            });
+            return Json(outcome);
         }
 
         //Used to get options for a specific printer on a server.
@@ -324,7 +352,7 @@ namespace EPSPrintMgmt.Controllers
                             //create the new printer object with the correct props.
                             AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
                             //Try and add the printer back in after it's been deleted.
-                            outcome.Add(AddNewPrinterStringReturn(newPrinter,mySession,printServer));
+                            outcome.Add(AddNewPrinterStringReturn(newPrinter, mySession, printServer));
                             if (UsePrintTrays())
                             {
                                 outcome.Add(SetPrinterTray(theNewPrinter.Name, server, theNewPrinter.Tray));
@@ -422,12 +450,27 @@ namespace EPSPrintMgmt.Controllers
                 var myPrintQueues = printServer.GetPrintQueues().OrderBy(t => t.Name);
                 //Create an empty list to return.
                 List<Printer> printerList = new List<Printer>();
-                //Loop through and add all items to the custom class.
-                foreach (PrintQueue pq in myPrintQueues)
+
+                if (ShowNumberPrintJobs())
                 {
-                    //pq.Refresh();
-                    printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), PortName = pq.QueuePort.Name });  //Removed the following for performance NumberJobs = pq.NumberOfJobs,
+                    //Loop through and add all items to the custom class.
+                    foreach (PrintQueue pq in myPrintQueues)
+                    {
+                        //pq.Refresh();
+                        printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), PortName = pq.QueuePort.Name, NumberJobs = pq.NumberOfJobs });  //Removed the following for performance NumberJobs = pq.NumberOfJobs,
+                    }
+
                 }
+                else
+                {
+                    //Loop through and add all items to the custom class.
+                    foreach (PrintQueue pq in myPrintQueues)
+                    {
+                        //pq.Refresh();
+                        printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), PortName = pq.QueuePort.Name });  //Removed the following for performance NumberJobs = pq.NumberOfJobs,
+                    }
+                }
+
                 printServer.Dispose();
                 //return the printers added to the custom class.
                 return (printerList);
@@ -441,17 +484,26 @@ namespace EPSPrintMgmt.Controllers
         //Get details for a specific printer on a specific print server.
         static public Printer GetPrinter(string server, string printer)
         {
-            //Currently using the PrintServer class instead of a WMI query.
-            //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
-            //PrintServer class requires the 2 wacks in the server name.
-            PrintServer printServer = new PrintServer(@"\\" + server);
-            //Get the one print queue from the print server.
-            var myPrintQueues = printServer.GetPrintQueue(printer);
-            //refresh and add the print queue to the custom class.
-            myPrintQueues.Refresh();
-            Printer printerList = new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = myPrintQueues.HostingPrintServer.Name, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name };
-            myPrintQueues.Dispose();
-            printServer.Dispose();
+            Printer printerList = new Printer();
+            try
+            {
+                //Currently using the PrintServer class instead of a WMI query.
+                //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
+                //PrintServer class requires the 2 wacks in the server name.
+                PrintServer printServer = new PrintServer(@"\\" + server);
+                //Get the one print queue from the print server.
+                var myPrintQueues = printServer.GetPrintQueue(printer);
+                //refresh and add the print queue to the custom class.
+                myPrintQueues.Refresh();
+                printerList = new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = myPrintQueues.HostingPrintServer.Name, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name };
+                myPrintQueues.Dispose();
+                printServer.Dispose();
+
+            }
+            catch
+            {
+                printerList = null;
+            }
             return (printerList);
         }
         //Get details for a specific printer.
@@ -825,25 +877,42 @@ namespace EPSPrintMgmt.Controllers
             }
             return "Delete failed on server: " + server + ". Returned failed at the end of the method.";
         }
-       
+
         static private bool ClearPrintQueue(string printer, string server)
         {
-            PrintServer printServer = new PrintServer(@"\\" + server);
-            PrintQueue pq = new PrintQueue(printServer, printer, PrintSystemDesiredAccess.AdministratePrinter);
-            //var myPrintQueues = printServer.GetPrintQueue(printer);
             try
             {
-                pq.Purge();
-                pq.Dispose();
-                printServer.Dispose();
+                using (PrintServer ps = new PrintServer(@"\\" + server))
+                {
+                    using (PrintQueue pq = new PrintQueue(ps, printer, PrintSystemDesiredAccess.AdministratePrinter))
+                    {
+                        pq.Purge();
+                        return true;
+                    }
+                }
 
-                //myPrintQueues.Purge();
-                return true;
             }
             catch
             {
                 return false;
             }
+            return false;
+            //PrintServer printServer = new PrintServer(@"\\" + server, PrintSystemDesiredAccess.AdministrateServer);
+            //PrintQueue pq = new PrintQueue(printServer, printer, PrintSystemDesiredAccess.AdministratePrinter);
+            ////var myPrintQueues = printServer.GetPrintQueue(printer);
+            //try
+            //{
+            //    pq.Purge();
+            //    pq.Dispose();
+            //    printServer.Dispose();
+
+            //    //myPrintQueues.Purge();
+            //    return true;
+            //}
+            //catch
+            //{
+            //    return false;
+            //}
         }
         static public bool CheckCurrentPrinter(string printer, string printserver)
         {

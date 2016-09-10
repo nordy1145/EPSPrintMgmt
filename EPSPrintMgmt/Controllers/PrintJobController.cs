@@ -14,7 +14,7 @@ using System.Net.Mail;
 
 namespace EPSPrintMgmt.Controllers
 {
-    
+
     public class PrintJobController : Controller
     {
         // GET: PrintJob
@@ -23,9 +23,9 @@ namespace EPSPrintMgmt.Controllers
             return View(GetPrintJobs(GetAllPrintServers()));
         }
 
-        public ActionResult Delete(int id, string printServer,string printer)
+        public ActionResult Delete(int id, string printServer, string printer)
         {
-            return View(GetPrintJob(printServer,printer,id));
+            return View(GetPrintJob(printServer, printer, id));
         }
 
         [HttpPost]
@@ -33,27 +33,10 @@ namespace EPSPrintMgmt.Controllers
         public ActionResult Delete(PrintJob printJob)
         {
             CancelPrintJob(printJob.Server, printJob.Printer, printJob.PrintJobID);
-            SendEmail("Canceled Print Job", "The following print job has been canceled: "+printJob.PrintJobName + Environment.NewLine + "Printer: "+printJob.Printer + Environment.NewLine+"Print server: " + printJob.Server + Environment.NewLine+"User: " + User.Identity.Name);
+            SendEmail("Canceled Print Job", "The following print job has been canceled: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
             return RedirectToAction("Index");
         }
 
-
-        static public List<PrintJob> PrintJobs()
-        {
-            List<PrintJob> printJobs = new List<PrintJob>();
-            string Namespace = @"root\cimv2";
-            string OSQuery = "SELECT * FROM Win32_PrintJob";
-            CimSession mySession = CimSession.Create("ryan-pc");
-            IEnumerable<CimInstance> queryInstance = mySession.QueryInstances(Namespace, "WQL", OSQuery);
-            foreach (var props in queryInstance)
-            {
-                var jobID = Int32.Parse(props.CimInstanceProperties["JobID"].Value.ToString());
-                var printName = props.CimInstanceProperties["Name"].ToString();
-                printJobs.Add(new PrintJob { PrintJobID = jobID, PrintJobName = printName });
-            }
-
-            return (printJobs);
-        }
 
         static public List<PrintJob> GetPrintJobs(List<string> printserver)
         {
@@ -64,36 +47,44 @@ namespace EPSPrintMgmt.Controllers
             {
                 CimSession mySession = CimSession.Create(ps);
                 IEnumerable<CimInstance> queryInstance = mySession.QueryInstances(Namespace, "WQL", OSQuery);
-                foreach (var props in queryInstance)
+                try
                 {
-                    var Printer = props.CimInstanceProperties["Name"].Value.ToString();
-                    Printer = Printer.Substring(0, Printer.LastIndexOf(','));
-                    var PrintJobID = Int32.Parse(props.CimInstanceProperties["JobID"].Value.ToString());
-                    var PrintJobName = props.CimInstanceProperties["Document"].Value.ToString();
-                    var HostPrintQueue = props.CimInstanceProperties["HostPrintQueue"].Value.ToString();
-                    var Status = props.CimInstanceProperties["Status"].Value.ToString();
-                    var PrintDriver = props.CimInstanceProperties["DriverName"].Value.ToString();
-                    //var TimeSubmitted = ManagementDateTimeConverter.ToDateTime(props.CimInstanceProperties["StartTime"].ToString());
-                    var TimeSubmitted = Convert.ToDateTime(props.CimInstanceProperties["TimeSubmitted"].Value);
-                    var PagesPrinted = Int32.Parse(props.CimInstanceProperties["PagesPrinted"].Value.ToString());
-                    var TotalPages = Int32.Parse(props.CimInstanceProperties["TotalPages"].Value.ToString());
-                    var Owner = props.CimInstanceProperties["Owner"].Value.ToString();
-
-                    printJobs.Add(new PrintJob
+                    foreach (var props in queryInstance)
                     {
-                        Printer = Printer,
-                        PrintJobID = PrintJobID,
-                        PrintJobName = PrintJobName,
-                        Server = ps,
-                        Status = Status,
-                        PrintDriver = PrintDriver,
-                        TimeSubmitted = TimeSubmitted,
-                        PagesPrinted = PagesPrinted,
-                        TotalPages = TotalPages,
-                        HostPrintQueue = HostPrintQueue,
-                        Owner=Owner
+                        var Printer = props.CimInstanceProperties["Name"].Value.ToString();
+                        Printer = Printer.Substring(0, Printer.LastIndexOf(','));
+                        var PrintJobID = Int32.Parse(props.CimInstanceProperties["JobID"].Value.ToString());
+                        var PrintJobName = props.CimInstanceProperties["Document"].Value.ToString();
+                        var HostPrintQueue = props.CimInstanceProperties["HostPrintQueue"].Value.ToString();
+                        var Status = props.CimInstanceProperties["Status"].Value.ToString();
+                        var PrintDriver = props.CimInstanceProperties["DriverName"].Value.ToString();
+                        //var TimeSubmitted = ManagementDateTimeConverter.ToDateTime(props.CimInstanceProperties["StartTime"].ToString());
+                        var TimeSubmitted = Convert.ToDateTime(props.CimInstanceProperties["TimeSubmitted"].Value);
+                        var PagesPrinted = Int32.Parse(props.CimInstanceProperties["PagesPrinted"].Value.ToString());
+                        var TotalPages = Int32.Parse(props.CimInstanceProperties["TotalPages"].Value.ToString());
+                        var Owner = props.CimInstanceProperties["Owner"].Value.ToString();
 
-                    });
+                        printJobs.Add(new PrintJob
+                        {
+                            Printer = Printer,
+                            PrintJobID = PrintJobID,
+                            PrintJobName = PrintJobName,
+                            Server = ps,
+                            Status = Status,
+                            PrintDriver = PrintDriver,
+                            TimeSubmitted = TimeSubmitted,
+                            PagesPrinted = PagesPrinted,
+                            TotalPages = TotalPages,
+                            HostPrintQueue = HostPrintQueue,
+                            Owner = Owner
+
+                        });
+                    }
+
+                }
+                catch
+                {
+
                 }
             }
 
@@ -111,7 +102,7 @@ namespace EPSPrintMgmt.Controllers
         }
 
 
-        static public PrintJob GetPrintJob(string printserver,string printer, int printJobID)
+        static public PrintJob GetPrintJob(string printserver, string printer, int printJobID)
         {
             PrintJob printJob = new PrintJob();
             string Namespace = @"root\cimv2";
@@ -127,7 +118,7 @@ namespace EPSPrintMgmt.Controllers
             //              where k.CimInstanceProperties["JobID"] == printJobID
             //              select k;
 
-            if (queryInstance.FirstOrDefault() ==null)
+            if (queryInstance.FirstOrDefault() == null)
             {
                 return (printJob);
             }
@@ -168,7 +159,7 @@ namespace EPSPrintMgmt.Controllers
 
         static public void CancelPrintJob(string printServer, string printQueue, int printJob)
         {
-            PrintServer pS = new PrintServer(@"\\"+printServer);
+            PrintServer pS = new PrintServer(@"\\" + printServer);
             var myPrintQueue = pS.GetPrintQueues(); //.Where(t=>t.FullName.Contains("PRLPFC115HP"));
             var pq = myPrintQueue.Where(p => p.Name.Equals(printQueue)).First();
             if (pq == null)
