@@ -1,7 +1,7 @@
 # EPSPrintMgmt
 
 UPDATE:
-The lastest update pushed 9/13/2016 requires an updated web.config file.  Please copy your <appSettings></appSettings> and replace the section in the web.config.template file.  Then rename it to just web.config.
+The lastest update pushed 9/13/2016 requires an updated web.config file.  Please copy your appSettings section in your web.config and replace the section in the web.config.template file.  Then rename it to just web.config.
 If you have issues with the drop down for looking up printers, refresh your browser cache by pressing ctrl+F5.
 
 
