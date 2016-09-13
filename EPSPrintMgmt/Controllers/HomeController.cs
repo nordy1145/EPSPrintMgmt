@@ -64,12 +64,10 @@ namespace EPSPrintMgmt.Controllers
             PrintServer printServer = new PrintServer(server);
             var myPrintQueues = printServer.GetPrintQueues().OrderBy(t => t.Name);
             List<PrintQueue> printerList = new List<PrintQueue>();
-            List<PrintTest> printerListExt = new List<PrintTest>();
             foreach (PrintQueue pq in myPrintQueues)
             {
                 pq.Refresh();
                 printerList.Add(pq);
-                //printerListExt.Add(pq);
             }
             return (printerList);
         }

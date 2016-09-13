@@ -52,13 +52,4 @@ namespace EPSPrintMgmt.Models
         public int PortNumber { get; set; }
         public string HostAddress { get; set; }
     }
-
-    public class PrintTest : System.Printing.PrintQueue
-    {
-        public PrintTest(PrintServer ps, string Test):base(ps, Test)
-        {
-            return;
-        }
-    }
-
 }

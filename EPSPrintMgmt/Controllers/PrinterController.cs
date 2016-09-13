@@ -132,6 +132,13 @@ namespace EPSPrintMgmt.Controllers
         {
             return View();
         }
+        public ActionResult Search()
+        {
+            // Gets all the print servers for the drop down option in the Index View of this controller.
+            ViewData["printServers"] = GetEPSServers();
+            return View();
+        }
+
         public ActionResult Create()
         {
             //Pass the print drivers from the Web.config file to the view
@@ -447,7 +454,7 @@ namespace EPSPrintMgmt.Controllers
                 //PrintServer class requires the 2 wacks in the server name.
                 PrintServer printServer = new PrintServer(@"\\" + server);
                 //Make a pretty ordered list by name.
-                var myPrintQueues = printServer.GetPrintQueues().OrderBy(t => t.Name);
+                var myPrintQueues = printServer.GetPrintQueues(new EnumeratedPrintQueueTypes[] { EnumeratedPrintQueueTypes.Local }).OrderBy(t => t.Name);
                 //Create an empty list to return.
                 List<Printer> printerList = new List<Printer>();
 
@@ -526,7 +533,7 @@ namespace EPSPrintMgmt.Controllers
                     myPrintQueues.Refresh();
                     //var theTray = GetCurrentPrintTray(printer, server);
                     var theTray = GetCurrentPrintTray(myPrintQueues);
-                    outcome.Add(new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = server, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = "Installed", Tray = theTray });
+                    outcome.Add(new Printer { Name = myPrintQueues.Name.ToUpper(), Driver = myPrintQueues.QueueDriver.Name, PrintServer = server, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = "Installed", Tray = theTray });
                     printServer.Dispose();
                     myPrintQueues.Dispose();
                 }

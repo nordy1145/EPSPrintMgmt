@@ -1,0 +1,36 @@
+﻿@model IEnumerable<EPSPrintMgmt.Models.Printer>
+@{
+    ViewBag.Title = "Search For a Printer";
+}
+
+<h2>Search For a Printer</h2>
+
+@using (Html.BeginForm("Details", "Printer", FormMethod.Post, new { encType = "multipart/form-data", id = "myform", name = "myform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <p>Search for a printer on all EPS Servers</p>
+        <p>Currently, you have to type the exact name of the printer, otherwise it will not find it.</p>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Printer</label> 
+            <div class="col-md-10">
+                @Html.TextBox("Printer")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Print Server</label>
+            <div class="col-md-10">
+                @Html.DropDownList("PrintServer", new SelectList((System.Collections.IEnumerable)ViewData["printServers"]))
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Search" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
