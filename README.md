@@ -1,6 +1,11 @@
 # EPSPrintMgmt
 
-Download the "Compiled (date)".zip found in the Downloads folder if you would like the precompiled version. 
+UPDATE:
+The lastest update pushed 9/13/2016 requires an updated web.config file.  Please copy your appSettings section in your web.config and replace the section in the web.config.template file.  Then rename it to just web.config.
+If you have issues with the drop down for looking up printers, refresh your browser cache by pressing ctrl+F5.
+
+
+Download the "Compiled (date)".zip found in the Downloads folder if you would like the precompiled version. Replace all content except the web.config file.
 
 Some requirements to run this project.
 Requires PowerShell 3+ installed on all servers, including web and print servers.
