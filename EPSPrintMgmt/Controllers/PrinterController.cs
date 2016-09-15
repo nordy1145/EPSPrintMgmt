@@ -1146,7 +1146,7 @@ namespace EPSPrintMgmt.Controllers
         }
         static public List<string> GetTrays()
         {
-            List<string> trays = new List<string>(new string[] { "AutoSelect", "Tray1", "Tray2", "Tray3" });
+            List<string> trays = new List<string>(new string[] { "AutoSelect", "Tray1", "Tray2", "Tray3","Tray4","Tray5","Tray6" });
             return (trays);
         }
         static public bool UsePrintTrays()

@@ -28,6 +28,7 @@ namespace EPSPrintMgmt.Models
         public string HostPrintQueue { get; set; }
         [DisplayName("User")]
         public string Owner { get; set; }
+        public bool ToDelete { get; set; }
 
         public void CancelPrintJob()
         {

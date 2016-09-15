@@ -22,7 +22,10 @@ namespace EPSPrintMgmt.Controllers
         {
             return View(GetPrintJobs(GetAllPrintServers()));
         }
-
+        public ActionResult IndexWPurge()
+        {
+            return View(GetPrintJobs(GetAllPrintServers()));
+        }
         public ActionResult Delete(int id, string printServer, string printer)
         {
             return View(GetPrintJob(printServer, printer, id));
@@ -36,7 +39,23 @@ namespace EPSPrintMgmt.Controllers
             SendEmail("Canceled Print Job", "The following print job has been canceled: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteMultipleJobs(List<PrintJob> printjobs)
+        {
+            List<string> outcome = new List<string>();
+            foreach (var pj in printjobs)
+            {
+                if (pj.ToDelete)
+                {
+                CancelPrintJob(pj.Server, pj.Printer, pj.PrintJobID);
+                outcome.Add("The following print job has been canceled: " + pj.PrintJobName + Environment.NewLine + "Printer: " + pj.Printer + Environment.NewLine + "Print server: " + pj.Server + Environment.NewLine + "User: " + User.Identity.Name + Environment.NewLine + Environment.NewLine);
+                }
 
+            }
+            SendEmail("Canceled Print Jobs", string.Concat(outcome));
+            return RedirectToAction("Index");
+        }
 
         static public List<PrintJob> GetPrintJobs(List<string> printserver)
         {
@@ -165,6 +184,7 @@ namespace EPSPrintMgmt.Controllers
             if (pq == null)
                 return;
             pq.Refresh();
+
             var jobs = pq.GetPrintJobInfoCollection();
             var theJob = jobs.Where(j => j.JobIdentifier.Equals(printJob)).First();
             if (theJob == null)
