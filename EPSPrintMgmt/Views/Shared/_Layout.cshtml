@@ -65,7 +65,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - EPS Print Management by Ryan Nordlocken</p>
+            <p style="float:left">&copy; @DateTime.Now.Year - EPS Print Management by Ryan Nordlocken</p><p style="float:right">Version: @ViewContext.Controller.GetType().Assembly.GetName().Version</p>
         </footer>
     </div>
 

@@ -35,8 +35,14 @@ namespace EPSPrintMgmt.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(PrintJob printJob)
         {
-            CancelPrintJob(printJob.Server, printJob.Printer, printJob.PrintJobID);
-            SendEmail("Canceled Print Job", "The following print job has been canceled: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
+            if(CancelPrintJob(printJob.Server, printJob.Printer, printJob.PrintJobID))
+            {
+                SendEmail("Canceled Print Job", "The following print job has been canceled: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
+            }
+            else
+            {
+                SendEmail("Canceled Print Job", "The following print job failed to cancel: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
+            }
             return RedirectToAction("Index");
         }
         [HttpPost]
@@ -48,8 +54,14 @@ namespace EPSPrintMgmt.Controllers
             {
                 if (pj.ToDelete)
                 {
-                CancelPrintJob(pj.Server, pj.Printer, pj.PrintJobID);
-                outcome.Add("The following print job has been canceled: " + pj.PrintJobName + Environment.NewLine + "Printer: " + pj.Printer + Environment.NewLine + "Print server: " + pj.Server + Environment.NewLine + "User: " + User.Identity.Name + Environment.NewLine + Environment.NewLine);
+                if(CancelPrintJob(pj.Server, pj.Printer, pj.PrintJobID))
+                    {
+                        outcome.Add("The following print job has been canceled: " + pj.PrintJobName + Environment.NewLine + "Printer: " + pj.Printer + Environment.NewLine + "Print server: " + pj.Server + Environment.NewLine + "User: " + User.Identity.Name + Environment.NewLine + Environment.NewLine);
+                    }
+                    else
+                    {
+                        outcome.Add("The following print job failed to cancel: " + pj.PrintJobName + Environment.NewLine + "Printer: " + pj.Printer + Environment.NewLine + "Print server: " + pj.Server + Environment.NewLine + "User: " + User.Identity.Name + Environment.NewLine + Environment.NewLine);
+                    }
                 }
 
             }
@@ -176,25 +188,26 @@ namespace EPSPrintMgmt.Controllers
             return (printJob);
         }
 
-        static public void CancelPrintJob(string printServer, string printQueue, int printJob)
+        static public bool CancelPrintJob(string printServer, string printQueue, int printJob)
         {
+            try
+            {
             PrintServer pS = new PrintServer(@"\\" + printServer);
             var myPrintQueue = pS.GetPrintQueues(); //.Where(t=>t.FullName.Contains("PRLPFC115HP"));
             var pq = myPrintQueue.Where(p => p.Name.Equals(printQueue)).First();
-            if (pq == null)
-                return;
             pq.Refresh();
 
             var jobs = pq.GetPrintJobInfoCollection();
             var theJob = jobs.Where(j => j.JobIdentifier.Equals(printJob)).First();
-            if (theJob == null)
-                return;
             theJob.Cancel();
             pq.Refresh();
-            //var pJ = myPrintQueue.GetJob(printJob);
-            //Console.WriteLine(pJ.Name);
-            //Console.WriteLine("Number of Pages before clearing: " + pJ.NumberOfPages);
-            //pJ.Cancel();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
         }
 
         static public string GetRelayServer()

@@ -18,6 +18,7 @@ using System.Web.Caching;
 using System.Net;
 using System.IO;
 using System.Xml;
+using System.Diagnostics;
 
 namespace EPSPrintMgmt.Controllers
 {
@@ -487,6 +488,34 @@ namespace EPSPrintMgmt.Controllers
                 List<Printer> printerList = new List<Printer>();
                 return (printerList);
             }
+        }
+
+        //Used to purge print queues from all EPS Servers.
+        public JsonResult PrintTestPages([Bind(Include = "Name")]Printer thePrinter)
+        {
+            List<string> outcome = new List<string>();
+
+            Parallel.ForEach(GetEPSServers(), server =>
+            {
+
+                try
+                {
+                    var theOutcome = PrintTestPage(server, thePrinter.Name);
+                    if (theOutcome == true)
+                    {
+                        outcome.Add("Successfully printed a test page for " + thePrinter.Name + " on server " + server);
+                    }
+                    else
+                    {
+                        outcome.Add("Failed to print a test page for " + thePrinter.Name + " on server " + server);
+                    }
+                }
+                catch
+                {
+                    outcome.Add("Failed to print a test page for " + thePrinter.Name + " on server " + server);
+                }
+            });
+            return Json(outcome);
         }
         //Get details for a specific printer on a specific print server.
         static public Printer GetPrinter(string server, string printer)
@@ -1127,6 +1156,39 @@ namespace EPSPrintMgmt.Controllers
                 statusReport = "Available";
             }
             return (statusReport);
+        }
+        static public bool PrintTestPage(string printServer, string printer)
+        {
+            try
+            {
+            ManagementScope scope = new ManagementScope(String.Format(@"\\{0}\ROOT\CIMV2", printServer));
+            scope.Connect();
+            ManagementPath managementPath = new ManagementPath("Win32_Process");
+            ManagementClass processClass = new ManagementClass(scope, managementPath, new ObjectGetOptions());
+            ManagementBaseObject inParams = processClass.GetMethodParameters("Create");
+            inParams["CommandLine"] = @"C:\Windows\System32\rundll32.exe printui.dll,PrintUIEntry /q /k /n"+printer;
+            ManagementBaseObject outParams = processClass.InvokeMethod("Create", inParams, null);
+            uint rtn = System.Convert.ToUInt32(outParams["returnValue"]);
+            uint processID = System.Convert.ToUInt32(outParams["processId"]);
+
+            System.Threading.Thread.Sleep(1000);
+            var processName = "rundll32.exe";
+            var query = new SelectQuery("select * from Win32_process where name = '" + processName + "' AND processid = '"+processID+"'");
+            using (var searcher = new ManagementObjectSearcher(scope, query))
+            {
+                foreach (ManagementObject process in searcher.Get()) // this is the fixed line
+                {
+                    process.InvokeMethod("Terminate", null);
+                }
+            }
+                return true;
+            }
+            catch
+            {
+
+            return false;
+            }
+
         }
         static public List<string> GetEPSServers()
         {

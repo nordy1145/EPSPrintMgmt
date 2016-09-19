@@ -7,6 +7,7 @@
 <h2>Printer Options</h2>
 
 <button id="ClearPrintJobs" class="btn btn-default">Clear All Print Jobs</button>
+<button id="PrintTestPage" class="btn btn-default">Print Test Page</button>
 @if (ViewData["isEPSServer"].ToString() == "True")
 {
     @Html.ActionLink("Edit EPS Printer", "Edit", new { printer = ViewData["thePrinter"] }, new { @class = "btn btn-default" })
@@ -65,7 +66,7 @@ else
 </div>
 
 <div id="divProcessing">
-    <p>Processing, please wait . . . <img src="../../Content/ajax-loader.gif"></p>
+    <p>Processing, please wait . . . <img src="@Url.Content("~/Content/ajax-loader.gif")"></p>
 </div>
 <div id="divResult">
 </div>
@@ -106,6 +107,32 @@ else
                     }
                 })
             });
+            $("#PrintTestPage").on("click", function (event) {
+                event.preventDefault();
+                // Show the "busy" Gif:
+                $("#divProcessing").show();
+                $("#divResult").text("");
+                var thePrinter = '@ViewData["thePrinter"]';
+
+                var url = $(this).attr("action");
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: "@Url.Action("PrintTestPages", "Printer")",
+                    type: "POST",
+                data: { "Name": thePrinter },
+                dataType: "json",
+                success: function (resp) {
+
+                    // Hide the "busy" gif:
+                    $("#divProcessing").hide();
+                    for (var i = 0; i < resp.length; i++) {
+                        var mess = resp[i];
+                        $("<h3>" + mess + "</h3>").appendTo("#divResult");
+                    }
+
+                }
+            })
+        });
         });
     </script>
 }

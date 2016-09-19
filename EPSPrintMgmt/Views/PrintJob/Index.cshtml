@@ -15,7 +15,7 @@
 {
     @Html.AntiForgeryToken()
 
-    <table class="table table-condensed table-responsive table-hover">
+    <table id="AllPrintJobs" class="table table-condensed table-responsive table-hover">
             <div class="col-md-10">
                 <input type="submit" value="Delete Select Print Jobs" class="btn btn-default" />
             </div>
@@ -120,6 +120,6 @@
             var $checkbox = $(this).find(':checkbox');
             $checkbox.attr('checked', !$checkbox.attr('checked'));
         }
-    })
-</script>
+    });
+    </script>
 }
