@@ -155,6 +155,10 @@ namespace EPSPrintMgmt.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult CreatePrinterJSON([Bind(Include = "DeviceID,DriverName,PortName,Tray,Comments,Location")]AddPrinterClass theNewPrinter)
         {
+            //Do some timing on the whole process.
+            Stopwatch newwatch = new Stopwatch();
+            newwatch.Start();
+
             //Initialize list to display to end users if it completes or not.
             List<string> outcome = new List<string>();
 
@@ -210,6 +214,8 @@ namespace EPSPrintMgmt.Controllers
                         mySession.Dispose();
                         //End the parallel processing.
                     });
+                    newwatch.Stop();
+                    outcome.Add(@"<h5>"+Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to install.</h5>");
                     //Email users from Web.Config to confirm everything went well!
                     SendEmail("New Printer Added to EPS", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     //Send a success message the Success View.
@@ -217,12 +223,16 @@ namespace EPSPrintMgmt.Controllers
                     //return JSON results to the AJAX request of the view.
                     return Json(outcome, JsonRequestBehavior.AllowGet);
                 }
+                newwatch.Stop();
                 //Send email and return results if DNS does not exist for the printer.
                 SendEmail("Failed EPS Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
                 TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.";
                 outcome.Add("Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.");
+                outcome.Add("<h5>"+Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install."+@"</h5>");
                 return Json(outcome, JsonRequestBehavior.AllowGet);
             }
+            newwatch.Stop();
+            outcome.Add("`r`n" + newwatch.ElapsedMilliseconds + " ms to install.");
             //Return error message that 
             TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
             outcome.Add("Something went wrong with the Model.  Please try again.");
@@ -325,6 +335,10 @@ namespace EPSPrintMgmt.Controllers
         //Currently deletes 
         public JsonResult EditPrinterJSON([Bind(Include = "Name,Driver,PortName,Tray")]Printer theNewPrinter)
         {
+            //Do some timing on the whole process.
+            Stopwatch newwatch = new Stopwatch();
+            newwatch.Start();
+
             //Initialize string for the output.
             List<string> outcome = new List<string>();
 
@@ -374,15 +388,19 @@ namespace EPSPrintMgmt.Controllers
                         }
                         mySession.Dispose();
                     });
+                    newwatch.Stop();
+                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to delete and install.</h5>");
                     //Finish the Parallel loop and return the results.
                     SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, the printer updated correctly!  Enjoy your day.";
                     return Json(outcome, JsonRequestBehavior.AllowGet);
 
                 }
+                newwatch.Stop();
                 SendEmail("Failed EPS Edit", "Printer: " + theNewPrinter.Name + " failed the DNS lookup or IP address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
                 TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is not a valid IP address.  Please try again.";
                 outcome.Add("Hostname of the Printer does not exist or it is not a valid IP address.  Please try again.");
+                outcome.Add("<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install." + @"</h5>");
                 return Json(outcome, JsonRequestBehavior.AllowGet);
             }
             TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
