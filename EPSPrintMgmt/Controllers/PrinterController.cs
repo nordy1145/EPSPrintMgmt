@@ -215,12 +215,12 @@ namespace EPSPrintMgmt.Controllers
                         //End the parallel processing.
                     });
                     newwatch.Stop();
-                    outcome.Add(@"<h5>"+Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to install.</h5>");
                     //Email users from Web.Config to confirm everything went well!
-                    SendEmail("New Printer Added to EPS", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    SendEmail("New Printer Added to EPS", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     //Send a success message the Success View.
                     TempData["SuccessMessage"] = "Congrats, the printer installed correctly!  Enjoy your day.";
                     //return JSON results to the AJAX request of the view.
+                    outcome.Add(@"<h5>"+Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to install.</h5>");
                     return Json(outcome, JsonRequestBehavior.AllowGet);
                 }
                 newwatch.Stop();
@@ -389,10 +389,10 @@ namespace EPSPrintMgmt.Controllers
                         mySession.Dispose();
                     });
                     newwatch.Stop();
-                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to delete and install.</h5>");
                     //Finish the Parallel loop and return the results.
-                    SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds+"ms to delete and install."+ Environment.NewLine + "Created by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, the printer updated correctly!  Enjoy your day.";
+                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to delete and install.</h5>");
                     return Json(outcome, JsonRequestBehavior.AllowGet);
 
                 }
