@@ -30,18 +30,17 @@ namespace EPSPrintMgmt.Controllers
         {
             return View(GetPrintJob(printServer, printer, id));
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(PrintJob printJob)
         {
             if(CancelPrintJob(printJob.Server, printJob.Printer, printJob.PrintJobID))
             {
-                SendEmail("Canceled Print Job", "The following print job has been canceled: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
+                Support.SendEmail("Canceled Print Job", "The following print job has been canceled: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
             }
             else
             {
-                SendEmail("Canceled Print Job", "The following print job failed to cancel: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
+                Support.SendEmail("Canceled Print Job", "The following print job failed to cancel: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
             }
             return RedirectToAction("Index");
         }
@@ -65,10 +64,9 @@ namespace EPSPrintMgmt.Controllers
                 }
 
             }
-            SendEmail("Canceled Print Jobs", string.Concat(outcome));
+            Support.SendEmail("Canceled Print Jobs", string.Concat(outcome));
             return RedirectToAction("Index");
         }
-
         static public List<PrintJob> GetPrintJobs(List<string> printserver)
         {
             List<PrintJob> printJobs = new List<PrintJob>();
@@ -131,8 +129,6 @@ namespace EPSPrintMgmt.Controllers
             List<string> epsServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("Server")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
             return (epsServers);
         }
-
-
         static public PrintJob GetPrintJob(string printserver, string printer, int printJobID)
         {
             PrintJob printJob = new PrintJob();
@@ -187,7 +183,6 @@ namespace EPSPrintMgmt.Controllers
             //}
             return (printJob);
         }
-
         static public bool CancelPrintJob(string printServer, string printQueue, int printJob)
         {
             try
@@ -209,13 +204,11 @@ namespace EPSPrintMgmt.Controllers
             }
 
         }
-
         static public string GetRelayServer()
         {
             string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("MailRelay")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
             return (relayServer);
         }
-
         static public string GetEmailTo()
         {
             string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailTo")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();

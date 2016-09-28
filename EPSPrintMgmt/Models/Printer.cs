@@ -42,6 +42,7 @@ namespace EPSPrintMgmt.Models
         public Boolean EnableBIDI { get; set; }
         public string Tray { get; set; }
         public bool IsEPS { get; set; }
+        public bool IsEnterprise { get; set; }
     }
 
     public class AddPrinterPortClass

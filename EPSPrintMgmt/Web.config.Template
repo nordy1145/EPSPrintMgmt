@@ -7,6 +7,7 @@
   <configSections>
     <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
     <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    <section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler,log4net" />
   </configSections>
   <connectionStrings>
     <add name="EPSPrintMgmtContext" connectionString="Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=EPSPrintMgmtContext-20160628142616; Integrated Security=True; MultipleActiveResultSets=True; AttachDbFilename=|DataDirectory|EPSPrintMgmtContext-20160628142616.mdf" providerName="System.Data.SqlClient" />
@@ -44,6 +45,23 @@
     <!--Following key is used to determine if you to see the number of print jobs in queue on the main list of printers.  This can cause performance issues. -->
     <add key="ShowNumberOfJobs" value="false"/>
   </appSettings>
+  <log4net debug="true">
+    <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
+      <file value="logs\log.txt" />
+      <appendToFile value="true" />
+      <rollingStyle value="Size" />
+      <maxSizeRollBackups value="10" />
+      <maximumFileSize value="10MB" />
+      <staticLogFileName value="true" />
+      <layout type="log4net.Layout.PatternLayout">
+        <conversionPattern value="%-5p %d %5rms %-22.22c{1} %-18.18M - %m%n" />
+      </layout>
+    </appender>
+    <root>
+      <level value="ALL" />
+      <appender-ref ref="RollingLogFileAppender" />
+    </root>
+  </log4net>
   <system.web>
     <compilation targetFramework="4.5.2" />
     <httpRuntime targetFramework="4.5.2" />

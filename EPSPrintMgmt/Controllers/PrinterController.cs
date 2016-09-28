@@ -24,6 +24,8 @@ namespace EPSPrintMgmt.Controllers
 {
     public class PrinterController : Controller
     {
+        //Setup for logging.
+        readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         // GET: Printer
         //[OutputCache(Duration = 300, VaryByParam = "PrintServer;sortOrder")]
         public ActionResult Index(string printServer, string sortOrder)
@@ -120,6 +122,8 @@ namespace EPSPrintMgmt.Controllers
             //Used to determine if the view should show the number of print jobs
             ViewData["ShowPrintJobs"] = ShowNumberPrintJobs();
 
+            logger.Info("User: " + User.Identity.Name.ToString() + " has viewed all printers for server " + Session["currentPrintServerLookup"] + ".");
+
             //return the list of printers one way or another.
             return View(printers);
         }
@@ -139,7 +143,6 @@ namespace EPSPrintMgmt.Controllers
             ViewData["printServers"] = GetEPSServers();
             return View();
         }
-
         public ActionResult Create()
         {
             //Pass the print drivers from the Web.config file to the view
@@ -149,7 +152,6 @@ namespace EPSPrintMgmt.Controllers
             ViewData["getTrays"] = GetTrays();
             return View();
         }
-
         //Used for parallel and AJAX processing of new EPS printer creation.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -184,14 +186,17 @@ namespace EPSPrintMgmt.Controllers
                                 //Adds printer port, currently just using the name of the printer for the port name.  So DNS must be setup first in order to add printer port.
                                 AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
                                 AddNewPrinterPort(AddThePort, server);
+                                logger.Info("New Port added.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
                             }
                             else
                             {
+                                logger.Info("New Port attempted to be added but already exists.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
                                 //If printer port already exists, don't do anything!
                             }
                             if (CheckCurrentPrinter(theNewPrinter.DeviceID, server))
                             {
                                 outcome.Add(theNewPrinter.DeviceID + " already exists on " + server);
+                                logger.Info("New Printer attempted to be added but already exists.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
                             }
                             else
                             {
@@ -200,9 +205,11 @@ namespace EPSPrintMgmt.Controllers
                                 AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
                                 //Use the string return function to determine if the printer was successfully added or not.
                                 outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                                logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
                                 if (UsePrintTrays())
                                 {
                                     outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, server, theNewPrinter.Tray));
+                                    logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + server + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
                                 }
                             }
                         }
@@ -210,6 +217,7 @@ namespace EPSPrintMgmt.Controllers
                         else
                         {
                             outcome.Add(server + " is not an active or a valid server.  Please verify the server is up or configured correctly in the web.config file.");
+                            logger.Info("Current Print Server is not active or invalid.  Print Server: " + server + " by user " + User.Identity.Name);
                         }
                         mySession.Dispose();
                         //End the parallel processing.
@@ -220,7 +228,7 @@ namespace EPSPrintMgmt.Controllers
                     //Send a success message the Success View.
                     TempData["SuccessMessage"] = "Congrats, the printer installed correctly!  Enjoy your day.";
                     //return JSON results to the AJAX request of the view.
-                    outcome.Add(@"<h5>"+Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to install.</h5>");
+                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to install.</h5>");
                     return Json(outcome, JsonRequestBehavior.AllowGet);
                 }
                 newwatch.Stop();
@@ -228,7 +236,7 @@ namespace EPSPrintMgmt.Controllers
                 SendEmail("Failed EPS Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
                 TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.";
                 outcome.Add("Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.");
-                outcome.Add("<h5>"+Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install."+@"</h5>");
+                outcome.Add("<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install." + @"</h5>");
                 return Json(outcome, JsonRequestBehavior.AllowGet);
             }
             newwatch.Stop();
@@ -236,6 +244,7 @@ namespace EPSPrintMgmt.Controllers
             //Return error message that 
             TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
             outcome.Add("Something went wrong with the Model.  Please try again.");
+            logger.Error("Failed to initialize the model");
             return Json(outcome, JsonRequestBehavior.AllowGet);
 
         }
@@ -250,7 +259,6 @@ namespace EPSPrintMgmt.Controllers
             //Return the printer for the View.
             return View(GetPrinterOnAllEPSServers(printer));
         }
-
         //Used to purge print queues from all EPS Servers.
         public JsonResult PurgePrintQueueAllServers([Bind(Include = "Name")]Printer theNewPrinter)
         {
@@ -262,15 +270,16 @@ namespace EPSPrintMgmt.Controllers
                 {
                     ClearPrintQueue(theNewPrinter.Name, server);
                     outcome.Add("Successfully purged " + theNewPrinter.Name + " on server " + server);
+                    logger.Info("Purged all jobs on " + theNewPrinter.Name + " on server " + server + " by user " + User.Identity.Name);
                 }
                 catch
                 {
                     outcome.Add("Failed to purge " + theNewPrinter.Name + " on server " + server);
+                    logger.Info("Failed to purge jobs on " + theNewPrinter.Name + " on server " + server + " by user " + User.Identity.Name);
                 }
             });
             return Json(outcome);
         }
-
         //Used to get options for a specific printer on a server.
         //The view currently allows to edit a print driver and clear a print queue.
         public ActionResult Options(string printer, string printServer)
@@ -281,7 +290,6 @@ namespace EPSPrintMgmt.Controllers
             //Return the printer for the View.
             return View(GetPrinter(printServer, printer));
         }
-
         //Post from the Options page, specifically for the Clear Print Queue option.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -361,6 +369,7 @@ namespace EPSPrintMgmt.Controllers
                                 //Check to see if port doesn't exist and create it if it does not exist.
                                 AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
                                 AddNewPrinterPort(AddThePort, mySession);
+                                logger.Info("New Port added.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
                             }
                             else
                             {
@@ -375,9 +384,11 @@ namespace EPSPrintMgmt.Controllers
                             AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
                             //Try and add the printer back in after it's been deleted.
                             outcome.Add(AddNewPrinterStringReturn(newPrinter, mySession, printServer));
+                            logger.Info("New Printer added.  Printer Name : " + theNewPrinter.Name + " on server " + server + " by user " + User.Identity.Name);
                             if (UsePrintTrays())
                             {
                                 outcome.Add(SetPrinterTray(theNewPrinter.Name, server, theNewPrinter.Tray));
+                                logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.Name + " Tray Info: " + theNewPrinter.Tray + " on server " + server + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
                             }
 
                         }
@@ -390,7 +401,7 @@ namespace EPSPrintMgmt.Controllers
                     });
                     newwatch.Stop();
                     //Finish the Parallel loop and return the results.
-                    SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds+"ms to delete and install."+ Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to delete and install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, the printer updated correctly!  Enjoy your day.";
                     outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to delete and install.</h5>");
                     return Json(outcome, JsonRequestBehavior.AllowGet);
@@ -403,12 +414,12 @@ namespace EPSPrintMgmt.Controllers
                 outcome.Add("<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install." + @"</h5>");
                 return Json(outcome, JsonRequestBehavior.AllowGet);
             }
+            logger.Error("Failed to initialize the model");
             TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
             outcome.Add("Something went wrong with the Model.  Please try again.");
             return Json(outcome, JsonRequestBehavior.AllowGet);
 
         }
-
         //Future use to edit a non EPS printer
         public JsonResult EditEnterprisePrinterJSON([Bind(Include = "Name,Driver,PrintServer")]Printer theNewPrinter)
         {
@@ -457,7 +468,7 @@ namespace EPSPrintMgmt.Controllers
 
         }
         //Method to return all printers from a specified print server
-        static public List<Printer> GetPrinters(string server)
+        public List<Printer> GetPrinters(string server)
         {
             //Currently using the PrintServer class instead of a WMI query.
             //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
@@ -496,18 +507,17 @@ namespace EPSPrintMgmt.Controllers
                         printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), PortName = pq.QueuePort.Name });  //Removed the following for performance NumberJobs = pq.NumberOfJobs,
                     }
                 }
-
                 printServer.Dispose();
                 //return the printers added to the custom class.
                 return (printerList);
             }
-            catch
+            catch (Exception ex)
             {
+                logger.Fatal("Failed to get printers for server: " + server, ex);
                 List<Printer> printerList = new List<Printer>();
                 return (printerList);
             }
         }
-
         //Used to purge print queues from all EPS Servers.
         public JsonResult PrintTestPages([Bind(Include = "Name")]Printer thePrinter)
         {
@@ -578,8 +588,17 @@ namespace EPSPrintMgmt.Controllers
                     //Get the one print queue from the print server.
                     var myPrintQueues = printServer.GetPrintQueue(printer);
                     myPrintQueues.Refresh();
+                    string theTray;
                     //var theTray = GetCurrentPrintTray(printer, server);
-                    var theTray = GetCurrentPrintTray(myPrintQueues);
+                    if (myPrintQueues.QueueDriver.Name.Contains("ZDesigner") || !Support.UsePrintTrays())
+                    {
+                        theTray = null;
+                    }
+                    else
+                    {
+                        theTray = GetCurrentPrintTray(myPrintQueues);
+
+                    }
                     outcome.Add(new Printer { Name = myPrintQueues.Name.ToUpper(), Driver = myPrintQueues.QueueDriver.Name, PrintServer = server, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = "Installed", Tray = theTray });
                     printServer.Dispose();
                     myPrintQueues.Dispose();
@@ -647,7 +666,6 @@ namespace EPSPrintMgmt.Controllers
             //if you've gotten this far, something went really wrong.
             return false;
         }
-
         //Return a true/false if printer port is active.  Need to know when adding a printer.
         static private bool ExistingPrinterPort(string portName, CimSession session)
         {
@@ -679,7 +697,6 @@ namespace EPSPrintMgmt.Controllers
             //if you've gotten this far, something went really wrong.
             return false;
         }
-
         //Add a printer port to a server.
         //Assumes you have verified the print server and ip/dns entries are valid.
         static private void AddNewPrinterPort(AddPrinterPortClass theNewPrinterPort, string thePrintServer)
@@ -729,7 +746,6 @@ namespace EPSPrintMgmt.Controllers
             myPrinter.Dispose();
             //Session.Dispose();
         }
-
         //Add a printer and return success or failure in a string.
         static private string AddNewPrinterStringReturn(AddPrinterClass theNewPrinter, string thePrintServer)
         {
@@ -847,7 +863,7 @@ namespace EPSPrintMgmt.Controllers
             catch (System.Printing.PrintSystemException e)
             {
                 //printServer.Dispose();
-                return (theNewPrinter.DeviceID + " failed to install on " + printServer + " with error message " + e.Message);
+                return (theNewPrinter.DeviceID + " failed to install on " + printServer.Name + " with error message " + e.Message);
             }
 
             //Have to change some printer properties that are not modified in installation.
@@ -876,19 +892,19 @@ namespace EPSPrintMgmt.Controllers
                     {
                         session.ModifyInstance(Namespace, exist);
                         //mySession.Dispose();
-                        return (theNewPrinter.DeviceID + " was added successfully on " + printServer);
+                        return (theNewPrinter.DeviceID + " was added successfully on " + printServer.Name);
                     }
                     catch
                     {
                         //mySession.Dispose();
-                        return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + printServer);
+                        return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + printServer.Name);
                     }
                 }
                 else
                 {
                     //item doesn't exist...
                     //mySession.Dispose();
-                    return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + printServer);
+                    return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + printServer.Name);
                 }
             }
             else
@@ -930,7 +946,6 @@ namespace EPSPrintMgmt.Controllers
             }
             return "Delete failed on server: " + server + ". Returned failed at the end of the method.";
         }
-
         static private bool ClearPrintQueue(string printer, string server)
         {
             try
@@ -972,7 +987,6 @@ namespace EPSPrintMgmt.Controllers
             //return (printerList);
             return true;
         }
-
         static public string GetCurrentPrintTray(string printer, string printserver)
         {
             string thePrintTray = null;
@@ -1179,32 +1193,32 @@ namespace EPSPrintMgmt.Controllers
         {
             try
             {
-            ManagementScope scope = new ManagementScope(String.Format(@"\\{0}\ROOT\CIMV2", printServer));
-            scope.Connect();
-            ManagementPath managementPath = new ManagementPath("Win32_Process");
-            ManagementClass processClass = new ManagementClass(scope, managementPath, new ObjectGetOptions());
-            ManagementBaseObject inParams = processClass.GetMethodParameters("Create");
-            inParams["CommandLine"] = @"C:\Windows\System32\rundll32.exe printui.dll,PrintUIEntry /q /k /n"+printer;
-            ManagementBaseObject outParams = processClass.InvokeMethod("Create", inParams, null);
-            uint rtn = System.Convert.ToUInt32(outParams["returnValue"]);
-            uint processID = System.Convert.ToUInt32(outParams["processId"]);
+                ManagementScope scope = new ManagementScope(String.Format(@"\\{0}\ROOT\CIMV2", printServer));
+                scope.Connect();
+                ManagementPath managementPath = new ManagementPath("Win32_Process");
+                ManagementClass processClass = new ManagementClass(scope, managementPath, new ObjectGetOptions());
+                ManagementBaseObject inParams = processClass.GetMethodParameters("Create");
+                inParams["CommandLine"] = @"C:\Windows\System32\rundll32.exe printui.dll,PrintUIEntry /q /k /n" + printer;
+                ManagementBaseObject outParams = processClass.InvokeMethod("Create", inParams, null);
+                uint rtn = System.Convert.ToUInt32(outParams["returnValue"]);
+                uint processID = System.Convert.ToUInt32(outParams["processId"]);
 
-            System.Threading.Thread.Sleep(1000);
-            var processName = "rundll32.exe";
-            var query = new SelectQuery("select * from Win32_process where name = '" + processName + "' AND processid = '"+processID+"'");
-            using (var searcher = new ManagementObjectSearcher(scope, query))
-            {
-                foreach (ManagementObject process in searcher.Get()) // this is the fixed line
+                System.Threading.Thread.Sleep(1000);
+                var processName = "rundll32.exe";
+                var query = new SelectQuery("select * from Win32_process where name = '" + processName + "' AND processid = '" + processID + "'");
+                using (var searcher = new ManagementObjectSearcher(scope, query))
                 {
-                    process.InvokeMethod("Terminate", null);
+                    foreach (ManagementObject process in searcher.Get()) // this is the fixed line
+                    {
+                        process.InvokeMethod("Terminate", null);
+                    }
                 }
-            }
                 return true;
             }
             catch
             {
 
-            return false;
+                return false;
             }
 
         }
@@ -1218,7 +1232,6 @@ namespace EPSPrintMgmt.Controllers
             List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("Server")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
             return (allServers);
         }
-
         static public List<string> GetAllPrintDrivers()
         {
             List<string> printDrivers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("PrintDriver")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
@@ -1226,7 +1239,7 @@ namespace EPSPrintMgmt.Controllers
         }
         static public List<string> GetTrays()
         {
-            List<string> trays = new List<string>(new string[] { "AutoSelect", "Tray1", "Tray2", "Tray3","Tray4","Tray5","Tray6" });
+            List<string> trays = new List<string>(new string[] { "AutoSelect", "Tray1", "Tray2", "Tray3", "Tray4", "Tray5", "Tray6" });
             return (trays);
         }
         static public bool UsePrintTrays()
@@ -1259,13 +1272,11 @@ namespace EPSPrintMgmt.Controllers
             return false;
 
         }
-
         static public string GetRelayServer()
         {
             string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("MailRelay")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
             return (relayServer);
         }
-
         static public string GetEmailTo()
         {
             string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailTo")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
@@ -1300,7 +1311,6 @@ namespace EPSPrintMgmt.Controllers
                 //do something useful some day...
             }
         }
-
         //Currently checks to validate it's an actual IP address or a valid DNS entry.
         //Doesn't Ping the IP address, just makes sure it's a valid IPV4 or IPV6 address.
         private static bool ValidHostname(string hostname)
