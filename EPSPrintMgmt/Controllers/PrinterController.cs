@@ -169,7 +169,7 @@ namespace EPSPrintMgmt.Controllers
             {
                 //Validate the printer exists in DNS or Valid IP Address
                 //Web.Config determines if it is really used or not.
-                if (!ValidatePrinterDNS() || ValidHostname(theNewPrinter.PortName) == true)
+                if (!ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //kick off multiple threads to install printers quickly
                     Parallel.ForEach(GetEPSServers(), server =>
@@ -224,7 +224,7 @@ namespace EPSPrintMgmt.Controllers
                     });
                     newwatch.Stop();
                     //Email users from Web.Config to confirm everything went well!
-                    SendEmail("New Printer Added to EPS", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    Support.SendEmail("New Printer Added to EPS", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     //Send a success message the Success View.
                     TempData["SuccessMessage"] = "Congrats, the printer installed correctly!  Enjoy your day.";
                     //return JSON results to the AJAX request of the view.
@@ -233,7 +233,7 @@ namespace EPSPrintMgmt.Controllers
                 }
                 newwatch.Stop();
                 //Send email and return results if DNS does not exist for the printer.
-                SendEmail("Failed EPS Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
+                Support.SendEmail("Failed EPS Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
                 TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.";
                 outcome.Add("Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.");
                 outcome.Add("<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install." + @"</h5>");
@@ -256,6 +256,7 @@ namespace EPSPrintMgmt.Controllers
             //Only limited functionality for non EPS servers is currently defined.
             ViewData["thePrinter"] = printer;
             ViewData["isEPSServer"] = GetEPSServers().Exists(s => s == printserver).ToString();
+            ViewData["allowDelete"] = Support.AllowEPSPrintDeletion();
             //Return the printer for the View.
             return View(GetPrinterOnAllEPSServers(printer));
         }
@@ -301,14 +302,14 @@ namespace EPSPrintMgmt.Controllers
                 if (ClearPrintQueue(theNewPrinter.Name, theNewPrinter.PrintServer) == true)
                 {
                     //Send out notification and return success if function returns true.
-                    SendEmail("Print Queue Cleared", "Printer: " + theNewPrinter.Name + " on server: " + theNewPrinter.PrintServer + " has been cleared successfully. by user: " + User.Identity.Name);
+                    Support.SendEmail("Print Queue Cleared", "Printer: " + theNewPrinter.Name + " on server: " + theNewPrinter.PrintServer + " has been cleared successfully. by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, the print queue has been cleared!  Enjoy your day.";
                     return RedirectToAction("Success");
                 }
                 else
                 {
                     //something went wrong and it couldn't clear the queue.
-                    SendEmail("Print Queue failed to clear", "Printer: " + theNewPrinter.Name + " on server: " + theNewPrinter.PrintServer + " has failed to clear. by user: " + User.Identity.Name);
+                    Support.SendEmail("Print Queue failed to clear", "Printer: " + theNewPrinter.Name + " on server: " + theNewPrinter.PrintServer + " has failed to clear. by user: " + User.Identity.Name);
                     TempData["RedirectToError"] = "Could not clear print queue.  Please try again or logon to the server directly to clear it.";
                     return RedirectToAction("Error");
                 }
@@ -340,7 +341,7 @@ namespace EPSPrintMgmt.Controllers
             return View(myPrinter);
         }
         //AJAX Json response for editing an EPS Printer.
-        //Currently deletes 
+        //Currently deletes and readds the printer
         public JsonResult EditPrinterJSON([Bind(Include = "Name,Driver,PortName,Tray")]Printer theNewPrinter)
         {
             //Do some timing on the whole process.
@@ -353,7 +354,7 @@ namespace EPSPrintMgmt.Controllers
             if (ModelState.IsValid)
             {
                 //Verify the printer name is still correct.
-                if (!ValidatePrinterDNS() || ValidHostname(theNewPrinter.PortName) == true)
+                if (!ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //Start parallel processing on each EPS server.
                     Parallel.ForEach(GetEPSServers(), (server) =>
@@ -379,7 +380,7 @@ namespace EPSPrintMgmt.Controllers
                             //PrintServer class requires the 2 wacks in the server name.
                             PrintServer printServer = new PrintServer(@"\\" + server, PrintSystemDesiredAccess.AdministrateServer);
                             //Need to delete out the old printer first, since I haven't found a good way to change print drivers/properities.
-                            outcome.Add(DeletePrinter(theNewPrinter.Name, server));
+                            outcome.Add(DeletePrinter(theNewPrinter.Name, printServer));
                             //create the new printer object with the correct props.
                             AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.Name, DriverName = theNewPrinter.Driver, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false };
                             //Try and add the printer back in after it's been deleted.
@@ -401,14 +402,14 @@ namespace EPSPrintMgmt.Controllers
                     });
                     newwatch.Stop();
                     //Finish the Parallel loop and return the results.
-                    SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to delete and install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    Support.SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to delete and install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, the printer updated correctly!  Enjoy your day.";
                     outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to delete and install.</h5>");
                     return Json(outcome, JsonRequestBehavior.AllowGet);
 
                 }
                 newwatch.Stop();
-                SendEmail("Failed EPS Edit", "Printer: " + theNewPrinter.Name + " failed the DNS lookup or IP address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
+                Support.SendEmail("Failed EPS Edit", "Printer: " + theNewPrinter.Name + " failed the DNS lookup or IP address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
                 TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is not a valid IP address.  Please try again.";
                 outcome.Add("Hostname of the Printer does not exist or it is not a valid IP address.  Please try again.");
                 outcome.Add("<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install." + @"</h5>");
@@ -426,7 +427,7 @@ namespace EPSPrintMgmt.Controllers
             List<string> outcome = new List<string>();
             if (ModelState.IsValid)
             {
-                if (!ValidatePrinterDNS() || ValidHostname(theNewPrinter.Name) == true)
+                if (!ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.Name) == true)
                 {
 
                     CimSession mySession = CimSession.Create(theNewPrinter.PrintServer);
@@ -452,12 +453,12 @@ namespace EPSPrintMgmt.Controllers
                         outcome.Add(theNewPrinter.PrintServer + "Is not a valid server.  Please contact the creator of this thing and have them check the web.config for valid EPS servers.");
                     }
 
-                    SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    Support.SendEmail("EPS Printer Edited", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, the printer updated correctly!  Enjoy your day.";
                     return Json(outcome, JsonRequestBehavior.AllowGet);
 
                 }
-                SendEmail("Failed EPS Edit", "Printer: " + theNewPrinter.Name + " failed the DNS lookup." + Environment.NewLine + "By user: " + User.Identity.Name);
+                Support.SendEmail("Failed EPS Edit", "Printer: " + theNewPrinter.Name + " failed the DNS lookup." + Environment.NewLine + "By user: " + User.Identity.Name);
                 TempData["RedirectToError"] = "Hostname of the Printer does not exist.  Please try again.";
                 outcome.Add("Hostname of the Printer does not exist.  Please try again.");
                 return Json(outcome, JsonRequestBehavior.AllowGet);
@@ -468,6 +469,55 @@ namespace EPSPrintMgmt.Controllers
 
         }
         //Method to return all printers from a specified print server
+        //AJAX Json response for editing an EPS Printer.
+        //Currently deletes and readds the printer
+        public JsonResult DeleteEPSPrinter([Bind(Include = "Name")]Printer theNewPrinter)
+        {
+            //Do some timing on the whole process.
+            Stopwatch newwatch = new Stopwatch();
+            newwatch.Start();
+
+            //Initialize string for the output.
+            List<string> outcome = new List<string>();
+
+            if (ModelState.IsValid)
+            {
+                //Start parallel processing on each EPS server.
+                Parallel.ForEach(GetEPSServers(), (server) =>
+                {
+                    //Verify a Cim Session can be created before calling methods that use it... Maybe a bit backwards.
+                    CimSession mySession = CimSession.Create(server);
+                    var testtheConnection = mySession.TestConnection();
+                    if (testtheConnection == true)
+                    {
+                        //Continue on if a session can be created
+                        //PrintServer class requires the 2 wacks in the server name.
+                        PrintServer printServer = new PrintServer(@"\\" + server, PrintSystemDesiredAccess.AdministrateServer);
+                        //Need to delete out the old printer first, since I haven't found a good way to change print drivers/properties.
+                        outcome.Add(DeletePrinter(theNewPrinter.Name, printServer));
+                        //logger.Info("Printer deleted.  Printer Name : " + theNewPrinter.Name + " on server " + server + " by user " + User.Identity.Name);
+                    }
+                    else
+                    {
+                        //Print server doesn't exist or is done.  Need to check web.config currently.
+                        outcome.Add(server + "Is not a valid server.  Please contact the creator of this thing and have them check the web.config for valid EPS servers.");
+                    }
+                    mySession.Dispose();
+                });
+                newwatch.Stop();
+                logger.Info(string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to delete." + Environment.NewLine + "Deleted by user: " + User.Identity.Name);
+                //Finish the Parallel loop and return the results.
+                Support.SendEmail("EPS Printer Deleted", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to delete." + Environment.NewLine + "Deleted by user: " + User.Identity.Name);
+                TempData["SuccessMessage"] = "Congrats, the printer was deleted!  Enjoy your day.";
+                outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to delete.</h5>");
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+            logger.Error("Failed to initialize the model");
+            TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
+            outcome.Add("Something went wrong with the Model.  Please try again.");
+            return Json(outcome, JsonRequestBehavior.AllowGet);
+
+        }
         public List<Printer> GetPrinters(string server)
         {
             //Currently using the PrintServer class instead of a WMI query.
@@ -749,7 +799,7 @@ namespace EPSPrintMgmt.Controllers
         //Add a printer and return success or failure in a string.
         static private string AddNewPrinterStringReturn(AddPrinterClass theNewPrinter, string thePrintServer)
         {
-            PrintServer printServer = new PrintServer(@"\\" + thePrintServer);
+            PrintServer printServer = new PrintServer(@"\\" + thePrintServer,PrintSystemDesiredAccess.AdministrateServer);
             PrintPropertyDictionary printProps = new PrintPropertyDictionary { };
             // Share the new printer using Remove/Add methods
             PrintBooleanProperty shared = new PrintBooleanProperty("IsShared", false);
@@ -916,6 +966,20 @@ namespace EPSPrintMgmt.Controllers
             //return (theNewPrinter.DeviceID + " was added successfully on " + thePrintServer);
 
         }
+        static private string DeletePrinter(string printer, PrintServer server)
+        {
+            try
+            {
+                PrintQueue thePrintQueue = server.GetPrintQueue(printer);
+                PrintServer.DeletePrintQueue(thePrintQueue);
+                thePrintQueue.Dispose();
+                return "Successfully deleted: " + printer + " on server: " + server.Name;
+            }
+            catch
+            {
+                return ("Delete failed on server: " + server.Name + " for printer: " + printer + ".  Printer does not exist.");
+            }
+        }
         static private string DeletePrinter(string printer, string server)
         {
             string Namespace = @"root\cimv2";
@@ -929,6 +993,11 @@ namespace EPSPrintMgmt.Controllers
             var scope = new ManagementScope(@"\\" + server + @"\" + Namespace, conneOption);
             ManagementObjectSearcher s = new ManagementObjectSearcher(scope, WMIQuery);
             ManagementObjectCollection col = s.Get();
+            if (col.Count == 0)
+            {
+                s.Dispose();
+                return "Delete failed on server: " + server + ".  Printer does not exist.";
+            }
             try
             {
                 foreach (ManagementObject i in col)

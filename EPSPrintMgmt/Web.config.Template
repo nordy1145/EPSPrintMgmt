@@ -44,6 +44,8 @@
     <add key="UsePrintTrays" value="false"/>
     <!--Following key is used to determine if you to see the number of print jobs in queue on the main list of printers.  This can cause performance issues. -->
     <add key="ShowNumberOfJobs" value="false"/>
+    <!--Following key is used to determine if a user can delete printers from an EPS server -->
+    <add key="AllowEPSPrinterDeletion" value="false" />
   </appSettings>
   <log4net debug="true">
     <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">

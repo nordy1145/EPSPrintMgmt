@@ -134,5 +134,15 @@ namespace EPSPrintMgmt.Models
             return false;
 
         }
+        static public bool AllowEPSPrintDeletion()
+        {
+            string deleteEPSPrinter = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("AllowEPSPrinterDeletion")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(deleteEPSPrinter, "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
     }
 }

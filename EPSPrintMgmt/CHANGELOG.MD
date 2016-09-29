@@ -3,8 +3,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- Ability to delete a printer
+- Looking into Enterprise Printer Management.
+- Additional Print Driver management along with label printers.
 
+## [1.0.9.4] - 2016-09-29
+### Added
+- Added Delete Printer option from Printer details section.  Does not delete the printer port.
+- Added Jquery UI package for dialog box integration.  Currently only being used for Deleting a Printer.
+- Added new config option in Web.Config.  <add key="AllowEPSPrinterDeletion" value="false" />
+
+### Changed
+- The delete method for removing printers.  Now uses the PrintServer class instead of WMI.
+Has improved performance for removing/changing printers.
 
 ## [1.0.9.3] - 2016-09-28
 ### Added
@@ -17,7 +27,7 @@ Using log4net library for logging
 ### Changed
 - The details of a printer no longer try to retrieve tray if the Driver contains "Zdesigner"
 or if the UsePrintTrays config option is set to false in the web.config file.
-- Changed some methods to use the new support clas.
+- Changed some methods to use the new support class.
 
 ### Fixed
 - Print Server name not showing up while editing a printer in the web page response or email notification.
