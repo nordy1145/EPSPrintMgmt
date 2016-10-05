@@ -3,8 +3,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- Looking into Enterprise Printer Management.
 - Additional Print Driver management along with label printers.
+
+### Changed
+- Change the search option to choose either a EPS or Enterprise option, versus having to choose an individual server.
+
+## [1.0.9.5] - 2016-10-05
+### Added
+- Added config options for additional security to delete, edit and purge print queues.  Includes new fields within the appsettings section.
+- Added the initial build for adding/editing/deleting Enterprise Printers.  Will automatically Share the printer with the printer name.
+- Added section in appsettings config file for Enterprise Print Drivers.
+- Added a new tab to create Enterprise Printer if config is set to allow it.
+
+### Changed
+- Moved the appsettings section of web.config to it's own file.
+- Modified Details view to handle both EPS and Enterprise Print Servers
+- Modified the search to search all Enterprise Print Servers when an EPS server is not selected.
 
 ## [1.0.9.4] - 2016-09-29
 ### Added

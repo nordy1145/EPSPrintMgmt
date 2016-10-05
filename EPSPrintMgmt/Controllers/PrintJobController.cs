@@ -34,7 +34,18 @@ namespace EPSPrintMgmt.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(PrintJob printJob)
         {
-            if(CancelPrintJob(printJob.Server, printJob.Printer, printJob.PrintJobID))
+            if (Support.AdditionalSecurity() == true)
+            {
+                var theADGroup = Support.ADGroupCanPurgePrintQueues();
+                bool isInRole = User.IsInRole(theADGroup);
+                if (isInRole == false)
+                {
+                    Support.SendEmail("Failed cancel print job", "User :" + User.Identity.Name.ToString() + " attempted to purge print jobs and failed because user does not have access.");
+                    return RedirectToAction("Index");
+                }
+            }
+
+            if (CancelPrintJob(printJob.Server, printJob.Printer, printJob.PrintJobID))
             {
                 Support.SendEmail("Canceled Print Job", "The following print job has been canceled: " + printJob.PrintJobName + Environment.NewLine + "Printer: " + printJob.Printer + Environment.NewLine + "Print server: " + printJob.Server + Environment.NewLine + "User: " + User.Identity.Name);
             }
@@ -48,6 +59,18 @@ namespace EPSPrintMgmt.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteMultipleJobs(List<PrintJob> printjobs)
         {
+            if (Support.AdditionalSecurity() == true)
+            {
+                var theADGroup = Support.ADGroupCanPurgePrintQueues();
+                bool isInRole = User.IsInRole(theADGroup);
+                if (isInRole == false)
+                {
+                    Support.SendEmail("Failed cancel print job","User :"+User.Identity.Name.ToString()+" attempted to purge print jobs and failed because user does not have access.");
+                    return RedirectToAction("Index");
+                }
+            }
+
+
             List<string> outcome = new List<string>();
             foreach (var pj in printjobs)
             {

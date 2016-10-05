@@ -8,18 +8,42 @@
 </div>
 <h2>Printer Options</h2>
 
-<button id="ClearPrintJobs" class="btn btn-default">Clear All Print Jobs</button>
-<button id="PrintTestPage" class="btn btn-default">Print Test Page</button>
+@if (ViewData["isEPSServer"].ToString() == "True")
+{
+    <button id="ClearPrintJobs" class="btn btn-default">Clear All Print Jobs</button>
+}
+
+@if (ViewData["isEPSServer"].ToString() == "True")
+{
+    <button id="PrintTestPage" class="btn btn-default">Print Test Page</button>
+}
+
 @if (ViewData["isEPSServer"].ToString() == "True")
 {
     @Html.ActionLink("Edit EPS Printer", "Edit", new { printer = ViewData["thePrinter"] }, new { @class = "btn btn-default" })
 }
-else
+
+@if (ViewData["isEntServer"].ToString() == "True")
 {
+    if (ViewData["allowEntPrinterEdit"].ToString() == "True")
+    {
+        @Html.ActionLink("Edit Enterprise Printer", "EditEnterprisePrinter", new { printer = ViewData["thePrinter"], printserver = ViewData["theServer"] }, new { @class = "btn btn-default" })
+    }
 }
+
 @if (ViewData["allowDelete"].ToString() == "True")
 {
-    <button id="DeleteEPSPrinter" class="btn btn-default pull-right">Delete EPS Printer</button>
+    if (ViewData["isEPSServer"].ToString() == "True")
+    {
+        <button id="DeleteEPSPrinter" class="btn btn-default pull-right">Delete EPS Printer</button>
+    }
+    if (ViewData["isEntServer"].ToString() == "True")
+    {
+        if (ViewData["allowEntPrinterEdit"].ToString() == "True")
+        {
+        <button id="DeleteEntPrinter" class="btn btn-default pull-right">Delete Enterprise Printer</button>
+        }
+    }
 }
 
 <table class="table">
@@ -162,7 +186,47 @@ else
                         $.ajax({
                             url: "@Url.Action("DeleteEPSPrinter", "Printer")",
                             type: "POST",
-                        data: { "Name": thePrinter },
+                            data: { "Name": thePrinter},
+                            dataType: "json",
+                            success: function (resp) {
+
+                                // Hide the "busy" gif:
+                                $("#divProcessing").hide();
+                                for (var i = 0; i < resp.length; i++) {
+                                    var mess = resp[i];
+                                    $("<h3>" + mess + "</h3>").appendTo("#divResult");
+                                }
+
+                            }
+                        })
+                    },
+                    "Cancel": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            $("#dialog").dialog("open")
+        });
+
+        $("#DeleteEntPrinter").on("click", function (event) {
+            event.preventDefault();
+            // Show the "busy" Gif:
+            $("#dialog").dialog({
+                buttons: {
+                    "Confirm": function () {
+                        // Show the "busy" Gif:
+                        $(this).dialog("close");
+                        $("#divProcessing").show();
+                        $("#divResult").text("");
+                        var thePrinter = '@ViewData["thePrinter"]';
+                        var theServer = '@ViewData["theServer"]';
+
+                        var url = $(this).attr("action");
+                        var formData = $(this).serialize();
+                        $.ajax({
+                            url: "@Url.Action("DeleteEnterprisePrinter", "Printer")",
+                            type: "POST",
+                            data: { "Name": thePrinter, "PrintServer":theServer },
                         dataType: "json",
                         success: function (resp) {
 
@@ -175,14 +239,13 @@ else
 
                         }
                     })
-                    },
-                    "Cancel": function () {
-                        $(this).dialog("close");
-                    }
-                }
-            });
-            $("#dialog").dialog("open")
+        },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        }
         });
-
+        $("#dialog").dialog("open")
+        });
     </script>
 }

@@ -43,6 +43,8 @@ namespace EPSPrintMgmt.Models
         public string Tray { get; set; }
         public bool IsEPS { get; set; }
         public bool IsEnterprise { get; set; }
+        [DisplayName("Print Server")]
+        public string PrintServer { get; set; }
     }
 
     public class AddPrinterPortClass

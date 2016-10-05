@@ -1,0 +1,140 @@
+﻿@model EPSPrintMgmt.Models.AddPrinterClass
+
+@{
+    ViewBag.Title = "Add Enterprise Printer";
+}
+
+<h2>Add Enterprise Printer</h2>
+
+@using (Html.BeginForm("CreateEnterprisePrinterJSON", "Printer", FormMethod.Post, new { encType = "multipart/form-data", id = "myform", name = "myform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <p>This page allows you to create an Enterprise print.</p>
+        <p>The page may continue to load for a few minutes.  Please give it some time to finish.</p>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.DeviceID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DeviceID, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DeviceID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @if (ViewData["useIP"].ToString() == "True")
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.PortName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.PortName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PortName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <input type="hidden" id="PortName" name="PortName" />
+        }
+
+        @if (ViewData["useTrays"].ToString() == "True")
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Tray, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("Tray", new SelectList((System.Collections.IEnumerable)ViewData["getTrays"]), "-- Select Printer Tray --")
+                    @*@Html.EditorFor(model => model.Tray, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @Html.ValidationMessageFor(model => model.Tray, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <input type="hidden" id="Tray" name="Tray" />
+        }
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DriverName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DriverName, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DriverName", new SelectList((System.Collections.IEnumerable)ViewData["printDrivers"]))
+                @Html.ValidationMessageFor(model => model.DriverName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrintServer, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("PrintServer", new SelectList((System.Collections.IEnumerable)ViewData["getEntServers"]))
+                @Html.ValidationMessageFor(model => model.PrintServer, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+<div id="divProcessing">
+    <p>Processing, please wait . . . <img src="@Url.Content("~/Content/ajax-loader.gif")"></p>
+</div>
+<div id="divResult">
+
+</div>
+@section Scripts {
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            // Hide the "busy" Gif at load:
+            $("#divProcessing").hide();
+            $("#divResult").text("");
+
+            $("#myform").on("submit", function (event) {
+                event.preventDefault();
+
+                // Show the "busy" Gif:
+                $("#divProcessing").show();
+                $("#divResult").text("");
+                var UseIP = "@ViewData["useIP"]";
+
+                if (UseIP == "False")
+                {
+                    document.getElementById("PortName").value = document.getElementById("DeviceID").value;
+                }
+
+                var url = $(this).attr("action");
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: formData,
+                    dataType: "json",
+                    success: function (resp) {
+
+                        // Hide the "busy" gif:
+                        $("#divProcessing").hide();
+                        for (var i = 0; i < resp.length; i++) {
+                            var mess = resp[i];
+                            $("<h3>"+mess+"</h3>").appendTo("#divResult");
+                        }
+
+                    }
+                })
+            });
+        });
+    </script>
+}

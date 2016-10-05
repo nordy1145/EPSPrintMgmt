@@ -20,6 +20,15 @@ namespace EPSPrintMgmt.Controllers
         {
             return View();
         }
+        //Following Parital is used to return the drop down to Create Enterprise Printer.
+        public PartialViewResult EditEnterprisePrinter()
+        {
+            if (Support.EditEnterprisePrinters() == true)
+            {
+                return PartialView();
+            }
+            return default(PartialViewResult);
+        }
 
         public ActionResult About()
         {

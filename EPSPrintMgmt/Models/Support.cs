@@ -94,9 +94,19 @@ namespace EPSPrintMgmt.Models
             List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("Server")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
             return (allServers);
         }
+        static public List<string> GetEnterprisePrintServers()
+        {
+            List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterpriseServer")).Select(k => ConfigurationManager.AppSettings[k]).OrderBy(x=>x).ToList();
+            return (allServers);
+        }
         static public List<string> GetAllPrintDrivers()
         {
             List<string> printDrivers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("PrintDriver")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
+            return (printDrivers);
+        }
+        static public List<string> GetAllEnterprisePrintDrivers()
+        {
+            List<string> printDrivers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterprisePD")).Select(k => ConfigurationManager.AppSettings[k]).OrderBy(k=>k).ToList();
             return (printDrivers);
         }
         static public List<string> GetTrays()
@@ -143,6 +153,60 @@ namespace EPSPrintMgmt.Models
             }
             return false;
 
+        }
+        static public bool EditEnterprisePrinters()
+        {
+            string editEntPrint = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EditEnterprisePrinters")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(editEntPrint, "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        static public bool AdditionalSecurity()
+        {
+            string theSecurity = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("AdditionalSecurity")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(theSecurity, "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        static public string ADGroupCanDeleteEPSPrinter()
+        {
+            string adGroup = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ADGrouptoDeleteEPSPrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return adGroup;
+        }
+        static public string ADGroupCanDeleteEnterprisePrinter()
+        {
+            string adGroup = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ADGrouptoDeleteEnterprisePrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return adGroup;
+        }
+        static public string ADGroupCanAddEPSPrinter()
+        {
+            string adGroup = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ADGrouptoAddEPSPrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return adGroup;
+        }
+        static public string ADGroupCanAddEnterprisePrinter()
+        {
+            string adGroup = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ADGrouptoAddEnterprisePrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return adGroup;
+        }
+        static public string ADGroupCanPurgePrintQueues()
+        {
+            string adGroup = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ADGrouptoPurgePrintQueues")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return adGroup;
+        }
+        static public string ADGroupCanEditEPSPrinter()
+        {
+            string adGroup = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ADGrouptoEditEPSPrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return adGroup;
+        }
+        static public string ADGroupCanEditEnterprisePrinter()
+        {
+            string adGroup = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ADGrouptoEditEnterprisePrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return adGroup;
         }
     }
 }

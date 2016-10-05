@@ -12,41 +12,7 @@
   <connectionStrings>
     <add name="EPSPrintMgmtContext" connectionString="Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=EPSPrintMgmtContext-20160628142616; Integrated Security=True; MultipleActiveResultSets=True; AttachDbFilename=|DataDirectory|EPSPrintMgmtContext-20160628142616.mdf" providerName="System.Data.SqlClient" />
   </connectionStrings>
-  <appSettings>
-    <add key="webpages:Version" value="3.0.0.0"/>
-    <add key="webpages:Enabled" value="false"/>
-    <add key="ClientValidationEnabled" value="true"/>
-    <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
-    <!--Following keys are used to determine current EPS servers for remote management.-->
-    <add key="EPSServer1" value="eps-3" />
-    <add key="EPSServer2" value="eps-4" />
-    <add key="EPSServer3" value="eps-5" />
-    <add key="EPSServer4" value="eps-6" />
-    <!--Following keys are used to add Non-EPS Print servers for limited remote management.-->
-    <add key="EnterpriseServer1" value="non-eps-printservers1"/>
-    <add key="EnterpriseServer2" value="non-eps-printservers2"/>
-    <!--Following keys are used to define what Print Drivers are available to end users when creating/editing printers.-->
-    <add key="PrintDriver1" value="HP Universal Printing PCL 5 (v5.6.5)"/>
-    <add key="PrintDriver2" value="HP Universal Printing PS (v5.7.0)"/>
-    <add key="PrintDriver3" value="ZDesigner GX420d"/>
-    <!--Following keys are used for Mail Relay-->
-    <add key="MailRelay" value="emailrelay.hostname.com"/>
-    <add key="EmailTo" value="emailaddress@host.com"/>
-    <add key="EmailFrom" value="EPSPrintMgmt@host.com"/>
-    <!--Following key used to set name on Splash page.-->
-    <add key="OrgName" value="Your Org Name Here"/>
-    <!--UsePrinterIPAddress when set to true creates a new field to manage printer ports by IP or DNS name. -->
-    <add key="UsePrinterIPAddress" value="false"/>
-    <!--Following key is used to determine if you want to see if there is a valid IP or DNS entry before adding the printer. -->
-    <!--Setting this to false could cause long times in adding a new printer if it cannot connect to printer. -->
-    <add key="ValidatePrinterDNS" value="true" />
-    <!--Following key is used to determine if you want the ability to select a printer tray when creating/editing a printer. -->
-    <add key="UsePrintTrays" value="false"/>
-    <!--Following key is used to determine if you to see the number of print jobs in queue on the main list of printers.  This can cause performance issues. -->
-    <add key="ShowNumberOfJobs" value="false"/>
-    <!--Following key is used to determine if a user can delete printers from an EPS server -->
-    <add key="AllowEPSPrinterDeletion" value="false" />
-  </appSettings>
+  <appSettings configSource="AppSettings.config" />
   <log4net debug="true">
     <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
       <file value="logs\log.txt" />

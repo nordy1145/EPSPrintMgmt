@@ -51,7 +51,8 @@
                         <a href="#" class="dropdown-toggle" id="dropdownCommonMenu" data-toggle="dropdown">Printers <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownCommonMenu">
                             <li role="menuitem">@Html.ActionLink("View Printers", "Index", "Printer")</li>
-                            <li role="menuitem">@Html.ActionLink("Create Printer", "Create", "Printer")</li>
+                            <li role="menuitem">@Html.ActionLink("Create EPS Printer", "Create", "Printer")</li>
+                            @{ Html.RenderAction("EditEnterprisePrinter", "Home", "");}
                             <li role="menuitem">@Html.ActionLink("Search For a Printer", "Search", "Printer")</li>
                         </ul>
                     </li>
