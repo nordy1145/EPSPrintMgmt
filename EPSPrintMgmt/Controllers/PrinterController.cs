@@ -407,17 +407,28 @@ namespace EPSPrintMgmt.Controllers
         public JsonResult PurgePrintQueueAllServers([Bind(Include = "Name")]Printer theNewPrinter)
         {
             List<string> outcome = new List<string>();
-            if (Support.AdditionalSecurity() == true)
+
+            if (!Support.IsUserAuthorized(Support.ADGroupCanPurgePrintQueues()))
             {
-                var theADGroup = Support.ADGroupCanPurgePrintQueues();
-                bool isInRole = User.IsInRole(theADGroup);
-                if (isInRole == false)
-                {
-                    outcome.Add("You are not authorized to purge print jobs.");
-                    logger.Info("User " + User.Identity.Name + " attempted to purge print queue for: " + theNewPrinter.Name);
-                    return Json(outcome, JsonRequestBehavior.AllowGet);
-                }
+                outcome.Add("You are not authorized to purge print jobs.");
+                logger.Info("User " + User.Identity.Name + " attempted to purge print queue for: " + theNewPrinter.Name);
+                Support.SendEmail("Print Queue Failed to Purged", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Purged attempted by user: " + User.Identity.Name);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
             }
+
+            //if (Support.AdditionalSecurity() == true)
+            //{
+            //    var theADGroup = Support.ADGroupCanPurgePrintQueues();
+            //    var testing = User.Identity;
+            //    bool isInRole = User.IsInRole(theADGroup);
+            //    if (isInRole == false)
+            //    {
+            //        outcome.Add("You are not authorized to purge print jobs.");
+            //        logger.Info("User " + User.Identity.Name + " attempted to purge print queue for: " + theNewPrinter.Name);
+            //        Support.SendEmail("Print Queue Failed to Purged", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Purged attempted by user: " + User.Identity.Name);
+            //        return Json(outcome, JsonRequestBehavior.AllowGet);
+            //    }
+            //}
 
             Parallel.ForEach(GetEPSServers(), server =>
             {
@@ -434,6 +445,8 @@ namespace EPSPrintMgmt.Controllers
                     logger.Info("Failed to purge jobs on " + theNewPrinter.Name + " on server " + server + " by user " + User.Identity.Name);
                 }
             });
+
+            Support.SendEmail("Print Queue Purged", string.Join(Environment.NewLine, outcome) + Environment.NewLine + "Purged by user: " + User.Identity.Name);
             return Json(outcome);
         }
         //Used to get options for a specific printer on a server.

@@ -198,9 +198,6 @@
     <Content Include="AppSettings.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="AppSettings - Copy.config">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="AppSettings.config.Template">
       <SubType>Designer</SubType>
     </None>

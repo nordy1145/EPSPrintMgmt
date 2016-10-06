@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Web;
 
 namespace EPSPrintMgmt.Models
 {
+
     public class Support
     {
         public static void SendEmail(string subject, string body)
@@ -207,6 +209,46 @@ namespace EPSPrintMgmt.Models
         {
             string adGroup = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ADGrouptoEditEnterprisePrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
             return adGroup;
+        }
+        static public bool IsUserAuthorized(string adGroup)
+        {
+            log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            if (Support.AdditionalSecurity() == true)
+            {
+                bool isInRole = HttpContext.Current.User.IsInRole(adGroup);
+                var httpTest = HttpContext.Current.User.Identity;
+                foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(httpTest))
+                {
+                    string name = descriptor.Name;
+                    object value = descriptor.GetValue(httpTest);
+                    logger.Debug(name+"="+value);
+                }
+                foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(httpTest.AuthenticationType))
+                {
+                    string name = descriptor.Name;
+                    object value = descriptor.GetValue(httpTest.AuthenticationType);
+                    logger.Debug(name + "=" + value);
+                }
+                foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(httpTest.IsAuthenticated))
+                {
+                    string name = descriptor.Name;
+                    object value = descriptor.GetValue(httpTest.IsAuthenticated);
+                    logger.Debug(name + "=" + value);
+                }
+                foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(httpTest.Name))
+                {
+                    string name = descriptor.Name;
+                    object value = descriptor.GetValue(httpTest.Name);
+                    logger.Debug(name + "=" + value);
+                }
+
+                logger.Debug("User info.  User ID: " + HttpContext.Current.User.Identity.Name.ToString() + " User is Authenticated: " + HttpContext.Current.User.Identity.IsAuthenticated.ToString() + " User Authenticated Type" + HttpContext.Current.User.Identity.AuthenticationType.ToString() + " AD Group check: "+adGroup + " Is User in AD Group Check: " + isInRole.ToString());
+                if (isInRole == false)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

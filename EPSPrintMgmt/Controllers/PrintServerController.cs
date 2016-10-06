@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using EPSPrintMgmt.Models;
 using System.Management;
+using System.Printing;
+using System.Net;
 
 namespace EPSPrintMgmt.Controllers
 {
@@ -16,9 +18,30 @@ namespace EPSPrintMgmt.Controllers
         public ActionResult Index()
         {
             List<MyPrintServer> myPrintServers = new List<MyPrintServer>();
-            foreach(var server in GetAllPrintServers())
+            foreach(var server in Support.GetAllPrintServers())
             {
-                myPrintServers.Add(new MyPrintServer { Name = server.ToString() });
+                string printerCount;
+                string ipAddress;
+                try
+                {
+                    PrintServer printServer = new PrintServer(@"\\"+server, PrintSystemDesiredAccess.AdministrateServer);
+                    printerCount = printServer.GetPrintQueues().Count().ToString();
+                }
+                catch
+                {
+                    printerCount = "N/A";
+                }
+
+                try
+                {
+                    ipAddress = Dns.GetHostEntry(server).AddressList[0].ToString();
+                }
+                catch
+                {
+                    ipAddress = "N/A";
+                }
+
+                myPrintServers.Add(new MyPrintServer { Name = server.ToString() ,PrinterCount=printerCount ,IP=ipAddress});
             }
             return View(myPrintServers.OrderBy(o=>o.Name));
         }
@@ -44,13 +67,13 @@ namespace EPSPrintMgmt.Controllers
             {
                 if (FlushDNSCache(myPrintServer.Name.ToString()) == true)
                 {
-                    SendEmail("DNS flushed from Print Server.","DNS has been flushed on the following computer: "+myPrintServer.Name+ "  by user: " + User.Identity.Name);
+                    Support.SendEmail("DNS flushed from Print Server.","DNS has been flushed on the following computer: "+myPrintServer.Name+ "  by user: " + User.Identity.Name);
                     TempData["SuccessMessage"] = "Congrats, DNS has been flushed from "+myPrintServer.Name+"!  Enjoy your day.";
                     return RedirectToAction("Success");
                 }
                 else
                 {
-                    SendEmail("Failed to flush DNS", "DNS has failed to flush on the following computer: " + myPrintServer.Name + "  by user: " + User.Identity.Name);
+                    Support.SendEmail("Failed to flush DNS", "DNS has failed to flush on the following computer: " + myPrintServer.Name + "  by user: " + User.Identity.Name);
                     TempData["RedirectToError"] = "Could not flush DNS on "+myPrintServer.Name+".  Please try again or logon to the server directly to clear it.";
                     return RedirectToAction("Error");
                 }
@@ -79,55 +102,6 @@ namespace EPSPrintMgmt.Controllers
                 return false;
             }
         }
-
-            static public List<string> GetEPSServers()
-        {
-            List<string> epsServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("EPS")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
-            return (epsServers);
-        }
-        static public List<string> GetAllPrintServers()
-        {
-            List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("Server")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
-            return (allServers);
-        }
-
-        static public List<string> GetAllPrintDrivers()
-        {
-            List<string> printDrivers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("PrintDriver")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
-            return (printDrivers);
-        }
-        static public string GetRelayServer()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("MailRelay")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-
-        static public string GetEmailTo()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailTo")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-        static public string GetEmailFrom()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailFrom")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-        private static void SendEmail(string subject, string body)
-        {
-            MailMessage message = new MailMessage(GetEmailFrom(), GetEmailTo(), subject, body);
-
-            SmtpClient mailClient = new SmtpClient(GetRelayServer());
-            try
-            {
-                mailClient.Send(message);
-                mailClient.Dispose();
-            }
-            catch
-            {
-                //do something useful some day...
-            }
-        }
-
 
     }
 }

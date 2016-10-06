@@ -14,6 +14,9 @@
         <th>
             @Html.DisplayNameFor(model => model.IP)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrinterCount)
+        </th>
         <th></th>
     </tr>
 
@@ -25,6 +28,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrinterCount)
             </td>
             <td>
                 @Html.ActionLink("Options", "Options", new { printServer = item.Name })

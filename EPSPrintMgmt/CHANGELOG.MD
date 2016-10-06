@@ -8,6 +8,14 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Change the search option to choose either a EPS or Enterprise option, versus having to choose an individual server.
 
+## [1.0.9.6] - 2016-10-05
+### Added
+- Email notification for purging print jobs from an entire print queue.
+- Added additional debugging information for Print job Purging. 
+
+###
+- Changed Print Server page to include the Server IP address and count of printers, if it's under a few thousand.
+
 ## [1.0.9.5] - 2016-10-05
 ### Added
 - Added config options for additional security to delete, edit and purge print queues.  Includes new fields within the appsettings section.
