@@ -20,11 +20,11 @@ namespace EPSPrintMgmt.Controllers
         // GET: PrintJob
         public ActionResult Index()
         {
-            return View(GetPrintJobs(GetAllPrintServers()));
+            return View(GetPrintJobs(Support.GetAllPrintServers()));
         }
         public ActionResult IndexWPurge()
         {
-            return View(GetPrintJobs(GetAllPrintServers()));
+            return View(GetPrintJobs(Support.GetAllPrintServers()));
         }
         public ActionResult Delete(int id, string printServer, string printer)
         {
@@ -142,16 +142,6 @@ namespace EPSPrintMgmt.Controllers
 
             return (printJobs);
         }
-        static public List<string> GetEPSServers()
-        {
-            List<string> epsServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("EPS")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
-            return (epsServers);
-        }
-        static public List<string> GetAllPrintServers()
-        {
-            List<string> epsServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("Server")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
-            return (epsServers);
-        }
         static public PrintJob GetPrintJob(string printserver, string printer, int printJobID)
         {
             PrintJob printJob = new PrintJob();
@@ -227,35 +217,6 @@ namespace EPSPrintMgmt.Controllers
             }
 
         }
-        static public string GetRelayServer()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("MailRelay")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-        static public string GetEmailTo()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailTo")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-        static public string GetEmailFrom()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailFrom")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-        private static void SendEmail(string subject, string body)
-        {
-            MailMessage message = new MailMessage(GetEmailFrom(), GetEmailTo(), subject, body);
 
-            SmtpClient mailClient = new SmtpClient(GetRelayServer());
-            try
-            {
-                mailClient.Send(message);
-                mailClient.Dispose();
-            }
-            catch
-            {
-                //do something useful some day...
-            }
-        }
     }
 }

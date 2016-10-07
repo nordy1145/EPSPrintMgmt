@@ -69,7 +69,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">Print Server</label>
             <div class="col-md-10">
-                @Model.PrintServer.TrimStart('\\');
+                @Model.PrintServer.TrimStart('\\')
                 @*@Html.TextBoxFor(model => model.Driver, new { @readonly = "readonly" })*@
             </div>
             <input type="hidden" id="printserver" name="printserver" value="@Model.PrintServer.TrimStart('\\')"/>

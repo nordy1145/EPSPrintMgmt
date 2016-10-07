@@ -7,7 +7,7 @@
 <p>It can take some time to load a printer.  Please be patient while it loads all the printers directly from the server.</p>
 <div>
     @Html.DropDownList("PrintServer", new SelectList((System.Collections.IEnumerable)ViewData["printServers"]),"-- Select Print Server --", new { @class = "pull-right", @onchange = "CallChangeFunc(this.value)" })
-    @Html.ActionLink("Create New EPS Printer", "Create", "", new { @class = "btn btn-default pull-left" })
+    @*@Html.ActionLink("Create New EPS Printer", "Create", "", new { @class = "btn btn-default pull-left" })*@
 </div>
 <table id="allPrinters"class="table table-condensed table-responsive table-hover">
             <tr>

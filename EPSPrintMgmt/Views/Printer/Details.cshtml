@@ -15,7 +15,7 @@
 
 @if (ViewData["isEPSServer"].ToString() == "True")
 {
-    <button id="PrintTestPage" class="btn btn-default">Print Test Page</button>
+    <button id="PrintTestPage" class="btn btn-default btn-">Print Test Page</button>
 }
 
 @if (ViewData["isEPSServer"].ToString() == "True")
@@ -23,229 +23,233 @@
     @Html.ActionLink("Edit EPS Printer", "Edit", new { printer = ViewData["thePrinter"] }, new { @class = "btn btn-default" })
 }
 
-@if (ViewData["isEntServer"].ToString() == "True")
-{
-    if (ViewData["allowEntPrinterEdit"].ToString() == "True")
-    {
-        @Html.ActionLink("Edit Enterprise Printer", "EditEnterprisePrinter", new { printer = ViewData["thePrinter"], printserver = ViewData["theServer"] }, new { @class = "btn btn-default" })
-    }
-}
-
-@if (ViewData["allowDelete"].ToString() == "True")
-{
-    if (ViewData["isEPSServer"].ToString() == "True")
-    {
-        <button id="DeleteEPSPrinter" class="btn btn-default pull-right">Delete EPS Printer</button>
-    }
-    if (ViewData["isEntServer"].ToString() == "True")
-    {
-        if (ViewData["allowEntPrinterEdit"].ToString() == "True")
+    @*@if (ViewData["isEntServer"].ToString() == "True")
         {
-        <button id="DeleteEntPrinter" class="btn btn-default pull-right">Delete Enterprise Printer</button>
-        }
-    }
-}
-
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Driver)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PrintServer)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NumberJobs)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Tray)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-        <th></th>
-    </tr>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Driver)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrintServer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberJobs)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tray)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-        </tr>
-    }
-</table>
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-<div id="divProcessing">
-    <p>Processing, please wait . . . <img src="@Url.Content("~/Content/ajax-loader.gif")"></p>
-</div>
-<div id="divResult">
-</div>
-
-@section Scripts {
-    @*@Scripts.Render("~/bundles/jqueryval")*@
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-
-            // Hide the "busy" Gif at load:
-            $("#divProcessing").hide();
-            $("#divResult").text("");
-            $("#dialog").dialog({
-                autoOpen: false,
-                modal: true
-            });
-        });
-        $("#ClearPrintJobs").on("click", function (event) {
-            event.preventDefault();
-            // Show the "busy" Gif:
-            $("#divProcessing").show();
-            $("#divResult").text("");
-            var thePrinter = '@ViewData["thePrinter"]';
-
-            var url = $(this).attr("action");
-            var formData = $(this).serialize();
-            $.ajax({
-                url: "@Url.Action("PurgePrintQueueAllServers", "Printer")",
-                type: "POST",
-                data: { "Name": thePrinter },
-                dataType: "json",
-                success: function (resp) {
-
-                    // Hide the "busy" gif:
-                    $("#divProcessing").hide();
-                    for (var i = 0; i < resp.length; i++) {
-                        var mess = resp[i];
-                        $("<h3>" + mess + "</h3>").appendTo("#divResult");
-                    }
-
-                }
-            })
-        });
-        $("#PrintTestPage").on("click", function (event) {
-            event.preventDefault();
-
-            // Show the "busy" Gif:
-            $("#divProcessing").show();
-            $("#divResult").text("");
-            var thePrinter = '@ViewData["thePrinter"]';
-
-            var url = $(this).attr("action");
-            var formData = $(this).serialize();
-            $.ajax({
-                url: "@Url.Action("PrintTestPages", "Printer")",
-                type: "POST",
-                data: { "Name": thePrinter },
-                dataType: "json",
-                success: function (resp) {
-
-                    // Hide the "busy" gif:
-                    $("#divProcessing").hide();
-                    for (var i = 0; i < resp.length; i++) {
-                        var mess = resp[i];
-                        $("<h3>" + mess + "</h3>").appendTo("#divResult");
-                    }
-
-                }
-            })
-        });
-        $("#DeleteEPSPrinter").on("click", function (event) {
-            event.preventDefault();
-            // Show the "busy" Gif:
-            $("#dialog").dialog({
-                buttons: {
-                    "Confirm": function () {
-                        // Show the "busy" Gif:
-                        $(this).dialog("close");
-                        $("#divProcessing").show();
-                        $("#divResult").text("");
-                        var thePrinter = '@ViewData["thePrinter"]';
-
-                        var url = $(this).attr("action");
-                        var formData = $(this).serialize();
-                        $.ajax({
-                            url: "@Url.Action("DeleteEPSPrinter", "Printer")",
-                            type: "POST",
-                            data: { "Name": thePrinter},
-                            dataType: "json",
-                            success: function (resp) {
-
-                                // Hide the "busy" gif:
-                                $("#divProcessing").hide();
-                                for (var i = 0; i < resp.length; i++) {
-                                    var mess = resp[i];
-                                    $("<h3>" + mess + "</h3>").appendTo("#divResult");
-                                }
-
-                            }
-                        })
-                    },
-                    "Cancel": function () {
-                        $(this).dialog("close");
-                    }
-                }
-            });
-            $("#dialog").dialog("open")
-        });
-
-        $("#DeleteEntPrinter").on("click", function (event) {
-            event.preventDefault();
-            // Show the "busy" Gif:
-            $("#dialog").dialog({
-                buttons: {
-                    "Confirm": function () {
-                        // Show the "busy" Gif:
-                        $(this).dialog("close");
-                        $("#divProcessing").show();
-                        $("#divResult").text("");
-                        var thePrinter = '@ViewData["thePrinter"]';
-                        var theServer = '@ViewData["theServer"]';
-
-                        var url = $(this).attr("action");
-                        var formData = $(this).serialize();
-                        $.ajax({
-                            url: "@Url.Action("DeleteEnterprisePrinter", "Printer")",
-                            type: "POST",
-                            data: { "Name": thePrinter, "PrintServer":theServer },
-                        dataType: "json",
-                        success: function (resp) {
-
-                            // Hide the "busy" gif:
-                            $("#divProcessing").hide();
-                            for (var i = 0; i < resp.length; i++) {
-                                var mess = resp[i];
-                                $("<h3>" + mess + "</h3>").appendTo("#divResult");
-                            }
-
-                        }
-                    })
-        },
-            "Cancel": function () {
-                $(this).dialog("close");
+            if (ViewData["allowEntPrinterEdit"].ToString() == "True")
+            {
+                @Html.ActionLink("Edit Enterprise Printer", "EditEnterprisePrinter", new { printer = ViewData["thePrinter"], printserver = ViewData["theServer"] }, new { @class = "btn btn-default" })
             }
+        }*@
+
+    @if (ViewData["allowDelete"].ToString() == "True")
+    {
+        if (ViewData["isEPSServer"].ToString() == "True")
+        {
+            <button id="DeleteEPSPrinter" class="btn btn-default pull-right">Delete EPS Printer</button>
         }
-        });
-        $("#dialog").dialog("open")
-        });
-    </script>
-}
+    }
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Driver)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrintServer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberJobs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tray)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Driver)
+                </td>
+                <td class="tdPrintServer">
+                    @Html.DisplayFor(modelItem => item.PrintServer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumberJobs)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tray)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @if (!(item.Status == "Not Installed or Server Down"))
+                    {
+                        if (ViewData["isEntServer"].ToString() == "True")
+                        {
+                            if (ViewData["allowEntPrinterEdit"].ToString() == "True")
+                            {
+                                @Html.ActionLink("Edit Enterprise Printer", "EditEnterprisePrinter", new { printer = item.Name, printserver = item.PrintServer.TrimStart('\\') }, new { @class = "btn btn-default btn-sm" })
+                            }
+                        }
+                        if (ViewData["allowDelete"].ToString() == "True")
+                        {
+                            if (ViewData["isEntServer"].ToString() == "True")
+                            {
+                                if (ViewData["allowEntPrinterEdit"].ToString() == "True")
+                                {
+                                    <button id="DeleteEntPrinter" class="theDelete btn btn-default btn-sm">Delete Enterprise Printer</button>
+                                }
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    <div id="divProcessing">
+        <p>Processing, please wait . . . <img src="@Url.Content("~/Content/ajax-loader.gif")"></p>
+    </div>
+    <div id="divResult">
+    </div>
+
+    @section Scripts {
+        @*@Scripts.Render("~/bundles/jqueryval")*@
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                // Hide the "busy" Gif at load:
+                $("#divProcessing").hide();
+                $("#divResult").text("");
+                $("#dialog").dialog({
+                    autoOpen: false,
+                    modal: true
+                });
+            });
+            $("#ClearPrintJobs").on("click", function (event) {
+                event.preventDefault();
+                // Show the "busy" Gif:
+                $("#divProcessing").show();
+                $("#divResult").text("");
+                var thePrinter = '@ViewData["thePrinter"]';
+                $.ajax({
+                    url: "@Url.Action("PurgePrintQueueAllServers", "Printer")",
+                    type: "POST",
+                    data: { "Name": thePrinter },
+                    dataType: "json",
+                    success: function (resp) {
+
+                        // Hide the "busy" gif:
+                        $("#divProcessing").hide();
+                        for (var i = 0; i < resp.length; i++) {
+                            var mess = resp[i];
+                            $("<h3>" + mess + "</h3>").appendTo("#divResult");
+                        }
+
+                    }
+                })
+            });
+            $("#PrintTestPage").on("click", function (event) {
+                event.preventDefault();
+
+                // Show the "busy" Gif:
+                $("#divProcessing").show();
+                $("#divResult").text("");
+                var thePrinter = '@ViewData["thePrinter"]';
+                $.ajax({
+                    url: "@Url.Action("PrintTestPages", "Printer")",
+                    type: "POST",
+                    data: { "Name": thePrinter },
+                    dataType: "json",
+                    success: function (resp) {
+
+                        // Hide the "busy" gif:
+                        $("#divProcessing").hide();
+                        for (var i = 0; i < resp.length; i++) {
+                            var mess = resp[i];
+                            $("<h3>" + mess + "</h3>").appendTo("#divResult");
+                        }
+
+                    }
+                })
+            });
+            $("#DeleteEPSPrinter").on("click", function (event) {
+                event.preventDefault();
+                // Show the "busy" Gif:
+                $("#dialog").dialog({
+                    buttons: {
+                        "Confirm": function () {
+                            // Show the "busy" Gif:
+                            $(this).dialog("close");
+                            $("#divProcessing").show();
+                            $("#divResult").text("");
+                            var thePrinter = '@ViewData["thePrinter"]';
+                            $.ajax({
+                                url: "@Url.Action("DeleteEPSPrinter", "Printer")",
+                                type: "POST",
+                                data: { "Name": thePrinter },
+                                dataType: "json",
+                                success: function (resp) {
+
+                                    // Hide the "busy" gif:
+                                    $("#divProcessing").hide();
+                                    for (var i = 0; i < resp.length; i++) {
+                                        var mess = resp[i];
+                                        $("<h3>" + mess + "</h3>").appendTo("#divResult");
+                                    }
+
+                                }
+                            })
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $("#dialog").dialog("open")
+            });
+
+            //$("#DeleteEntPrinter").on("click", function (event) {
+            $(".theDelete").on("click", function (event) {
+                event.preventDefault();
+                var theServer = $(this).closest('td').parent().find('td.tdPrintServer').text();
+                // Show the "busy" Gif:
+                $("#dialog").dialog({
+                    buttons: {
+                        "Confirm": function () {
+                            // Show the "busy" Gif:
+                            $(this).dialog("close");
+                            $("#divProcessing").show();
+                            $("#divResult").text("");
+                            var thePrinter = '@ViewData["thePrinter"]';
+                            $.ajax({
+                                url: "@Url.Action("DeleteEnterprisePrinter", "Printer")",
+                                type: "POST",
+                                data: { "Name": thePrinter, "PrintServer": theServer },
+                                dataType: "json",
+                                success: function (resp) {
+
+                                    // Hide the "busy" gif:
+                                    $("#divProcessing").hide();
+                                    for (var i = 0; i < resp.length; i++) {
+                                        var mess = resp[i];
+                                        $("<h3>" + mess + "</h3>").appendTo("#divResult");
+                                    }
+
+                                }
+                            })
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $("#dialog").dialog("open")
+            });
+        </script>
+    }

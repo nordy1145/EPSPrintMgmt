@@ -39,7 +39,7 @@ namespace EPSPrintMgmt.Controllers
             List<Printer> printers;
 
             //initialize some strings used throughout
-            string theFirstEPSSErver = GetEPSServers().First();
+            string theFirstEPSSErver = Support.GetEPSServers().First();
             string checkPrintServer;
             string currentEPSServer = "";
 
@@ -64,7 +64,7 @@ namespace EPSPrintMgmt.Controllers
                     currentEPSServer = theFirstEPSSErver;
                     printers = GetPrinters(theFirstEPSSErver);
                     //Used to determine if the options tab will include specific edit options for EPS servers only.
-                    Session["IsEPSServer"] = GetEPSServers().Exists(s => s == currentEPSServer).ToString();
+                    Session["IsEPSServer"] = Support.GetEPSServers().Exists(s => s == currentEPSServer).ToString();
                 }
                 //Checks to see if it's not the first EPS server in list, then returns the actual one.
                 else if (checkPrintServer != theFirstEPSSErver)
@@ -85,10 +85,10 @@ namespace EPSPrintMgmt.Controllers
                 currentEPSServer = printServer;
                 printers = GetPrinters(printServer);
                 //Used to determine if the options tab will include specific edit options for EPS servers only.
-                Session["IsEPSServer"] = GetEPSServers().Exists(s => s == currentEPSServer).ToString();
+                Session["IsEPSServer"] = Support.GetEPSServers().Exists(s => s == currentEPSServer).ToString();
             }
             // Gets all the print servers for the drop down option in the Index View of this controller.
-            ViewData["printServers"] = GetAllPrintServers();
+            ViewData["printServers"] = Support.GetAllPrintServers();
 
             //Switch statement to determine the sort order of the view.
             switch (sortOrder)
@@ -114,13 +114,13 @@ namespace EPSPrintMgmt.Controllers
             }
 
             //Used to determine if the options tab will include specific edit options for EPS servers only.
-            Session["IsEPSServer"] = GetEPSServers().Exists(s => s == currentEPSServer).ToString();
+            Session["IsEPSServer"] = Support.GetEPSServers().Exists(s => s == currentEPSServer).ToString();
 
             //Used to determine if the view should have links for the Printer name aka DNS or Printer IP aka Printer Port
-            ViewData["useIP"] = UsePrinterIPAddr();
+            ViewData["useIP"] = Support.UsePrinterIPAddr();
 
             //Used to determine if the view should show the number of print jobs
-            ViewData["ShowPrintJobs"] = ShowNumberPrintJobs();
+            ViewData["ShowPrintJobs"] = Support.ShowNumberPrintJobs();
 
             logger.Info("User: " + User.Identity.Name.ToString() + " has viewed all printers for server " + Session["currentPrintServerLookup"] + ".");
 
@@ -146,10 +146,10 @@ namespace EPSPrintMgmt.Controllers
         public ActionResult Create()
         {
             //Pass the print drivers from the Web.config file to the view
-            ViewData["printDrivers"] = GetAllPrintDrivers();
-            ViewData["useIP"] = UsePrinterIPAddr();
-            ViewData["useTrays"] = UsePrintTrays();
-            ViewData["getTrays"] = GetTrays();
+            ViewData["printDrivers"] = Support.GetAllPrintDrivers();
+            ViewData["useIP"] = Support.UsePrinterIPAddr();
+            ViewData["useTrays"] = Support.UsePrintTrays();
+            ViewData["getTrays"] = Support.GetTrays();
             return View();
         }
         public ActionResult CreateENT()
@@ -160,9 +160,9 @@ namespace EPSPrintMgmt.Controllers
             }
             //Pass the print drivers from the Web.config file to the view
             ViewData["printDrivers"] = Support.GetAllEnterprisePrintDrivers();
-            ViewData["useIP"] = UsePrinterIPAddr();
-            ViewData["useTrays"] = UsePrintTrays();
-            ViewData["getTrays"] = GetTrays();
+            ViewData["useIP"] = Support.UsePrinterIPAddr();
+            ViewData["useTrays"] = Support.UsePrintTrays();
+            ViewData["getTrays"] = Support.GetTrays();
             ViewData["getEntServers"] = Support.GetEnterprisePrintServers();
             return View();
         }
@@ -177,16 +177,14 @@ namespace EPSPrintMgmt.Controllers
 
             //Initialize list to display to end users if it completes or not.
             List<string> outcome = new List<string>();
-            if (Support.AdditionalSecurity() == true)
+
+            //Used to determine if user has correct access to create a printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanAddEPSPrinter()))
             {
-                var theADGroup = Support.ADGroupCanAddEPSPrinter();
-                bool isInRole = User.IsInRole(theADGroup);
-                if (isInRole == false)
-                {
-                    outcome.Add("You are not authorized to add printers.");
-                    logger.Info("User " + User.Identity.Name + " attempted to create EPS printer: " + theNewPrinter.DeviceID);
-                    return Json(outcome, JsonRequestBehavior.AllowGet);
-                }
+                outcome.Add("You are not authorized to add printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to create EPS printer: " + theNewPrinter.DeviceID);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
             }
 
             //Make sure incoming data is good to go.
@@ -194,10 +192,10 @@ namespace EPSPrintMgmt.Controllers
             {
                 //Validate the printer exists in DNS or Valid IP Address
                 //Web.Config determines if it is really used or not.
-                if (!ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
+                if (!Support.ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //kick off multiple threads to install printers quickly
-                    Parallel.ForEach(GetEPSServers(), server =>
+                    Parallel.ForEach(Support.GetEPSServers(), server =>
                     {
                         //Used to test if it can connect via Cim first.  If it cannot it skips that server.
                         CimSession mySession = CimSession.Create(server);
@@ -231,7 +229,7 @@ namespace EPSPrintMgmt.Controllers
                                 //Use the string return function to determine if the printer was successfully added or not.
                                 outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
                                 logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
-                                if (UsePrintTrays())
+                                if (Support.UsePrintTrays())
                                 {
                                     outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, server, theNewPrinter.Tray));
                                     logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + server + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
@@ -284,16 +282,14 @@ namespace EPSPrintMgmt.Controllers
 
             //Initialize list to display to end users if it completes or not.
             List<string> outcome = new List<string>();
-            if (Support.AdditionalSecurity() == true)
+
+            //Used to determine if user has correct access to create a printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanAddEnterprisePrinter()))
             {
-                var theADGroup = Support.ADGroupCanAddEnterprisePrinter();
-                bool isInRole = User.IsInRole(theADGroup);
-                if (isInRole == false)
-                {
-                    outcome.Add("You are not authorized to add enterprise printers.");
-                    logger.Info("User " + User.Identity.Name + " attempted to create Enterprise printer: " + theNewPrinter.DeviceID);
-                    return Json(outcome, JsonRequestBehavior.AllowGet);
-                }
+                outcome.Add("You are not authorized to add enterprise printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to create Enterprise printer: " + theNewPrinter.DeviceID);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
             }
 
             //Make sure incoming data is good to go.
@@ -301,7 +297,7 @@ namespace EPSPrintMgmt.Controllers
             {
                 //Validate the printer exists in DNS or Valid IP Address
                 //Web.Config determines if it is really used or not.
-                if (!ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
+                if (!Support.ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //Used to test if it can connect via Cim first.  If it cannot it skips that server.
                     CimSession mySession = CimSession.Create(theNewPrinter.PrintServer);
@@ -336,7 +332,7 @@ namespace EPSPrintMgmt.Controllers
                             //Use the string return function to determine if the printer was successfully added or not.
                             outcome.Add(AddNewEnterprisePrinterStringReturn(newPrinter, mySession, thePrintServer));
                             logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name);
-                            if (UsePrintTrays())
+                            if (Support.UsePrintTrays())
                             {
                                 outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, theNewPrinter.PrintServer, theNewPrinter.Tray));
                                 logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
@@ -430,7 +426,7 @@ namespace EPSPrintMgmt.Controllers
             //    }
             //}
 
-            Parallel.ForEach(GetEPSServers(), server =>
+            Parallel.ForEach(Support.GetEPSServers(), server =>
             {
 
                 try
@@ -455,7 +451,7 @@ namespace EPSPrintMgmt.Controllers
         {
             //used to determine if the print server in question is an EPS server.
             //Only limited functionality for non EPS servers is currently defined.
-            Session["IsEPSServer"] = GetEPSServers().Exists(s => s == printServer).ToString();
+            Session["IsEPSServer"] = Support.GetEPSServers().Exists(s => s == printServer).ToString();
             //Return the printer for the View.
             return View(GetPrinter(printServer, printer));
         }
@@ -490,13 +486,13 @@ namespace EPSPrintMgmt.Controllers
         public ActionResult Edit(string printer)
         {
             //Just uses the first EPS print server to get the properties.
-            var myPrinter = GetPrinter(GetEPSServers().First(), printer);
+            var myPrinter = GetPrinter(Support.GetEPSServers().First(), printer);
             //Return a list of available print drivers from web.config
-            ViewData["printDrivers"] = GetAllPrintDrivers();
+            ViewData["printDrivers"] = Support.GetAllPrintDrivers();
             //Determines if an PortName field should be returned to users.
-            ViewData["useIP"] = UsePrinterIPAddr();
-            ViewData["useTrays"] = UsePrintTrays();
-            ViewData["getTrays"] = GetTrays();
+            ViewData["useIP"] = Support.UsePrinterIPAddr();
+            ViewData["useTrays"] = Support.UsePrintTrays();
+            ViewData["getTrays"] = Support.GetTrays();
 
             //return view with printer info.
             return View(myPrinter);
@@ -505,10 +501,15 @@ namespace EPSPrintMgmt.Controllers
         public ActionResult EditEnterprisePrinter(string printer, string printServer)
         {
             var myPrinter = GetPrinter(printServer, printer);
+            //Catch to see if the get printer function returns a result.  If not return to index.
+            if (myPrinter == null)
+            {
+                return RedirectToAction("Index");
+            }
             ViewData["printDrivers"] = Support.GetAllEnterprisePrintDrivers();
-            ViewData["useIP"] = UsePrinterIPAddr();
-            ViewData["useTrays"] = UsePrintTrays();
-            ViewData["getTrays"] = GetTrays();
+            ViewData["useIP"] = Support.UsePrinterIPAddr();
+            ViewData["useTrays"] = Support.UsePrintTrays();
+            ViewData["getTrays"] = Support.GetTrays();
             return View(myPrinter);
         }
         //AJAX Json response for editing an EPS Printer.
@@ -522,25 +523,22 @@ namespace EPSPrintMgmt.Controllers
             //Initialize string for the output.
             List<string> outcome = new List<string>();
 
-            if (Support.AdditionalSecurity() == true)
+            //Used to determine if user has correct access to edit a EPS printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanEditEPSPrinter()))
             {
-                var theADGroup = Support.ADGroupCanEditEPSPrinter();
-                bool isInRole = User.IsInRole(theADGroup);
-                if (isInRole == false)
-                {
-                    outcome.Add("You are not authorized to edit printers.");
-                    logger.Info("User " + User.Identity.Name + " attempted to edit printer: " + theNewPrinter.Name);
-                    return Json(outcome, JsonRequestBehavior.AllowGet);
-                }
+                outcome.Add("You are not authorized to edit printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to edit printer: " + theNewPrinter.Name);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
             }
 
             if (ModelState.IsValid)
             {
                 //Verify the printer name is still correct.
-                if (!ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
+                if (!Support.ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //Start parallel processing on each EPS server.
-                    Parallel.ForEach(GetEPSServers(), (server) =>
+                    Parallel.ForEach(Support.GetEPSServers(), (server) =>
                     {
                         //Verify a Cim Session can be created before calling methods that use it... Maybe a bit backwards.
                         CimSession mySession = CimSession.Create(server);
@@ -569,7 +567,7 @@ namespace EPSPrintMgmt.Controllers
                             //Try and add the printer back in after it's been deleted.
                             outcome.Add(AddNewPrinterStringReturn(newPrinter, mySession, printServer));
                             logger.Info("New Printer added.  Printer Name : " + theNewPrinter.Name + " on server " + server + " by user " + User.Identity.Name);
-                            if (UsePrintTrays())
+                            if (Support.UsePrintTrays())
                             {
                                 outcome.Add(SetPrinterTray(theNewPrinter.Name, server, theNewPrinter.Tray));
                                 logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.Name + " Tray Info: " + theNewPrinter.Tray + " on server " + server + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
@@ -615,17 +613,16 @@ namespace EPSPrintMgmt.Controllers
             //Initialize string for the output.
             List<string> outcome = new List<string>();
 
-            if (Support.AdditionalSecurity() == true)
+            //Used to determine if user has correct access to edit an Enterprise printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanEditEnterprisePrinter()))
             {
-                var theADGroup = Support.ADGroupCanEditEnterprisePrinter();
-                bool isInRole = User.IsInRole(theADGroup);
-                if (isInRole == false)
-                {
-                    outcome.Add("You are not authorized to edit Enterprise printers.");
-                    logger.Info("User " + User.Identity.Name + " attempted to edit printer: " + theNewPrinter.Name);
-                    return Json(outcome, JsonRequestBehavior.AllowGet);
-                }
+                outcome.Add("You are not authorized to edit Enterprise printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to edit printer: " + theNewPrinter.Name);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
             }
+
+            //Catch case where a print server may not be submitted
             if (theNewPrinter.PrintServer == null)
             {
                 outcome.Add("Print Server is null.  Please try again.");
@@ -637,7 +634,7 @@ namespace EPSPrintMgmt.Controllers
             if (ModelState.IsValid)
             {
                 //Verify the printer name is still correct.
-                if (!ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
+                if (!Support.ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
                 {
                     //Verify a Cim Session can be created before calling methods that use it... Maybe a bit backwards.
                     CimSession mySession = CimSession.Create(server);
@@ -666,7 +663,7 @@ namespace EPSPrintMgmt.Controllers
                         //Try and add the printer back in after it's been deleted.
                         outcome.Add(AddNewEnterprisePrinterStringReturn(newPrinter, mySession, printServer));
                         logger.Info("New Printer added.  Printer Name : " + theNewPrinter.Name + " on server " + server + " by user " + User.Identity.Name);
-                        if (UsePrintTrays())
+                        if (Support.UsePrintTrays())
                         {
                             outcome.Add(SetPrinterTray(theNewPrinter.Name, server, theNewPrinter.Tray));
                             logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.Name + " Tray Info: " + theNewPrinter.Tray + " on server " + server + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
@@ -711,22 +708,20 @@ namespace EPSPrintMgmt.Controllers
 
             //Initialize string for the output.
             List<string> outcome = new List<string>();
-            if (Support.AdditionalSecurity() == true)
+
+            //Used to determine if user has correct access to Delete an EPS printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanDeleteEPSPrinter()))
             {
-                var theADGroup = Support.ADGroupCanDeleteEPSPrinter();
-                bool isInRole = User.IsInRole(theADGroup);
-                if (isInRole == false)
-                {
-                    outcome.Add("You are not authorized to delete printers.");
-                    logger.Info("User " + User.Identity.Name + " attempted to delete EPS printer: " + theNewPrinter.Name);
-                    return Json(outcome, JsonRequestBehavior.AllowGet);
-                }
+                outcome.Add("You are not authorized to delete printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to delete EPS printer: " + theNewPrinter.Name);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
             }
 
             if (ModelState.IsValid)
             {
                 //Start parallel processing on each EPS server.
-                Parallel.ForEach(GetEPSServers(), (server) =>
+                Parallel.ForEach(Support.GetEPSServers(), (server) =>
                 {
                     //Verify a Cim Session can be created before calling methods that use it... Maybe a bit backwards.
                     CimSession mySession = CimSession.Create(server);
@@ -767,20 +762,20 @@ namespace EPSPrintMgmt.Controllers
             //Do some timing on the whole process.
             Stopwatch newwatch = new Stopwatch();
             newwatch.Start();
-
+            
             //Initialize string for the output.
             List<string> outcome = new List<string>();
-            if (Support.AdditionalSecurity() == true)
+
+            //Used to determine if user has correct access to Delete an Enterprise printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanDeleteEnterprisePrinter()))
             {
-                var theADGroup = Support.ADGroupCanDeleteEnterprisePrinter();
-                bool isInRole = User.IsInRole(theADGroup);
-                if (isInRole == false)
-                {
-                    outcome.Add("You are not authorized to delete Enterprise printers.");
-                    logger.Info("User " + User.Identity.Name + " attempted to delete Enterprise printer: " + theNewPrinter.Name);
-                    return Json(outcome, JsonRequestBehavior.AllowGet);
-                }
+                outcome.Add("You are not authorized to delete Enterprise printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to delete Enterprise printer: " + theNewPrinter.Name);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
             }
+
+            //Check to verify the print server field is not null.
             if (theNewPrinter.PrintServer == null)
             {
                 outcome.Add("Print Server is null.  Please try again.");
@@ -788,7 +783,7 @@ namespace EPSPrintMgmt.Controllers
                 return Json(outcome, JsonRequestBehavior.AllowGet);
             }
 
-            string server = theNewPrinter.PrintServer.ToString();
+            string server = theNewPrinter.PrintServer.Trim().ToString();
 
             if (ModelState.IsValid)
             {
@@ -845,13 +840,13 @@ namespace EPSPrintMgmt.Controllers
                 //Create an empty list to return.
                 List<Printer> printerList = new List<Printer>();
 
-                if (ShowNumberPrintJobs())
+                if (Support.ShowNumberPrintJobs())
                 {
                     //Loop through and add all items to the custom class.
                     foreach (PrintQueue pq in myPrintQueues)
                     {
                         //pq.Refresh();
-                        printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), PortName = pq.QueuePort.Name, NumberJobs = pq.NumberOfJobs });  //Removed the following for performance NumberJobs = pq.NumberOfJobs,
+                        printerList.Add(new Printer { Name = pq.Name, Driver = pq.QueueDriver.Name, PrintServer = pq.HostingPrintServer.Name.TrimStart('\\'), PortName = pq.QueuePort.Name, NumberJobs = pq.NumberOfJobs});  //Removed the following for performance NumberJobs = pq.NumberOfJobs,
                     }
 
                 }
@@ -880,7 +875,7 @@ namespace EPSPrintMgmt.Controllers
         {
             List<string> outcome = new List<string>();
 
-            Parallel.ForEach(GetEPSServers(), server =>
+            Parallel.ForEach(Support.GetEPSServers(), server =>
             {
 
                 try
@@ -935,7 +930,7 @@ namespace EPSPrintMgmt.Controllers
             List<Printer> outcome = new List<Printer>();
 
             //kick off multiple threads to install printers quickly
-            Parallel.ForEach(GetEPSServers(), (server) =>
+            Parallel.ForEach(Support.GetEPSServers(), (server) =>
             {
                 try
                 {
@@ -957,7 +952,7 @@ namespace EPSPrintMgmt.Controllers
                         theTray = GetCurrentPrintTray(myPrintQueues);
 
                     }
-                    outcome.Add(new Printer { Name = myPrintQueues.Name.ToUpper(), Driver = myPrintQueues.QueueDriver.Name, PrintServer = server, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = "Installed", Tray = theTray });
+                    outcome.Add(new Printer { Name = myPrintQueues.Name.ToUpper(), Driver = myPrintQueues.QueueDriver.Name, PrintServer = server, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = GetPrinterStatus(myPrintQueues), Tray = theTray });
                     printServer.Dispose();
                     myPrintQueues.Dispose();
                 }
@@ -966,31 +961,6 @@ namespace EPSPrintMgmt.Controllers
                     outcome.Add(new Printer { Name = printer, PrintServer = server, Status = "Not Installed or Server Down" });
                 }
             });
-
-            //foreach (var server in GetEPSServers())
-            //{
-            //    try
-            //    {
-            //        //Currently using the PrintServer class instead of a WMI query.
-            //        //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
-            //        //PrintServer class requires the 2 wacks in the server name.
-            //        PrintServer printServer = new PrintServer(@"\\" + server);
-            //        //Get the one print queue from the print server.
-            //        var myPrintQueues = printServer.GetPrintQueue(printer);
-            //        myPrintQueues.Refresh();
-            //        var theTray = GetCurrentPrintTray(printer, server);
-            //        outcome.Add(new Printer { Name = myPrintQueues.Name, Driver = myPrintQueues.QueueDriver.Name, PrintServer = server, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = "Installed", Tray = theTray });
-            //        printServer.Dispose();
-            //        myPrintQueues.Dispose();
-            //    }
-            //    catch
-            //    {
-            //        outcome.Add(new Printer { Name = printer, PrintServer = server, Status = "Not Installed or Server Down" });
-            //    }
-            //}
-
-
-
             return (outcome.OrderBy(s => s.PrintServer).ToList());
         }
         //Get details for a specific printer on a specific Print Server.
@@ -1020,7 +990,7 @@ namespace EPSPrintMgmt.Controllers
                     theTray = GetCurrentPrintTray(myPrintQueues);
 
                 }
-                outcome.Add(new Printer { Name = myPrintQueues.Name.ToUpper(), Driver = myPrintQueues.QueueDriver.Name, PrintServer = printserver, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = "Installed", Tray = theTray });
+                outcome.Add(new Printer { Name = myPrintQueues.Name.ToUpper(), Driver = myPrintQueues.QueueDriver.Name, PrintServer = printserver, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = GetPrinterStatus(myPrintQueues), Tray = theTray });
                 printServer.Dispose();
                 myPrintQueues.Dispose();
             }
@@ -1037,9 +1007,40 @@ namespace EPSPrintMgmt.Controllers
         {
             //Initialize list to display to end users if it completes or not.
             List<Printer> outcome = new List<Printer>();
-
             //kick off multiple threads to install printers quickly
-            Parallel.ForEach(Support.GetEnterprisePrintServers(), (server) =>
+            //Parallel.ForEach(Support.GetEnterprisePrintServers(), (server) =>
+            //{
+            //    try
+            //    {
+            //        //Currently using the PrintServer class instead of a WMI query.
+            //        //Was roughly 3-4 times faster to use PrintServer instead of WMI on 1400 printers.  Still takes about 10 seconds though.
+            //        //PrintServer class requires the 2 wacks in the server name.
+            //        PrintServer printServer = new PrintServer(@"\\" + server);
+            //        //Get the one print queue from the print server.
+            //        var myPrintQueues = printServer.GetPrintQueue(printer);
+            //        myPrintQueues.Refresh();
+            //        string theTray;
+            //        //var theTray = GetCurrentPrintTray(printer, server);
+            //        if (myPrintQueues.QueueDriver.Name.Contains("ZDesigner") || !Support.UsePrintTrays())
+            //        {
+            //            theTray = null;
+            //        }
+            //        else
+            //        {
+            //            theTray = GetCurrentPrintTray(myPrintQueues);
+
+            //        }
+            //        outcome.Add(new Printer { Name = myPrintQueues.Name.ToUpper(), Driver = myPrintQueues.QueueDriver.Name, PrintServer = server, NumberJobs = myPrintQueues.NumberOfJobs, PortName = myPrintQueues.QueuePort.Name, Status = "Installed", Tray = theTray });
+            //        printServer.Dispose();
+            //        myPrintQueues.Dispose();
+            //    }
+            //    catch
+            //    {
+            //        outcome.Add(new Printer { Name = printer,PrintServer=server ,Status = "Not Installed or Server Down" });
+            //    }
+            //});
+
+            foreach(var server in Support.GetEnterprisePrintServers())
             {
                 try
                 {
@@ -1069,7 +1070,8 @@ namespace EPSPrintMgmt.Controllers
                 {
                     outcome.Add(new Printer { Name = printer, PrintServer = server, Status = "Not Installed or Server Down" });
                 }
-            });
+            }
+
 
             return (outcome.OrderBy(s => s.PrintServer).OrderBy(s => s.Status).ToList());
         }
@@ -1754,130 +1756,6 @@ namespace EPSPrintMgmt.Controllers
                 return false;
             }
 
-        }
-        static public List<string> GetEPSServers()
-        {
-            List<string> epsServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("EPS")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
-            return (epsServers);
-        }
-        static public List<string> GetAllPrintServers()
-        {
-            List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("Server")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
-            return (allServers);
-        }
-        static public List<string> GetAllPrintDrivers()
-        {
-            List<string> printDrivers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("PrintDriver")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
-            return (printDrivers);
-        }
-        static public List<string> GetTrays()
-        {
-            List<string> trays = new List<string>(new string[] { "AutoSelect", "Tray1", "Tray2", "Tray3", "Tray4", "Tray5", "Tray6" });
-            return (trays);
-        }
-        static public bool UsePrintTrays()
-        {
-            string usePrintTrays = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UsePrintTrays")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(usePrintTrays, "true", true) == 0)
-            {
-                return true;
-            }
-            return false;
-
-        }
-        static public bool ValidatePrinterDNS()
-        {
-            string validDNS = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ValidatePrinterDNS")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(validDNS, "true", true) == 0)
-            {
-                return true;
-            }
-            return false;
-
-        }
-        static public bool ShowNumberPrintJobs()
-        {
-            string validDNS = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ShowNumberOfJobs")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(validDNS, "true", true) == 0)
-            {
-                return true;
-            }
-            return false;
-
-        }
-        static public string GetRelayServer()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("MailRelay")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-        static public string GetEmailTo()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailTo")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-        static public string GetEmailFrom()
-        {
-            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailFrom")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            return (relayServer);
-        }
-        static public bool UsePrinterIPAddr()
-        {
-            string useIPAddr = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UsePrinterIPAddress")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(useIPAddr, "true", true) == 0)
-            {
-                return true;
-            }
-            return false;
-        }
-        private static void SendEmail(string subject, string body)
-        {
-            MailMessage message = new MailMessage(GetEmailFrom(), GetEmailTo(), subject, body);
-
-            SmtpClient mailClient = new SmtpClient(GetRelayServer());
-            try
-            {
-                mailClient.Send(message);
-                mailClient.Dispose();
-            }
-            catch
-            {
-                //do something useful some day...
-            }
-        }
-        //Currently checks to validate it's an actual IP address or a valid DNS entry.
-        //Doesn't Ping the IP address, just makes sure it's a valid IPV4 or IPV6 address.
-        private static bool ValidHostname(string hostname)
-        {
-            IPHostEntry host;
-            IPAddress address;
-
-            if (IPAddress.TryParse(hostname, out address))
-            {
-                switch (address.AddressFamily)
-                {
-                    case System.Net.Sockets.AddressFamily.InterNetwork:
-                        return true;
-
-                    case System.Net.Sockets.AddressFamily.InterNetworkV6:
-                        return true;
-
-                    default:
-                        // umm... yeah... I'm going to need to take your red packet and...
-                        return false;
-                }
-            }
-
-
-            try
-            {
-                host = System.Net.Dns.GetHostEntry(hostname);
-            }
-            catch //(System.Net.Sockets.SocketException e)
-            {
-                //Console.WriteLine(e.Message);
-                return false;
-            }
-            return true;
         }
     }
 }
