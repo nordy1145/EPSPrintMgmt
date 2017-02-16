@@ -265,6 +265,7 @@
     <Content Include="Views\Printer\CreateEnt.cshtml" />
     <Content Include="Views\Home\EditEnterprisePrinter.cshtml" />
     <Content Include="Views\Printer\EditEnterprisePrinter.cshtml" />
+    <Content Include="Views\Printer\Edit - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

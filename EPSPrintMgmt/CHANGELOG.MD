@@ -8,6 +8,12 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Change the search option to choose either a EPS or Enterprise option, versus having to choose an individual server.
 
+## [1.0.9.8] - 2017-02-16
+### Added
+- Added the ability to disable bidirectional support when adding Enterprise Printers
+### Fixed
+- Wording in appsettings.config file to better indicate the EditEnterprisePrinters key.
+
 ## [1.0.9.7] - 2016-10-05
 ### Fixed
 - Fixed issue with Enterprise Printer details would not edit/delete correct printer.  Moved buttons to the row of the print server.

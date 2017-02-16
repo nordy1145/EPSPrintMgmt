@@ -26,7 +26,15 @@ namespace EPSPrintMgmt.Models
         public string Comments { get; set; }
         public string Location { get; set; }
     }
-
+    public class EditPrinter:Printer
+    {
+        public string OldDriver { get; set; }
+        public string OldPortName { get; set; }
+        public string OldTry { get; set; }
+        public string OldComments { get; set; }
+        public string OldLocation { get; set; }
+        public string OldPrintServer { get; set; }
+    }
     public class AddPrinterClass
     {
         [DisplayName("Driver Name")]

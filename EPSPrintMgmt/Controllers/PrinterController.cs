@@ -1364,6 +1364,11 @@ namespace EPSPrintMgmt.Controllers
             PrintBooleanProperty direct = new PrintBooleanProperty("IsDirect", false);
             PrintBooleanProperty spoolFirst = new PrintBooleanProperty("ScheduleCompletedJobsFirst", true);
             PrintBooleanProperty doComplete = new PrintBooleanProperty("DoCompleteFirst", true);
+            if (Support.UseEnterprisePrinterBiDirectionalSupport() != true)
+            {
+                PrintBooleanProperty BIDI = new PrintBooleanProperty("EnableBIDI", false);
+                printProps.Add("EnableBIDI", BIDI);
+            }
             printProps.Add("IsDirect", direct);
             printProps.Add("DoCompleteFirst", doComplete);
             printProps.Add("ScheduleCompletedJobsFirst", spoolFirst);

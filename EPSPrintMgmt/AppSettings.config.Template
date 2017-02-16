@@ -4,28 +4,36 @@
   <add key="webpages:Enabled" value="false"/>
   <add key="ClientValidationEnabled" value="true"/>
   <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
+  
   <!--Following keys are used to determine current EPS servers for remote management.-->
   <add key="EPSServer1" value="eps-3" />
   <add key="EPSServer2" value="eps-4" />
   <add key="EPSServer3" value="eps-5" />
   <add key="EPSServer4" value="eps-6" />
+  
   <!--Following keys are used to add Non-EPS Print servers for limited remote management.-->
   <add key="EnterpriseServer1" value="non-eps-printservers1"/>
   <add key="EnterpriseServer2" value="non-eps-printservers2"/>
+  
   <!--Following keys are used to define what Print Drivers are available to end users when creating/editing printers.-->
   <add key="PrintDriver1" value="HP Universal Printing PCL 5 (v5.6.5)"/>
   <add key="PrintDriver2" value="HP Universal Printing PS (v5.7.0)"/>
   <add key="PrintDriver3" value="ZDesigner GX420d"/>
+  
   <!--Following keys are used to define what Enterprise Print Drivers are available to end users when creating/editing Enterprise printers.-->
   <add key="EnterprisePD1" value="HP Universal Printing PCL 5 (v5.6.5)" />
   <add key="EnterprisePD2" value="HP Universal Printing PS (v5.7.0)" />
   <add key="EnterprisePD3" value="Xerox GPD PCL6 V3.2.303.16.0" />
+  
   <!--Following keys are used for Mail Relay-->
   <add key="MailRelay" value="emailrelay.hostname.com"/>
   <add key="EmailTo" value="emailaddress@host.com"/>
   <add key="EmailFrom" value="EPSPrintMgmt@host.com"/>
+  
   <!--Following key used to set name on Splash page.-->
   <add key="OrgName" value="Your Org Name Here"/>
+  
+  <!--Misc config-->
   <!--UsePrinterIPAddress when set to true creates a new field to manage printer ports by IP or DNS name. -->
   <add key="UsePrinterIPAddress" value="true"/>
   <!--Following key is used to determine if you want to see if there is a valid IP or DNS entry before adding the printer. -->
@@ -37,8 +45,12 @@
   <add key="ShowNumberOfJobs" value="false"/>
   <!--Following key is used to determine if a user can delete printers from an EPS server -->
   <add key="AllowEPSPrinterDeletion" value="false" />
-  <!--Following key is used to determine if Enterprise Print Servers can be modified. -->
+  <!--Following key is used to determine if Enterprise Print Servers can be modified. Must be set to True in order to add Enterprise Printers.-->
   <add key="EditEnterprisePrinters" value="false" />
+  <!--Following key is used to determine if Enterprise Printers are installed with BiDirectional Support enabled or not.  True means enabled, false means disabled -->
+  <add key="EnterprisePrinterBiDirectionalSupport" value="false" />
+
+  <!--Security Section -->
   <!--Following key is used to determine if additional security roles will be used to segment access to different parts of the web page. -->
   <add key="AdditionalSecurity" value="false" />
   <!--Following key is used to determine what AD group can delete EPS printers. -->

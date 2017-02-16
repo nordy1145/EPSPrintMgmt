@@ -126,6 +126,16 @@ namespace EPSPrintMgmt.Models
             return false;
 
         }
+        static public bool UseEnterprisePrinterBiDirectionalSupport()
+        {
+            string UseEnterprisePrinterBiDirectionalSupport = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterprisePrinterBiDirectionalSupport")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(UseEnterprisePrinterBiDirectionalSupport, "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
         static public bool ValidatePrinterDNS()
         {
             string validDNS = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ValidatePrinterDNS")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
