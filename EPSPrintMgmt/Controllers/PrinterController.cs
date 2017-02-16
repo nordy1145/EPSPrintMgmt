@@ -1407,6 +1407,10 @@ namespace EPSPrintMgmt.Controllers
                 if (exist != null)
                 {
                     //return true and exit.
+                    if (Support.UseEnterprisePrinterBiDirectionalSupport() != true)
+                    {
+                        exist.CimInstanceProperties["EnableBIDI"].Value = false;
+                    }
                     exist.CimInstanceProperties["DoCompleteFirst"].Value = true;
                     exist.CimInstanceProperties["Published"].Value = true;
                     try
