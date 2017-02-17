@@ -1373,7 +1373,16 @@ namespace EPSPrintMgmt.Controllers
             printProps.Add("DoCompleteFirst", doComplete);
             printProps.Add("ScheduleCompletedJobsFirst", spoolFirst);
             String[] port = new String[] { theNewPrinter.PortName };
-            PrintQueueAttributes thePrintAttrs = PrintQueueAttributes.EnableBidi | PrintQueueAttributes.Shared | PrintQueueAttributes.Published | PrintQueueAttributes.ScheduleCompletedJobsFirst;
+            PrintQueueAttributes thePrintAttrs;
+            if (Support.UseEnterprisePrinterBiDirectionalSupport() != true)
+            {
+                thePrintAttrs = PrintQueueAttributes.Shared | PrintQueueAttributes.Published | PrintQueueAttributes.ScheduleCompletedJobsFirst;
+            }
+            else
+            {
+                thePrintAttrs = PrintQueueAttributes.EnableBidi | PrintQueueAttributes.Shared | PrintQueueAttributes.Published | PrintQueueAttributes.ScheduleCompletedJobsFirst;
+            }
+            //thePrintAttrs = PrintQueueAttributes.EnableBidi | PrintQueueAttributes.Shared | PrintQueueAttributes.Published | PrintQueueAttributes.ScheduleCompletedJobsFirst;
 
             try
             {
