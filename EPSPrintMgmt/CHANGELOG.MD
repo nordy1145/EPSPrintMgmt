@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 ## [1.0.9.8] - 2017-02-16
 ### Added
 - Added the ability to disable bidirectional support when adding Enterprise Printers
+- Added the ability to clone a EPS print queue when creating a new one.
+- Added seperate email notification for Adding Enterprise Print Queues.
 ### Fixed
 - Wording in appsettings.config file to better indicate the EditEnterprisePrinters key.
 
