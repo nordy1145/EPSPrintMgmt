@@ -53,7 +53,21 @@
         {
             <input type="hidden" id="Tray" name="Tray" />
         }
-
+        @if (ViewData["useGold"].ToString() == "True")
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.SourcePrinter, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("SourcePrinter", new SelectList((System.Collections.IEnumerable)ViewData["getGold"]), "-- Select Source EPS Print Queue --")
+                    @*@Html.EditorFor(model => model.Tray, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @Html.ValidationMessageFor(model => model.SourcePrinter, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <input type="hidden" id="SourcePrinter" name="SourcePrinter" />
+        }
         @*<div class="form-group">
                 @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">

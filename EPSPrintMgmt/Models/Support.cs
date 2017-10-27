@@ -27,6 +27,21 @@ namespace EPSPrintMgmt.Models
                 //do something useful some day...
             }
         }
+        public static void SendEnterpriseEmail(string subject, string body)
+        {
+            MailMessage message = new MailMessage(GetEmailFrom(), GetEnterpriseEmailTo(), subject, body);
+
+            SmtpClient mailClient = new SmtpClient(GetRelayServer());
+            try
+            {
+                mailClient.Send(message);
+                mailClient.Dispose();
+            }
+            catch
+            {
+                //do something useful some day...
+            }
+        }
         static private string GetRelayServer()
         {
             string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("MailRelay")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
@@ -35,6 +50,11 @@ namespace EPSPrintMgmt.Models
         static private string GetEmailTo()
         {
             string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailTo")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return (relayServer);
+        }
+        static private string GetEnterpriseEmailTo()
+        {
+            string relayServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EmailEnterpriseTo")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
             return (relayServer);
         }
         static private string GetEmailFrom()
@@ -80,7 +100,7 @@ namespace EPSPrintMgmt.Models
         static public bool UsePrinterIPAddr()
         {
             string useIPAddr = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UsePrinterIPAddress")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(useIPAddr, "true", true) == 0)
+            if (string.Compare(useIPAddr.ToLower(), "true", true) == 0)
             {
                 return true;
             }
@@ -88,12 +108,13 @@ namespace EPSPrintMgmt.Models
         }
         static public List<string> GetEPSServers()
         {
-            List<string> epsServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("EPS")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
+            List<string> epsServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("EPSServer")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
             return (epsServers);
         }
         static public List<string> GetAllPrintServers()
         {
-            List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("Server")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
+            List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("EPSServer") ||k.StartsWith("EnterpriseServer")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
+
             return (allServers);
         }
         static public List<string> GetEnterprisePrintServers()
@@ -111,6 +132,26 @@ namespace EPSPrintMgmt.Models
             List<string> printDrivers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterprisePD")).Select(k => ConfigurationManager.AppSettings[k]).OrderBy(k=>k).ToList();
             return (printDrivers);
         }
+        static public List<string> GetEPSGoldPrinters()
+        {
+            List<string> epsGoldPrinters = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("EPSGoldPrinter")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
+            return (epsGoldPrinters);
+        }
+        static public string GetEPSGoldPrintServer()
+        {
+            string goldServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EPSGoldPrintServer")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return (goldServer);
+        }
+        static public bool UseEPSGoldPrinter()
+        {
+            string useEPSGold = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UseEPSGoldPrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(useEPSGold.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
         static public List<string> GetTrays()
         {
             List<string> trays = new List<string>(new string[] { "AutoSelect", "Tray1", "Tray2", "Tray3", "Tray4", "Tray5", "Tray6" });
@@ -119,7 +160,7 @@ namespace EPSPrintMgmt.Models
         static public bool UsePrintTrays()
         {
             string usePrintTrays = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UsePrintTrays")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(usePrintTrays, "true", true) == 0)
+            if (string.Compare(usePrintTrays.ToLower(), "true", true) == 0)
             {
                 return true;
             }
@@ -129,17 +170,26 @@ namespace EPSPrintMgmt.Models
         static public bool UseEnterprisePrinterBiDirectionalSupport()
         {
             string UseEnterprisePrinterBiDirectionalSupport = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterprisePrinterBiDirectionalSupport")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(UseEnterprisePrinterBiDirectionalSupport, "true", true) == 0)
+            if (string.Compare(UseEnterprisePrinterBiDirectionalSupport.ToLower(), "true", true) == 0)
             {
                 return true;
             }
             return false;
 
         }
+        static public bool EnterpriseUsePrinterIPAddr()
+        {
+            string useIPAddr = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UseEnterprisePrinterIPAddress")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(useIPAddr, "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+        }
         static public bool ValidatePrinterDNS()
         {
             string validDNS = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ValidatePrinterDNS")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(validDNS, "true", true) == 0)
+            if (string.Compare(validDNS.ToLower(), "true", true) == 0)
             {
                 return true;
             }
@@ -149,7 +199,7 @@ namespace EPSPrintMgmt.Models
         static public bool ShowNumberPrintJobs()
         {
             string validDNS = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("ShowNumberOfJobs")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(validDNS, "true", true) == 0)
+            if (string.Compare(validDNS.ToLower(), "true", true) == 0)
             {
                 return true;
             }
@@ -169,7 +219,7 @@ namespace EPSPrintMgmt.Models
         static public bool EditEnterprisePrinters()
         {
             string editEntPrint = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EditEnterprisePrinters")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(editEntPrint, "true", true) == 0)
+            if (string.Compare(editEntPrint.ToLower(), "true", true) == 0)
             {
                 return true;
             }
@@ -179,7 +229,7 @@ namespace EPSPrintMgmt.Models
         static public bool AdditionalSecurity()
         {
             string theSecurity = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("AdditionalSecurity")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(theSecurity, "true", true) == 0)
+            if (string.Compare(theSecurity.ToLower(), "true", true) == 0)
             {
                 return true;
             }

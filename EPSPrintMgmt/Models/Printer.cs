@@ -26,6 +26,11 @@ namespace EPSPrintMgmt.Models
         public string Comments { get; set; }
         public string Location { get; set; }
     }
+    public class ClonePrinter:Printer
+    {
+        public string sourcePrintQueue { get; set; }
+        public string sourcePrintServer { get; set; }
+    }
     public class EditPrinter:Printer
     {
         public string OldDriver { get; set; }
@@ -53,6 +58,9 @@ namespace EPSPrintMgmt.Models
         public bool IsEnterprise { get; set; }
         [DisplayName("Print Server")]
         public string PrintServer { get; set; }
+        [DisplayName("Source Printer")]
+        public string SourcePrinter { get; set; }
+        public string SourceServer { get; set; }
     }
 
     public class AddPrinterPortClass

@@ -24,12 +24,25 @@
   <add key="EnterprisePD1" value="HP Universal Printing PCL 5 (v5.6.5)" />
   <add key="EnterprisePD2" value="HP Universal Printing PS (v5.7.0)" />
   <add key="EnterprisePD3" value="Xerox GPD PCL6 V3.2.303.16.0" />
+
+  <!--Following key is used to determine if you want to have a "Gold" EPS Print queue to clone from.-->
+  <!--If the following is set to true, the following MS KB needs to be installed.  Prevents the call from erroring out.-->
+  <!--https://support.microsoft.com/en-us/help/2954953/some-apis-do-not-work-when-they-are-called-in-services-in-windows-->
+  <add key="UseEPSGoldPrinter" value="true" />
+  <!--Following key is used to determine if you want to have a "Gold" EPS Print queue to clone from.-->
+  <add key="EPSGoldPrintServer" value="servernamewhereyouwantthegoldprinterstobe" />
+  <!--Following keys are used to define what local printer is a Gold Printer.  Will pull the current Print Driver and Settings and clone to the destination print queue.-->
+  <add key="EPSGoldPrinter1" value="GoldPrinter1-HP" />
+  <add key="EPSGoldPrinter2" value="GoldPrinter2-Cannon" />
+  <add key="EPSGoldPrinter3" value="GoldPrinter3-Zebra" />
   
   <!--Following keys are used for Mail Relay-->
   <add key="MailRelay" value="emailrelay.hostname.com"/>
   <add key="EmailTo" value="emailaddress@host.com"/>
   <add key="EmailFrom" value="EPSPrintMgmt@host.com"/>
-  
+  <!--Following key is used to determine who notifications are sent to for changes to Enterprise Print Servers only.-->
+  <add key="EmailEnterpriseTo" value="emailaddress@host.com" />
+
   <!--Following key used to set name on Splash page.-->
   <add key="OrgName" value="Your Org Name Here"/>
   
@@ -49,6 +62,8 @@
   <add key="EditEnterprisePrinters" value="false" />
   <!--Following key is used to determine if Enterprise Printers are installed with BiDirectional Support enabled or not.  True means enabled, false means disabled -->
   <add key="EnterprisePrinterBiDirectionalSupport" value="false" />
+  <!--EnterpriseUsePrinterIPAddress when set to true creates a new field to manage printer ports by IP or DNS name for Enterprise Print Queues. -->
+  <add key="UseEnterprisePrinterIPAddress" value="false" />
 
   <!--Security Section -->
   <!--Following key is used to determine if additional security roles will be used to segment access to different parts of the web page. -->
