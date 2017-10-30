@@ -8,7 +8,14 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Change the search option to choose either a EPS or Enterprise option, versus having to choose an individual server.
 
-## [1.0.9.8] - 2017-02-16
+## [1.0.9.9] - 2017-10-30
+### Added
+- Added support to add EPS and Enterprise print queues at the same time
+- Added additional appsettings.config items
+### Changed
+- A potential broken Roslyn package that prevented the application from running properly after an upgrade.
+
+## [1.0.9.8] - 2017-10-17
 ### Added
 - Added the ability to disable bidirectional support when adding Enterprise Printers
 - Added the ability to clone a EPS print queue when creating a new one.
