@@ -52,7 +52,17 @@
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownCommonMenu">
                             <li role="menuitem">@Html.ActionLink("View Printers", "Index", "Printer")</li>
                             <li role="menuitem">@Html.ActionLink("Create EPS Printer", "Create", "Printer")</li>
-                            @{ Html.RenderAction("EditEnterprisePrinter", "Home", "");}
+                            @*Defined in ApplicationStartupItems.cs and Global.asax.cs files*@
+                            @if (ViewBag.IsAbleAddENTPrinters == true)
+                            {
+                            <li role="menuitem">@Html.ActionLink("Create Enterprise Printer", "CreateEnt", "Printer")</li>
+                            }
+                            @*@{ Html.RenderAction("EditEnterprisePrinter", "Home", "");}*@
+                            @if (ViewBag.IsAbleAddEPSandENTPrinters==true)
+                            {
+                            <li role="menuitem">@Html.ActionLink("Create EPS And Enterprise Printer", "CreateEPSAndEnt", "Printer")</li>
+
+                            }
                             <li role="menuitem">@Html.ActionLink("Search For a Printer", "Search", "Printer")</li>
                         </ul>
                     </li>

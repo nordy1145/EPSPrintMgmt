@@ -44,7 +44,7 @@ namespace EPSPrintMgmt.Models
     {
         [DisplayName("Driver Name")]
         public string DriverName { get; set; }
-        [DisplayName("Port Name")]
+        [DisplayName("DNS or IP Address")]
         public string PortName { get; set; }
         public string Location { get; set; }
         public string Comment { get; set; }
@@ -62,7 +62,20 @@ namespace EPSPrintMgmt.Models
         public string SourcePrinter { get; set; }
         public string SourceServer { get; set; }
     }
-
+    public class AddEPSandENTPrinterClass : AddPrinterClass
+    {
+        [DisplayName("Enterprise Driver Name")]
+        public string ENTDriverName { get; set; }
+        [DisplayName("DNS or IP Address")]
+        public string ENTPortName { get; set; }
+        [DisplayName("Enterprise Source Printer")]
+        public string ENTSourcePrinter { get; set; }
+        public string ENTSourceServer { get; set; }
+        public Boolean ENTShared { get; set; }
+        public Boolean ENTPublished { get; set; }
+        public Boolean ENTEnableBIDI { get; set; }
+        public string ENTTray { get; set; }
+    }
     public class AddPrinterPortClass
     {
         public string Name { get; set; }

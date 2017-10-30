@@ -54,16 +54,24 @@
   <add key="ValidatePrinterDNS" value="true" />
   <!--Following key is used to determine if you want the ability to select a printer tray when creating/editing a printer. -->
   <add key="UsePrintTrays" value="false"/>
+  <!--Following key is used to determine if you want the ability to select a printer tray when creating/editing Enterprise Print queues. -->
+  <add key="UseEnterprisePrintTrays" value="false" />
   <!--Following key is used to determine if you to see the number of print jobs in queue on the main list of printers.  This can cause performance issues. -->
   <add key="ShowNumberOfJobs" value="false"/>
   <!--Following key is used to determine if a user can delete printers from an EPS server -->
   <add key="AllowEPSPrinterDeletion" value="false" />
+  <!--Following key is used to determine if a user can add Enterprise Print Queues at the same time. -->
+  <add key="AllowEnterprisePrintCreation" value="true" />
   <!--Following key is used to determine if Enterprise Print Servers can be modified. Must be set to True in order to add Enterprise Printers.-->
   <add key="EditEnterprisePrinters" value="false" />
   <!--Following key is used to determine if Enterprise Printers are installed with BiDirectional Support enabled or not.  True means enabled, false means disabled -->
   <add key="EnterprisePrinterBiDirectionalSupport" value="false" />
   <!--EnterpriseUsePrinterIPAddress when set to true creates a new field to manage printer ports by IP or DNS name for Enterprise Print Queues. -->
   <add key="UseEnterprisePrinterIPAddress" value="false" />
+  <!--Following key is used to determine if a user can add EPS and Enterprise Print Queues at the same time. -->
+  <add key="AllowEPSAndEnterprisePrintCreation" value="true" />
+  <!--Following key is used to determine if a user can delete printers from an EPS server -->
+  <add key="AllowEPSPrinterDeletion" value="true" />
 
   <!--Security Section -->
   <!--Following key is used to determine if additional security roles will be used to segment access to different parts of the web page. -->

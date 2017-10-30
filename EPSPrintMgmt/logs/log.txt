@@ -1,0 +1,627 @@
+INFO  2017-10-30 11:51:08,886 36377ms PrinterController      erprisePrinterJSON - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\hm3307
+INFO  2017-10-30 11:52:14,662 102154ms PrinterController      erprisePrinterJSON - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\hm3307
+INFO  2017-10-30 11:55:32,575 13825ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+418ms to delete.
+Deleted by user: HCMC\ep3307
+INFO  2017-10-30 11:55:58,710 39960ms PrinterController      erprisePrinterJSON - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 11:56:47,256 88506ms PrinterController      erprisePrinterJSON - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 11:58:10,054 16022ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 11:58:10,105 16073ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 11:58:10,112 16080ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 11:58:10,235 16203ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 11:58:10,344 16312ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 11:58:10,464 16432ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 11:59:31,918 97886ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 11:59:32,251 98219ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 11:59:35,594 101561ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 11:59:35,731 101698ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 11:59:37,548 103515ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 11:59:38,276 104243ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:00:20,657 146625ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+181ms to delete.
+Deleted by user: HCMC\ep3307
+INFO  2017-10-30 12:01:49,850 14895ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:01:50,038 15083ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:01:50,129 15174ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:01:50,201 15245ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:01:50,202 15246ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:01:50,455 15499ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:01:50,465 15509ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:01:50,526 15570ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:03:13,541 98586ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:03:13,654 98699ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:03:15,697 100742ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:03:17,319 102363ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:03:17,907 102951ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:03:19,960 105005ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:09:09,860 14580ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+405ms to delete.
+Deleted by user: HCMC\ep3307
+INFO  2017-10-30 12:14:29,425 16417ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:14:29,439 16431ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:14:29,487 16479ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:14:29,491 16483ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:14:29,503 16495ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:14:29,513 16505ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:14:29,652 16643ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:14:29,663 16655ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:15:50,672 97664ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:15:53,097 100089ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:15:53,498 100490ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:15:53,637 100629ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:15:53,790 100782ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:15:55,678 102670ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:16:47,649 154641ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+192ms to delete.
+Deleted by user: HCMC\ep3307
+INFO  2017-10-30 12:19:09,741 33140ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:19:09,917 33316ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:19:10,021 33420ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:19:10,048 33447ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:19:10,078 33477ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:19:10,095 33494ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:19:10,368 33767ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:19:10,387 33786ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:20:32,099 115497ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:20:32,432 115831ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:20:33,681 117080ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:20:34,457 117855ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:20:36,253 119651ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:20:37,845 121244ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:21:50,662 12697ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+411ms to delete.
+Deleted by user: HCMC\ep3307
+INFO  2017-10-30 12:22:10,722 32757ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:22:10,882 32918ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:22:10,959 32995ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:22:11,028 33064ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:22:11,047 33083ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:22:11,112 33148ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:22:11,152 33187ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:22:11,410 33445ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:23:31,677 113713ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:23:32,853 114889ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:23:35,970 118005ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:23:36,036 118072ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:23:36,486 118522ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:23:37,119 119155ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:26:57,151 11068ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+442ms to delete.
+Deleted by user: HCMC\ep3307
+INFO  2017-10-30 12:27:35,485 49402ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:27:50,923 64839ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:27:50,927 64843ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:27:50,940 64856ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:27:50,953 64870ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:27:50,956 64873ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:27:51,286 65203ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:28:49,329 123245ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:38:26,233 10028ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+445ms to delete.
+Deleted by user: HCMC\ep3307
+INFO  2017-10-30 12:39:21,168 64963ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:39:21,389 65185ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:39:21,410 65205ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:39:21,456 65251ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:39:21,545 65340ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:39:21,803 65598ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:39:21,939 65734ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:40:11,180 114976ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+INFO  2017-10-30 12:40:42,139 145934ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:40:44,476 148271ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:40:45,959 149754ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:40:46,022 149817ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:40:46,459 150255ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+INFO  2017-10-30 12:40:47,384 151180ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:13,104 23767ms PrinterController      erprisePrinterJSON - 2 ms has passed.  Before Parallel foreach
+DEBUG 2017-10-30 12:52:13,140 23803ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 39 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:52:13,140 23803ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 39 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:52:13,140 23803ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 39 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:52:13,140 23803ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 39 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:52:13,140 23803ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 39 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:52:13,140 23803ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 39 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:52:13,140 23803ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 39 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:52:13,221 23884ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 120 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:52:13,225 23888ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 124 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:52:13,222 23885ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 121 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:52:13,221 23884ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 120 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:52:13,223 23886ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 122 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:52:13,228 23891ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 127 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:52:13,231 23894ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 130 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:52:13,234 23897ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 133 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:52:13,239 23902ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 138 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:52:13,241 23904ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 140 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:52:13,244 23907ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 143 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:52:13,255 23918ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 154 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:52:13,265 23928ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 164 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:52:13,280 23943ms PrinterController      sePrinterJSON>b__0 - Before ENT Port Creation.  Testing port : 179 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:52:14,726 25389ms PrinterController      sePrinterJSON>b__0 - After ENT Port Check with No Ports to add : 1625 ms has passed on server: tst-eps-1
+INFO  2017-10-30 12:52:14,731 25394ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:14,738 25401ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1637 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:52:14,831 25494ms PrinterController      sePrinterJSON>b__0 - After Testing if printer exists and nothing to do: 1730 ms has passed on server: tst-eps-1
+INFO  2017-10-30 12:52:14,836 25499ms PrinterController      sePrinterJSON>b__0 - New Printer attempted to be added but already exists.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:15,012 25675ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1912 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 12:52:15,020 25683ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:15,028 25691ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1927 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:52:15,049 25712ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1948 ms has passed on server: mcd-epic-eps2
+INFO  2017-10-30 12:52:15,055 25718ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:15,062 25725ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1961 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:52:15,134 25797ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2033 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 12:52:15,140 25803ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:15,145 25808ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2044 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:52:15,208 25871ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2107 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 12:52:15,224 25887ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:15,243 25906ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2142 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:52:15,269 25933ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2168 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 12:52:15,275 25939ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:15,280 25944ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2179 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:52:15,449 26112ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2348 ms has passed on server: dr-epic-eps2
+INFO  2017-10-30 12:52:15,454 26117ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 12:52:15,459 26122ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2358 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:53:35,658 106322ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 82558 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 12:53:35,664 106327ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:53:37,271 107935ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 84171 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:53:37,418 108081ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 84318 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 12:53:37,423 108086ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 12:53:38,763 109426ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 85663 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 12:53:38,776 109439ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:53:38,830 109493ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 85730 ms has passed on server: dr-epic-eps2
+INFO  2017-10-30 12:53:38,837 109500ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 12:53:38,931 109594ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 85831 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:53:39,338 110002ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 86238 ms has passed on server: mcd-epic-eps2
+INFO  2017-10-30 12:53:39,345 110008ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 12:53:39,875 110538ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 86775 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 12:53:39,882 110546ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:53:41,828 112491ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 88727 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:53:43,019 113682ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 89919 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:53:43,019 113682ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 89919 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:53:43,361 114024ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 90261 ms has passed on server: mcd-epic-eps2
+INFO  2017-10-30 12:54:31,842 162505ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+190ms to delete.
+Deleted by user: HCMC\ep3307
+DEBUG 2017-10-30 12:59:44,994 13190ms PrinterController      erprisePrinterJSON - 3 ms has passed.  Before Parallel foreach
+DEBUG 2017-10-30 12:59:45,060 13256ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 71 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:59:45,060 13256ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 71 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:59:45,060 13256ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 71 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:59:45,060 13256ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 71 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:59:45,060 13256ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 71 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:59:45,060 13256ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 71 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:59:45,060 13256ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 71 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:59:45,149 13345ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 160 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:59:45,149 13345ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 160 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:59:45,149 13345ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 160 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:59:45,149 13345ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 160 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:59:45,150 13346ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 161 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:59:45,157 13353ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 168 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:59:45,166 13362ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 176 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:59:45,167 13363ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 178 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:59:45,172 13368ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 183 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:59:45,177 13373ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 188 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:59:45,184 13380ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 194 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:59:45,188 13384ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 199 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:59:45,195 13391ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 205 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:59:45,211 13407ms PrinterController      sePrinterJSON>b__0 - Before ENT Port Creation.  Testing port : 221 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:59:46,503 14699ms PrinterController      sePrinterJSON>b__0 - After ENT Port Check with No Ports to add : 1514 ms has passed on server: tst-eps-1
+INFO  2017-10-30 12:59:46,509 14705ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:59:46,513 14709ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1524 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:59:46,625 14821ms PrinterController      sePrinterJSON>b__0 - Before creation of new ENT Print Queue : 1636 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 12:59:46,943 15139ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1954 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:59:46,948 15144ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1958 ms has passed on server: mcd-epic-eps2
+INFO  2017-10-30 12:59:46,965 15161ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+INFO  2017-10-30 12:59:46,959 15155ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:59:46,971 15167ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1981 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:59:46,984 15180ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1994 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:59:47,051 15247ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2062 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 12:59:47,058 15254ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:59:47,062 15258ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2073 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:59:47,076 15272ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2087 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 12:59:47,131 15327ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2142 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 12:59:47,194 15390ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2205 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 12:59:47,203 15399ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2214 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 12:59:47,208 15404ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 12:59:47,214 15410ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2225 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:59:47,298 15494ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2308 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 12:59:47,299 15495ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2309 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 12:59:47,313 15509ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 12:59:47,322 15518ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2333 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:59:47,320 15516ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2330 ms has passed on server: dr-epic-eps2
+INFO  2017-10-30 12:59:47,335 15532ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 12:59:47,342 15538ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2353 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 12:59:47,402 15599ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2413 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 12:59:47,436 15632ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2447 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:00:37,142 65338ms PrinterController      sePrinterJSON>b__0 - After creation of new ENT Print Queue : 52153 ms has passed on server: tst-eps-1
+INFO  2017-10-30 13:00:37,148 65344ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:01:09,975 98171ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 84986 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 13:01:09,981 98177ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:01:10,358 98554ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 85369 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 13:01:10,366 98562ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:01:11,709 99905ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 86720 ms has passed on server: dr-epic-eps2
+INFO  2017-10-30 13:01:11,716 99912ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:01:12,216 100412ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 87227 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:01:12,229 100425ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 87240 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 13:01:12,236 100432ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:01:13,449 101645ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 88461 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:01:13,536 101733ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 88548 ms has passed on server: mcd-epic-eps2
+INFO  2017-10-30 13:01:13,541 101738ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:01:14,709 102905ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 89720 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 13:01:14,720 102917ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:01:15,525 103721ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 90536 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:01:16,640 104837ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 91652 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:01:16,640 104837ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 91652 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:01:17,019 105216ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 92031 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 13:17:49,224 13462ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+416ms to delete.
+Deleted by user: HCMC\ep3307
+DEBUG 2017-10-30 13:18:04,406 28645ms PrinterController      erprisePrinterJSON - 1 ms has passed.  Before Parallel foreach
+DEBUG 2017-10-30 13:18:04,426 28664ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 20 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:04,426 28664ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 20 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:04,426 28665ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 21 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:04,426 28665ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 21 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:04,426 28664ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 20 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:04,427 28665ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 21 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:04,426 28665ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 21 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:18:04,479 28717ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 73 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:04,484 28722ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 78 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:04,495 28733ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 89 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:04,495 28733ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 90 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:04,512 28750ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 106 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:04,504 28742ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 98 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:04,506 28744ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 101 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:04,508 28746ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 102 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:04,512 28750ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 106 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:04,522 28760ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 116 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:04,524 28762ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 118 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:18:04,538 28776ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 132 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:04,543 28781ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 138 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:04,553 28791ms PrinterController      sePrinterJSON>b__0 - Before ENT Port Creation.  Testing port : 148 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:18:06,202 30441ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1797 ms has passed on server: mcd-epic-eps2
+INFO  2017-10-30 13:18:06,208 30446ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:18:06,213 30452ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1808 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:06,295 30533ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 1890 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:06,304 30542ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:06,330 30569ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:06,335 30574ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1930 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 13:18:06,343 30582ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:18:06,340 30579ms PrinterController      sePrinterJSON>b__0 - After ENT Port Check with No Ports to add : 1935 ms has passed on server: tst-eps-1
+INFO  2017-10-30 13:18:06,356 30595ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:18:06,349 30588ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1944 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:06,357 30595ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1951 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:06,362 30600ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1957 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:18:06,377 30616ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1972 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 13:18:06,374 30612ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:18:06,389 30628ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1984 ms has passed on server: dr-epic-eps2
+INFO  2017-10-30 13:18:06,384 30622ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:18:06,399 30637ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1993 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:06,420 30658ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2014 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:06,425 30663ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:06,440 30679ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2035 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:06,445 30684ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:06,468 30707ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2063 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:06,445 30683ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:06,473 30711ms PrinterController      sePrinterJSON>b__0 - After Testing if printer exists and nothing to do: 2067 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:18:06,476 30715ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 13:18:06,487 30725ms PrinterController      sePrinterJSON>b__0 - New Printer attempted to be added but already exists.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:18:06,484 30722ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:06,508 30746ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:06,631 30869ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2225 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 13:18:06,636 30875ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:18:06,641 30880ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2236 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:06,695 30933ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2289 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:06,700 30938ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:06,721 30959ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:06,728 30966ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2322 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 13:18:06,744 30982ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:18:06,756 30994ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2350 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:06,850 31089ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2445 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:06,861 31100ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:06,890 31128ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:46,732 70970ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:46,738 70976ms PrinterController      rinterStringReturn - After Commit of Print Queue : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:46,743 70981ms PrinterController      rinterStringReturn - After dispose of Print Server : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:46,747 70985ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:47,724 71962ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:47,729 71967ms PrinterController      rinterStringReturn - After Commit of Print Queue : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:47,733 71972ms PrinterController      rinterStringReturn - After dispose of Print Server : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:47,738 71977ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:47,753 71991ms PrinterController      rinterStringReturn - Before Cimsession creation : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:47,758 71996ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:47,805 72044ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:47,810 72049ms PrinterController      rinterStringReturn - Before Query Instance Setup : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:47,816 72054ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:18:48,554 72792ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:48,559 72797ms PrinterController      rinterStringReturn - After Commit of Print Queue : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:48,563 72802ms PrinterController      rinterStringReturn - After dispose of Print Server : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:48,568 72807ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:48,743 72981ms PrinterController      rinterStringReturn - Before Cimsession creation : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:48,749 72987ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:48,797 73035ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:48,802 73040ms PrinterController      rinterStringReturn - Before Query Instance Setup : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:48,806 73045ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:18:49,574 73813ms PrinterController      rinterStringReturn - Before Cimsession creation : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:49,580 73819ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:49,629 73868ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:49,634 73872ms PrinterController      rinterStringReturn - Before Query Instance Setup : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:49,638 73877ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:18:49,731 73969ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:49,736 73974ms PrinterController      rinterStringReturn - After Commit of Print Queue : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:49,740 73979ms PrinterController      rinterStringReturn - After dispose of Print Server : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:49,745 73983ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:50,031 74270ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:50,036 74274ms PrinterController      rinterStringReturn - After Commit of Print Queue : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:50,040 74279ms PrinterController      rinterStringReturn - After dispose of Print Server : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:50,045 74284ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:50,207 74446ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:50,220 74458ms PrinterController      rinterStringReturn - After Commit of Print Queue : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:50,232 74471ms PrinterController      rinterStringReturn - After dispose of Print Server : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:50,243 74482ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:50,750 74988ms PrinterController      rinterStringReturn - Before Cimsession creation : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:50,755 74993ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:50,801 75039ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:50,806 75044ms PrinterController      rinterStringReturn - Before Query Instance Setup : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:50,812 75050ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:18:51,051 75289ms PrinterController      rinterStringReturn - Before Cimsession creation : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:51,056 75294ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:51,104 75343ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:51,110 75348ms PrinterController      rinterStringReturn - Before Query Instance Setup : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:51,114 75353ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:18:51,254 75493ms PrinterController      rinterStringReturn - Before Cimsession creation : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:51,266 75504ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:51,324 75563ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:51,335 75574ms PrinterController      rinterStringReturn - Before Query Instance Setup : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:18:51,346 75585ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:19:26,702 110940ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:19:26,707 110945ms PrinterController      rinterStringReturn - Before Modifying the Properties : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:19:26,969 111208ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:19:26,974 111213ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:19:26,979 111218ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 82575 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 13:19:26,985 111223ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:19:27,348 111586ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:19:27,353 111591ms PrinterController      rinterStringReturn - Before Modifying the Properties : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:19:27,606 111845ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:19:27,614 111852ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:19:27,621 111859ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 83216 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 13:19:27,626 111865ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:19:29,219 113457ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:19:29,224 113462ms PrinterController      rinterStringReturn - Before Modifying the Properties : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:19:29,491 113729ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:19:29,498 113736ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:19:29,504 113742ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 85100 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:19:29,499 113737ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 85095 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 13:19:29,510 113748ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:19:30,716 114954ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 86311 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:19:31,062 115300ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 86657 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:19:31,878 116116ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:19:31,883 116122ms PrinterController      rinterStringReturn - Before Modifying the Properties : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:19:32,152 116390ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:19:32,157 116395ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:19:32,162 116400ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 87758 ms has passed on server: dr-epic-eps2
+INFO  2017-10-30 13:19:32,167 116405ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:19:32,379 116617ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:19:32,394 116632ms PrinterController      rinterStringReturn - Before Modifying the Properties : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:19:32,662 116900ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:19:32,674 116913ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:19:32,687 116925ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 88282 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 13:19:32,698 116937ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:19:33,295 117534ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:19:33,300 117539ms PrinterController      rinterStringReturn - Before Modifying the Properties : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:19:33,571 117809ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:19:33,577 117815ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:19:33,582 117820ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 89178 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 13:19:33,589 117827ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:19:34,221 118459ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 89817 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:19:35,223 119462ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 90819 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:19:35,583 119821ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 91178 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 13:21:05,041 12699ms PrinterController      DeleteEPSPrinter   - Successfully deleted: ryan-pc on server: dr-epic-eps1
+Successfully deleted: ryan-pc on server: dr-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps2
+Successfully deleted: ryan-pc on server: mcd-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps1
+Successfully deleted: ryan-pc on server: tst-epic-eps2
+246ms to delete.
+Deleted by user: HCMC\ep3307
+DEBUG 2017-10-30 13:21:23,703 31360ms PrinterController      erprisePrinterJSON - 1 ms has passed.  Before Parallel foreach
+DEBUG 2017-10-30 13:21:23,719 31376ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 17 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:21:23,719 31376ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 17 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:21:23,719 31376ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 17 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:21:23,720 31377ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 17 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:21:23,720 31377ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 17 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:21:23,719 31376ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 17 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:21:23,720 31377ms PrinterController      sePrinterJSON>b__0 - Before 1st CimSession creation: 17 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:21:23,779 31436ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 77 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:21:23,784 31441ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 82 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:21:23,779 31436ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 77 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:21:23,785 31442ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 82 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:21:23,788 31445ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 86 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:21:23,796 31453ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 93 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:21:23,801 31458ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 98 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:21:23,802 31459ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 99 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:21:23,806 31463ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 104 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:21:23,811 31468ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 109 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:21:23,816 31473ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 113 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:21:23,817 31474ms PrinterController      sePrinterJSON>b__0 - CimSession creation completed Successfully: 114 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:21:23,833 31490ms PrinterController      sePrinterJSON>b__0 - Before EPS Port Creation.  Testing port : 131 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:21:23,854 31511ms PrinterController      sePrinterJSON>b__0 - Before ENT Port Creation.  Testing port : 152 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:21:25,314 32971ms PrinterController      sePrinterJSON>b__0 - After ENT Port Check with No Ports to add : 1611 ms has passed on server: tst-eps-1
+INFO  2017-10-30 13:21:25,320 32977ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:21:25,326 32983ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1623 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:21:25,413 33070ms PrinterController      sePrinterJSON>b__0 - Before creation of new ENT Print Queue : 1710 ms has passed on server: tst-eps-1
+DEBUG 2017-10-30 13:21:25,529 33187ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1827 ms has passed on server: mcd-epic-eps2
+INFO  2017-10-30 13:21:25,534 33192ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:21:25,539 33197ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1837 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:21:25,543 33201ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1841 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 13:21:25,551 33208ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:21:25,557 33214ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1854 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:21:25,593 33250ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 1891 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:21:25,599 33257ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:21:25,611 33268ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 1909 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:21:25,622 33279ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:21:25,617 33274ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 16 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:21:25,631 33288ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1928 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:21:25,627 33284ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 5 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 13:21:25,637 33294ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:21:25,647 33304ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1944 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:21:25,652 33309ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 1949 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 13:21:25,657 33314ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:21:25,662 33319ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 1959 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:21:25,745 33402ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2042 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:21:25,761 33418ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:21:25,756 33413ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2054 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:21:25,771 33428ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:21:25,767 33424ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 5 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:21:25,778 33435ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 6 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:21:25,854 33511ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2151 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 13:21:25,859 33516ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:21:25,863 33521ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2161 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:21:25,913 33570ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2211 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:21:25,918 33575ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:21:25,924 33581ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 5 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:21:25,957 33614ms PrinterController      sePrinterJSON>b__0 - After EPS Port Check with No Ports to add : 2254 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 13:21:25,968 33625ms PrinterController      sePrinterJSON>b__0 - New Port attempted to be added but already exists.  Port Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:21:25,979 33636ms PrinterController      sePrinterJSON>b__0 - Before Testing if printer exists : 2277 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:21:26,062 33719ms PrinterController      sePrinterJSON>b__0 - Before creation of new EPS Print Queue : 2360 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:21:26,074 33731ms PrinterController      rinterStringReturn - Start of Adding New Printer Function : 0 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:21:26,087 33744ms PrinterController      rinterStringReturn - Start of Adding Installing Print Queue : 12 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:06,866 74523ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 41244 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:06,871 74528ms PrinterController      rinterStringReturn - After Commit of Print Queue : 41249 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:06,877 74534ms PrinterController      rinterStringReturn - After dispose of Print Server : 41255 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:06,881 74538ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 41260 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:07,048 74705ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 41277 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:07,053 74710ms PrinterController      rinterStringReturn - After Commit of Print Queue : 41282 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:07,057 74714ms PrinterController      rinterStringReturn - After dispose of Print Server : 41286 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:07,062 74719ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 41291 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:07,795 75452ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 42034 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:07,800 75458ms PrinterController      rinterStringReturn - After Commit of Print Queue : 42040 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:07,805 75462ms PrinterController      rinterStringReturn - After dispose of Print Server : 42044 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:07,809 75467ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 42049 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:07,886 75544ms PrinterController      rinterStringReturn - Before Cimsession creation : 42265 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:07,891 75549ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 42270 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:07,940 75597ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 42318 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:07,945 75603ms PrinterController      rinterStringReturn - Before Query Instance Setup : 42324 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:07,951 75608ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 42329 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:08,067 75725ms PrinterController      rinterStringReturn - Before Cimsession creation : 42296 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:08,072 75730ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 42302 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:08,118 75775ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 42347 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:08,125 75782ms PrinterController      rinterStringReturn - Before Query Instance Setup : 42354 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:08,130 75787ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 42359 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:08,249 75906ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 42175 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:08,261 75918ms PrinterController      rinterStringReturn - After Commit of Print Queue : 42186 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:08,272 75929ms PrinterController      rinterStringReturn - After dispose of Print Server : 42198 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:08,283 75940ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 42209 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:08,570 76228ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 42971 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:08,575 76233ms PrinterController      rinterStringReturn - After Commit of Print Queue : 42976 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:08,580 76238ms PrinterController      rinterStringReturn - After dispose of Print Server : 42981 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:08,586 76243ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 42986 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:08,816 76473ms PrinterController      rinterStringReturn - Before Cimsession creation : 43055 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:08,821 76478ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 43060 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:08,867 76524ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 43106 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:08,872 76529ms PrinterController      rinterStringReturn - Before Query Instance Setup : 43111 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:08,876 76533ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 43116 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:09,156 76813ms PrinterController      rinterStringReturn - Installed Print Queue Before Commit : 43238 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:09,161 76818ms PrinterController      rinterStringReturn - After Commit of Print Queue : 43243 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:09,166 76823ms PrinterController      rinterStringReturn - After dispose of Print Server : 43248 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:09,170 76827ms PrinterController      rinterStringReturn - Finished Installing Printer before Sleep for 1000ms : 43252 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:09,295 76952ms PrinterController      rinterStringReturn - Before Cimsession creation : 43221 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:09,306 76963ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 43232 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:09,365 77022ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 43290 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:09,377 77034ms PrinterController      rinterStringReturn - Before Query Instance Setup : 43302 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:09,387 77044ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 43313 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:09,591 77248ms PrinterController      rinterStringReturn - Before Cimsession creation : 43991 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:09,596 77253ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 43997 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:09,645 77302ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 44045 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:09,650 77307ms PrinterController      rinterStringReturn - Before Query Instance Setup : 44051 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:09,655 77312ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 44055 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:10,175 77832ms PrinterController      rinterStringReturn - Before Cimsession creation : 44257 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:10,180 77837ms PrinterController      rinterStringReturn - After Cimsession creation and before testing connection : 44262 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:10,226 77884ms PrinterController      rinterStringReturn - After Cimsession Connection Test : 44309 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:10,232 77890ms PrinterController      rinterStringReturn - Before Query Instance Setup : 44314 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:10,239 77897ms PrinterController      rinterStringReturn - After Query Instance Setup but before Query Instance Where Statement : 44321 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:15,944 83601ms PrinterController      sePrinterJSON>b__0 - After creation of new ENT Print Queue : 52242 ms has passed on server: tst-eps-1
+INFO  2017-10-30 13:22:15,949 83606ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-eps-1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:22:48,100 115757ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 82479 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:48,107 115764ms PrinterController      rinterStringReturn - Before Modifying the Properties : 82486 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:48,372 116029ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 82751 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:48,378 116035ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 82757 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:48,383 116040ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 84681 ms has passed on server: tst-epic-eps2
+INFO  2017-10-30 13:22:48,387 116044ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:22:49,830 117487ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 86128 ms has passed on server: tst-epic-eps2
+DEBUG 2017-10-30 13:22:50,009 117666ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 84410 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:50,016 117673ms PrinterController      rinterStringReturn - Before Modifying the Properties : 84416 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:50,300 117957ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 84701 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:50,307 117965ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 84708 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:50,314 117972ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 86613 ms has passed on server: mcd-epic-eps2
+INFO  2017-10-30 13:22:50,322 117980ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:22:50,351 118009ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 84591 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:50,362 118019ms PrinterController      rinterStringReturn - Before Modifying the Properties : 84602 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:50,398 118055ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 84480 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:50,404 118061ms PrinterController      rinterStringReturn - Before Modifying the Properties : 84487 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:50,633 118290ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 84872 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:50,639 118296ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 84878 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:50,643 118300ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 86942 ms has passed on server: dr-epic-eps2
+INFO  2017-10-30 13:22:50,648 118305ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps2 by user HCMC\ep3307
+DEBUG 2017-10-30 13:22:50,675 118332ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 84758 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:50,682 118339ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 84764 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:50,688 118345ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 86986 ms has passed on server: tst-epic-eps1
+INFO  2017-10-30 13:22:50,693 118350ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server tst-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:22:51,545 119202ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 85774 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:51,552 119209ms PrinterController      rinterStringReturn - Before Modifying the Properties : 85781 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:51,827 119484ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 86056 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:51,833 119490ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 86063 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:51,838 119495ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 88137 ms has passed on server: dr-epic-eps1
+INFO  2017-10-30 13:22:51,843 119500ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server dr-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:22:53,333 120990ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 89631 ms has passed on server: mcd-epic-eps2
+DEBUG 2017-10-30 13:22:53,653 121310ms PrinterController      rinterStringReturn - After Query Instance Statement to see if Print Queue exists : 87579 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:53,666 121323ms PrinterController      rinterStringReturn - Before Modifying the Properties : 87592 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:53,972 121630ms PrinterController      rinterStringReturn - After Modifying the WMI Properities and before Disposing of the Session : 87899 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:53,993 121650ms PrinterController      rinterStringReturn - After Disposing of CIM Instance : 87919 ms has passed on server: mcd-epic-eps1
+DEBUG 2017-10-30 13:22:54,009 121666ms PrinterController      sePrinterJSON>b__0 - After creation of new EPS Print Queue : 90308 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 13:22:54,027 121684ms PrinterController      sePrinterJSON>b__0 - New Printer added.  Printer Name : ryan-pc on server mcd-epic-eps1 by user HCMC\ep3307
+DEBUG 2017-10-30 13:22:54,332 121989ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 90631 ms has passed on server: tst-epic-eps1
+DEBUG 2017-10-30 13:22:55,652 123309ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 91950 ms has passed on server: dr-epic-eps1
+DEBUG 2017-10-30 13:22:55,866 123523ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 92164 ms has passed on server: dr-epic-eps2
+DEBUG 2017-10-30 13:22:56,002 123659ms PrinterController      sePrinterJSON>b__0 - After Print Queue is Cloned : 92300 ms has passed on server: mcd-epic-eps1
+INFO  2017-10-30 13:47:39,210  6415ms PrinterController      Index              - User: HCMC\ep3307 has viewed all printers for server mcd-epic-eps1.
+INFO  2017-10-30 15:06:45,792  5962ms PrinterController      Index              - User: HCMC\ep3307 has viewed all printers for server mcd-epic-eps1.

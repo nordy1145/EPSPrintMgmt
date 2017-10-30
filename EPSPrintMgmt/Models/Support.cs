@@ -167,6 +167,16 @@ namespace EPSPrintMgmt.Models
             return false;
 
         }
+        static public bool UseEnterprisePrintTrays()
+        {
+            string usePrintTrays = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UseEnterprisePrintTrays")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(usePrintTrays.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
         static public bool UseEnterprisePrinterBiDirectionalSupport()
         {
             string UseEnterprisePrinterBiDirectionalSupport = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterprisePrinterBiDirectionalSupport")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
@@ -216,10 +226,30 @@ namespace EPSPrintMgmt.Models
             return false;
 
         }
+        static public bool AddEnterprisePrinters()
+        {
+            string useEPSAndEnterprisePrinters = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("AllowEnterprisePrintCreation")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(useEPSAndEnterprisePrinters.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
         static public bool EditEnterprisePrinters()
         {
             string editEntPrint = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EditEnterprisePrinters")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
             if (string.Compare(editEntPrint.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        static public bool AddEPSAndEnterprisePrinters()
+        {
+            string useEPSAndEnterprisePrinters = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("AllowEPSAndEnterprisePrintCreation")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(useEPSAndEnterprisePrinters.ToLower(), "true", true) == 0)
             {
                 return true;
             }
