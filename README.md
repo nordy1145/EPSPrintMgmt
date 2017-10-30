@@ -36,6 +36,6 @@ Either at the Top IIS server level or the Web Site level, go to the ASP.NET sect
 
 Can bind a certificate to port 443 if you'd like.
 
-
+Review the EPSPrintMgmt/ChangeLog.MD file for changes that have happened in each version.
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=JYESRLRN7N2WC&lc=US&item_name=EPS%20Print%20Management&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
