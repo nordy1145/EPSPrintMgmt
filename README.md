@@ -35,3 +35,7 @@ Under the Default Web Site or custom Virtual Application go to Basic Settings an
 Either at the Top IIS server level or the Web Site level, go to the ASP.NET section -> .NET Authorization Rules.  Remove the Allow Any and add an Allow Rule.   Add the AD Group you want to give access to the actual website.
 
 Can bind a certificate to port 443 if you'd like.
+
+
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=JYESRLRN7N2WC&lc=US&item_name=EPS%20Print%20Management&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
