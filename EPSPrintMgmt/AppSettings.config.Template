@@ -29,13 +29,28 @@
   <!--If the following is set to true, the following MS KB needs to be installed.  Prevents the call from erroring out.-->
   <!--https://support.microsoft.com/en-us/help/2954953/some-apis-do-not-work-when-they-are-called-in-services-in-windows-->
   <add key="UseEPSGoldPrinter" value="true" />
+  <!--Following key is used to determine if users have the ability to clone Printer Device Settings when copying a Gold Print Queue.-->
+  <add key="CloneDeviceSettings" value="true" />
   <!--Following key is used to determine if you want to have a "Gold" EPS Print queue to clone from.-->
   <add key="EPSGoldPrintServer" value="servernamewhereyouwantthegoldprinterstobe" />
   <!--Following keys are used to define what local printer is a Gold Printer.  Will pull the current Print Driver and Settings and clone to the destination print queue.-->
   <add key="EPSGoldPrinter1" value="GoldPrinter1-HP" />
   <add key="EPSGoldPrinter2" value="GoldPrinter2-Cannon" />
   <add key="EPSGoldPrinter3" value="GoldPrinter3-Zebra" />
-  
+
+  <!--Following key is used to determine if you want to have a "Gold" Enterprise Print queue to clone from.-->
+  <!--If the following is set to true, the following MS KB needs to be installed.  Prevents the call from erroring out.-->
+  <!--https://support.microsoft.com/en-us/help/2954953/some-apis-do-not-work-when-they-are-called-in-services-in-windows-->
+  <add key="UseEntGoldPrinter" value="true" />
+  <!--Following key is used to determine if users have the ability to clone Enterprise Printer Device Settings when copying a Gold Print Queue.-->
+  <add key="CloneEntDeviceSettings" value="true" />
+  <!--Following key is used to determine the print server that houses the Gold Enterprise Print Queue.-->
+  <add key="EntGoldPrintServer" value="ENT-printserver-Name-Housing-Gold-Print-Queues" />
+  <!--Following keys are used to define what local printer is a Gold Printer.  Will pull the current Print Driver and Settings and clone to the destination print queue.-->
+  <add key="EntGoldPrinter1" value="GoldPrinter1-HP" />
+  <add key="EntGoldPrinter2" value="GoldPrinter2-Cannon" />
+  <add key="EntGoldPrinter3" value="GoldPrinter3-Xerox" />
+
   <!--Following keys are used for Mail Relay-->
   <add key="MailRelay" value="emailrelay.hostname.com"/>
   <add key="EmailTo" value="emailaddress@host.com"/>
@@ -73,6 +88,11 @@
   <!--Following key is used to determine if a user can delete printers from an EPS server -->
   <add key="AllowEPSPrinterDeletion" value="true" />
 
+  <!--Important Key Here!!!!-->
+  <!--Offload Printer Creation to internal exe.  Speeds up the process but unsure of local security policies -->
+  <!--DO NOT USE YET!!!!!!!!!!! For future use.-->
+  <add key="UseEXEForPrinterCreation" value="false" />
+  
   <!--Security Section -->
   <!--Following key is used to determine if additional security roles will be used to segment access to different parts of the web page. -->
   <add key="AdditionalSecurity" value="false" />

@@ -119,7 +119,8 @@ namespace EPSPrintMgmt.Models
         }
         static public List<string> GetEnterprisePrintServers()
         {
-            List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterpriseServer")).Select(k => ConfigurationManager.AppSettings[k]).OrderBy(x=>x).ToList();
+            //List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterpriseServer")).Select(k => ConfigurationManager.AppSettings[k]).OrderBy(x => x).ToList();
+            List<string> allServers = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EnterpriseServer")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
             return (allServers);
         }
         static public List<string> GetAllPrintDrivers()
@@ -146,6 +147,57 @@ namespace EPSPrintMgmt.Models
         {
             string useEPSGold = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UseEPSGoldPrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
             if (string.Compare(useEPSGold.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        static public bool clonePrinterDeviceSettings()
+        {
+            string clonePrinterDevSets = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("CloneDeviceSettings")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(clonePrinterDevSets.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+
+        static public List<string> GetEntGoldPrinters()
+        {
+            List<string> epsGoldPrinters = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("EntGoldPrinter")).Select(k => ConfigurationManager.AppSettings[k]).ToList();
+            return (epsGoldPrinters);
+        }
+        static public string GetEntGoldPrintServer()
+        {
+            string goldServer = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("EntGoldPrintServer")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return (goldServer);
+        }
+        static public bool UseEntGoldPrinter()
+        {
+            string useEPSGold = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UseEntGoldPrinter")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(useEPSGold.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        static public bool cloneEntPrinterDeviceSettings()
+        {
+            string clonePrinterDevSets = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("CloneEntDeviceSettings")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(clonePrinterDevSets.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        static public bool UseEXEForPrinterCreation()
+        {
+            string useExe = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UseEXEForPrinterCreation")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(useExe.ToLower(), "true", true) == 0)
             {
                 return true;
             }
@@ -339,6 +391,24 @@ namespace EPSPrintMgmt.Models
                 }
             }
             return true;
+        }
+        static public string ExeReturnCodeParser(int returnCode)
+        {
+            switch (returnCode)
+            {
+                case 1:
+                    return ("success");
+                case 2:
+                    return ("success without props");
+                case 400:
+                    return ("failed");
+                case 404:
+                    return ("failed missing parameters");
+                case 500:
+                    return ("no idea how we got there");
+                        
+            }
+            return ("");
         }
     }
 }

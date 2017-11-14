@@ -38,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet />
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -164,6 +165,7 @@
     <Compile Include="Models\Printer.cs" />
     <Compile Include="Models\PrintJob.cs" />
     <Compile Include="Models\PrintServers.cs" />
+    <Compile Include="Models\RegKeyClone.cs" />
     <Compile Include="Models\Support.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -266,6 +268,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ExternalReferences\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

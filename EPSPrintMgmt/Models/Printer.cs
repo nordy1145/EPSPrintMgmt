@@ -61,6 +61,8 @@ namespace EPSPrintMgmt.Models
         [DisplayName("Source Printer")]
         public string SourcePrinter { get; set; }
         public string SourceServer { get; set; }
+        [DisplayName("Copy Printer Device Settings")]
+        public bool cloneDevSettings { get; set; }
     }
     public class AddEPSandENTPrinterClass : AddPrinterClass
     {
@@ -75,6 +77,8 @@ namespace EPSPrintMgmt.Models
         public Boolean ENTPublished { get; set; }
         public Boolean ENTEnableBIDI { get; set; }
         public string ENTTray { get; set; }
+        [DisplayName("Copy Enterprise Printer Device Settings")]
+        public bool cloneENTDevSettings { get; set; }
     }
     public class AddPrinterPortClass
     {

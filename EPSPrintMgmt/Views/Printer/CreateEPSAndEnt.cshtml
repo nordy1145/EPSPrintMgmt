@@ -23,7 +23,7 @@
                 </div>
             </div>
         <section>
-            <p>EPS Print Queue Configuration</p>
+            <p><h3>EPS Print Queue Configuration</h3></p>
 
             @if (ViewData["EPSuseIP"].ToString() == "True")
             {
@@ -57,6 +57,8 @@
             }
             @if (ViewData["EPSuseGold"].ToString() == "True")
             {
+                <p>Source Printer and Copy Printer Device Settings checkbox can be left blank/untouched if there is not a printer you'd like to copy from.  These are not required fields.</p>
+                            <p>Please make sure the Source Printer's driver is the same as the Driver Name.</p>
                 <div class="form-group">
                     @Html.LabelFor(model => model.SourcePrinter, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -77,6 +79,23 @@
                 @Html.ValidationMessageFor(model => model.DriverName, "", new { @class = "text-danger" })
             </div>
         </div>*@
+            @if (ViewData["cloneDevSettings"].ToString() == "True")
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.cloneDevSettings, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.CheckBoxFor(model => model.cloneDevSettings)
+                        @*@Html.DropDownList("SourcePrinter", new SelectList((System.Collections.IEnumerable)ViewData["getGold"]), "-- Select Source EPS Print Queue --")*@
+                        @*@Html.EditorFor(model => model.Tray, new { htmlAttributes = new { @class = "form-control" } })*@
+                        @Html.ValidationMessageFor(model => model.cloneDevSettings, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                @Html.HiddenFor(model => model.cloneDevSettings)
+                @*<input type="hidden" id="cloneDevSettings" name="cloneDevSettings" />*@
+            }
 
             <div class="form-group">
                 @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -88,7 +107,7 @@
         
         </section>
         <section>
-            <p>Enterprise Print Queue Configuration </p>
+            <p><h3>Enterprise Print Queue Configuration</h3> </p>
 
             @if (ViewData["ENTuseIP"].ToString() == "True")
             {
@@ -120,6 +139,49 @@
             {
                 <input type="hidden" id="ENTTray" name="ENTTray" />
             }
+
+            @if (ViewData["ENTuseGold"].ToString() == "True")
+            {
+                <p>Source Printer and Copy Printer Device Settings checkbox can be left blank/untouched if there is not a printer you'd like to copy from.  These are not required fields.</p>
+                            <p>Please make sure the Source Printer's driver is the same as the Driver Name.</p>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ENTSourcePrinter, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("SourcePrinter", new SelectList((System.Collections.IEnumerable)ViewData["ENTgetGold"]), "-- Select Source Print Queue --")
+                        @*@Html.EditorFor(model => model.Tray, new { htmlAttributes = new { @class = "form-control" } })*@
+                        @Html.ValidationMessageFor(model => model.ENTSourcePrinter, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" id="ENTSourcePrinter" name="ENTSourcePrinter" />
+            }
+            @*<div class="form-group">
+            @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DriverName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DriverName, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+            @if (ViewData["ENTcloneDevSettings"].ToString() == "True")
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.cloneENTDevSettings, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.CheckBoxFor(model => model.cloneENTDevSettings)
+                        @*@Html.DropDownList("SourcePrinter", new SelectList((System.Collections.IEnumerable)ViewData["getGold"]), "-- Select Source EPS Print Queue --")*@
+                        @*@Html.EditorFor(model => model.Tray, new { htmlAttributes = new { @class = "form-control" } })*@
+                        @Html.ValidationMessageFor(model => model.cloneENTDevSettings, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                @Html.HiddenFor(model => model.cloneENTDevSettings)
+                @*<input type="hidden" id="cloneDevSettings" name="cloneDevSettings" />*@
+            }
+
 
             @*<div class="form-group">
             @Html.LabelFor(model => model.DriverName, htmlAttributes: new { @class = "control-label col-md-2" })
