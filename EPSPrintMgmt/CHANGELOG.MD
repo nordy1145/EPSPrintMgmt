@@ -4,9 +4,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Additional Print Driver management along with label printers.
+- Background jobs for adding/remove printers
 
 ### Changed
 - Change the search option to choose either a EPS or Enterprise option, versus having to choose an individual server.
+
+## [1.0.9.10] - 2017-11-13
+### Added
+- Added ability to copy print driver and device settings from a source Print Queue
+### Changed
+- Ability to manage print trays as this should be handled by cloning a print queue
+
 
 ## [1.0.9.9] - 2017-10-30
 ### Added
