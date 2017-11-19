@@ -1,6 +1,7 @@
 # EPSPrintMgmt
 
 ##UPDATE:
+-v1.0.9.11 Restricts the view based upon users security.  Auto populate missing fields in AppSettings.config file.  If there are missing keys, it will populate them with defaults, but it also removes all comments, so please reference the template for any necessary comments.
 -v1.0.9.10 Allows you to clone a print driver preferences and device settings!!  Make sure to have the KB below installed for this to work.
 
 -v1.0.9.8 If you want to clone a EPS Print queue, you need the following update installed on the web server in order to do this
