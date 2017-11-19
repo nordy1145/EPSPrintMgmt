@@ -1,6 +1,8 @@
 # EPSPrintMgmt
 
 ##UPDATE:
+-v1.0.9.10 Allows you to clone a print driver preferences and device settings!!  Make sure to have the KB below installed for this to work.
+
 -v1.0.9.8 If you want to clone a EPS Print queue, you need the following update installed on the web server in order to do this
 https://support.microsoft.com/en-us/help/2954953/some-apis-do-not-work-when-they-are-called-in-services-in-windows
 
