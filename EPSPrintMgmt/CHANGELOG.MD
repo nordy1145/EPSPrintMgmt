@@ -3,11 +3,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- Additional Print Driver management along with label printers.
 - Background jobs for adding/remove printers
+- Ability to create a static IP address within InfoBlox.
 
 ### Changed
 - Change the search option to choose either a EPS or Enterprise option, versus having to choose an individual server.
+
+## [1.0.9.11] - 2017-11-18
+### Added
+- Autopopulate the AppSettings.config file on startup.  Will add new keys if missing
+### Changed
+- The Layout now adds/removes menu options based upon the security you have access to.
+
 
 ## [1.0.9.10] - 2017-11-13
 ### Added
