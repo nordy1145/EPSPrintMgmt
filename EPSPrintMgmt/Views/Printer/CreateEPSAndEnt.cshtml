@@ -4,14 +4,14 @@
     ViewBag.Title = "Add EPS and Enterprise Printer";
 }
 
-<h2>Add Enterprise Printer</h2>
+<h2>Add EPS and Enterprise Printer</h2>
 
 @using (Html.BeginForm("CreateEPSAndEnterprisePrinterJSON", "Printer", FormMethod.Post, new { encType = "multipart/form-data", id = "myform", name = "myform" }))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <p>This page allows you to create an Enterprise print.</p>
+        <p>This page allows you to create an EPS and  Enterprise print queue at the same time.</p>
         <p>The page may continue to load for a few minutes.  Please give it some time to finish.</p>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })

@@ -10,7 +10,10 @@
 
 @if (ViewData["isEPSServer"].ToString() == "True")
 {
-    <button id="ClearPrintJobs" class="btn btn-default">Clear All Print Jobs</button>
+    if (ViewData["allowPrintJob"].ToString() == "True")
+    {
+        <button id="ClearPrintJobs" class="btn btn-default">Clear All Print Jobs</button>
+    }
 }
 
 @if (ViewData["isEPSServer"].ToString() == "True")
@@ -18,7 +21,7 @@
     <button id="PrintTestPage" class="btn btn-default btn-">Print Test Page</button>
 }
 
-@if (ViewData["isEPSServer"].ToString() == "True")
+@if (ViewData["isEPSServer"].ToString() == "True"&& ViewData["allowADGroupToEditEPS"].ToString()=="True")
 {
     @Html.ActionLink("Edit EPS Printer", "Edit", new { printer = ViewData["thePrinter"] }, new { @class = "btn btn-default" })
 }
@@ -31,12 +34,12 @@
             }
         }*@
 
-    @if (ViewData["allowDelete"].ToString() == "True")
+    @if (ViewData["allowDelete"].ToString() == "True"&& ViewData["allowADGroupToDelete"].ToString() == "True" && ViewData["isEPSServer"].ToString() == "True")
     {
-        if (ViewData["isEPSServer"].ToString() == "True")
-        {
+        //if (ViewData["isEPSServer"].ToString() == "True")
+        //{
             <button id="DeleteEPSPrinter" class="btn btn-default pull-right">Delete EPS Printer</button>
-        }
+        //}
     }
 
     <table class="table">

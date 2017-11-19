@@ -10,28 +10,28 @@
     @Scripts.Render("~/bundles/modernizr")
     @Styles.Render("~/Content/datatables")
     <style>
-        .submit-progress {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  height: 6em;
-  padding-top: 2.3em;
-  /* The following rules are the
-     ones most likely to change */
-  width: 20em;
-  /* Set 'margin-left' to a negative number
-     that is 1/2 of 'width' */
-  margin-left: -10em;
-  padding-left: 2.1em;
-  background-color: black;
-  color: white;
-  -webkit-border-radius: 0.4em;
-  -moz-border-radius: 0.4em;
-  border-radius: 0.4em;
-  box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
-  -webkit-box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
-  -moz-box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
-}
+           .submit-progress {
+               position: fixed;
+               top: 50%;
+               left: 50%;
+               height: 6em;
+               padding-top: 2.3em;
+               /* The following rules are the
+        ones most likely to change */
+               width: 20em;
+               /* Set 'margin-left' to a negative number
+        that is 1/2 of 'width' */
+               margin-left: -10em;
+               padding-left: 2.1em;
+               background-color: black;
+               color: white;
+               -webkit-border-radius: 0.4em;
+               -moz-border-radius: 0.4em;
+               border-radius: 0.4em;
+               box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
+               -webkit-box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
+               -moz-box-shadow: 0.4em 0.4em rgba(0,0,0,0.6);
+           }
     </style>
 </head>
 <body>
@@ -51,23 +51,37 @@
                         <a href="#" class="dropdown-toggle" id="dropdownCommonMenu" data-toggle="dropdown">Printers <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownCommonMenu">
                             <li role="menuitem">@Html.ActionLink("View Printers", "Index", "Printer")</li>
-                            <li role="menuitem">@Html.ActionLink("Create EPS Printer", "Create", "Printer")</li>
+                            @*<li role="menuitem">@Html.ActionLink("Create EPS Printer", "Create", "Printer")</li>*@
+                            @if (ViewBag.IsAbleAddEPSPrinters == true)
+                            {
+                                <li role="menuitem">@Html.ActionLink("Create EPS Printer", "Create", "Printer")</li>
+
+                            }
                             @*Defined in ApplicationStartupItems.cs and Global.asax.cs files*@
                             @if (ViewBag.IsAbleAddENTPrinters == true)
                             {
-                            <li role="menuitem">@Html.ActionLink("Create Enterprise Printer", "CreateEnt", "Printer")</li>
+                                <li role="menuitem">@Html.ActionLink("Create Enterprise Printer", "CreateEnt", "Printer")</li>
                             }
                             @*@{ Html.RenderAction("EditEnterprisePrinter", "Home", "");}*@
-                            @if (ViewBag.IsAbleAddEPSandENTPrinters==true)
+                            @if (ViewBag.IsAbleAddEPSandENTPrinters == true)
                             {
-                            <li role="menuitem">@Html.ActionLink("Create EPS And Enterprise Printer", "CreateEPSAndEnt", "Printer")</li>
+                                <li role="menuitem">@Html.ActionLink("Create EPS And Enterprise Printer", "CreateEPSAndEnt", "Printer")</li>
 
                             }
                             <li role="menuitem">@Html.ActionLink("Search For a Printer", "Search", "Printer")</li>
                         </ul>
                     </li>
-                    <li>@Html.ActionLink("Print Jobs", "Index", "PrintJob")</li>
-                    <li>@Html.ActionLink("Print Servers", "Index", "PrintServer")</li>
+
+                    @if (ViewBag.IsAbleSeePrintJobs == true)
+                    {
+                        
+                        <li>@Html.ActionLink("Print Jobs", "Index", "PrintJob")</li>
+
+                    }
+                    @if (ViewBag.IsAbleSeePrintServers == true)
+                    {
+                        <li>@Html.ActionLink("Print Servers", "Index", "PrintServer")</li>
+                    }
                 </ul>
                 <p class="nav navbar-text navbar-right">Hello, @User.Identity.Name!</p>
             </div>

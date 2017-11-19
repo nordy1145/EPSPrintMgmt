@@ -654,9 +654,12 @@ namespace EPSPrintMgmt.Controllers
             ViewData["thePrinter"] = printer;
             ViewData["theServer"] = printserver;
             ViewData["isEPSServer"] = Support.GetEPSServers().Exists(s => s == printserver).ToString();
+            ViewData["allowADGroupToEditEPS"] = (Support.IsUserAuthorized(Support.ADGroupCanEditEPSPrinter()));
             ViewData["isEntServer"] = Support.GetEnterprisePrintServers().Exists(s => s == printserver).ToString();
             ViewData["allowDelete"] = Support.AllowEPSPrintDeletion();
+            ViewData["allowADGroupToDelete"] = (Support.IsUserAuthorized(Support.ADGroupCanDeleteEPSPrinter()));
             ViewData["allowEntPrinterEdit"] = Support.EditEnterprisePrinters();
+            ViewData["allowPrintJob"] = (Support.IsUserAuthorized(Support.ADGroupCanPurgePrintQueues()));
             //Return the printer for the View.
             if (Support.GetEPSServers().Exists(s => s == printserver) == true)
             {

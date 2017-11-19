@@ -110,4 +110,6 @@
   <add key="ADGrouptoEditEnterprisePrinter" value="Domain\ADGRoup" />
   <!--Following key is used to determine what AD group can Purge Print Queues. -->
   <add key="ADGrouptoPurgePrintQueues" value="Domain\ADGRoup" />
+  <!--Following key is used to determine what AD group can view the Print Servers section. -->
+  <add key="ADGrouptoViewPrintServers" value="Domain\ADGroup" />
 </appSettings>
