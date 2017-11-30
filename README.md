@@ -1,6 +1,14 @@
 # EPSPrintMgmt
 
 ##UPDATE:
+-v1.1.0.1 Adds functionality to proccess jobs in the background now.  The following items need to be set in order for the site to work now.
+SQL Express LocalDB 2016 installation from the External_Resources folder (SqlLocalDB.msi) needs to be installed.
+"C:\Windows\System32\inetsrv\config\applicationHost.config" needs to be altered.  In the ApplicationPools section, the ApplicationPoolDefaults needs to have the loadUserProfile="true" and setProfileEnvironment="true" settings added.
+            <applicationPoolDefaults managedRuntimeVersion="v4.0">
+                <processModel identityType="ApplicationPoolIdentity" loadUserProfile="true" setProfileEnvironment="true" />
+            </applicationPoolDefaults>
+In the App_Data folder, the Hangfire.mdf and Hangfire_lod.ldf files need modify access for the service account running the application.
+
 -v1.0.9.11 Restricts the view based upon users security.  Auto populate missing fields in AppSettings.config file.  If there are missing keys, it will populate them with defaults, but it also removes all comments, so please reference the template for any necessary comments.
 -v1.0.9.10 Allows you to clone a print driver preferences and device settings!!  Make sure to have the KB below installed for this to work.
 
@@ -36,6 +44,15 @@ Under the Default Web Site or custom Virtual Application go to Basic Settings an
   Under the IIS section open Authenication Disable Anonymous Authentication and Enable Windows Authentication.
   
 Either at the Top IIS server level or the Web Site level, go to the ASP.NET section -> .NET Authorization Rules.  Remove the Allow Any and add an Allow Rule.   Add the AD Group you want to give access to the actual website.
+
+SQL Express LocalDB 2016 installation from the External_Resources folder (SqlLocalDB.msi) needs to be installed.
+
+"C:\Windows\System32\inetsrv\config\applicationHost.config" needs to be altered.  In the ApplicationPools section, the ApplicationPoolDefaults needs to have the loadUserProfile="true" and setProfileEnvironment="true" settings added.
+            <applicationPoolDefaults managedRuntimeVersion="v4.0">
+                <processModel identityType="ApplicationPoolIdentity" loadUserProfile="true" setProfileEnvironment="true" />
+            </applicationPoolDefaults>
+            
+In the App_Data folder, the Hangfire.mdf and Hangfire_lod.ldf files need modify access for the service account running the application.
 
 Can bind a certificate to port 443 if you'd like.
 
