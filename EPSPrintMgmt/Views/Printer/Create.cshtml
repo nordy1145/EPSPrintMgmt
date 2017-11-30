@@ -6,7 +6,7 @@
 
 <h2>Add EPS Printer</h2>
 
-@using (Html.BeginForm("CreatePrinterJSON", "Printer", FormMethod.Post, new { encType = "multipart/form-data", id = "myform", name = "myform" }))
+@using (Html.BeginForm("CreatePrinterBackgroundJSON", "Printer", FormMethod.Post, new { encType = "multipart/form-data", id = "myform", name = "myform" }))
 {
     @Html.AntiForgeryToken()
 

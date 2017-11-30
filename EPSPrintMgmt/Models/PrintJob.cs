@@ -42,9 +42,7 @@ namespace EPSPrintMgmt.Models
             var theJob = jobs.Where(j => j.JobIdentifier.Equals(this.PrintJobID)).First();
             if (theJob == null)
                 return;
-            //Console.WriteLine("Print Job ID " + theJob.JobIdentifier);
-            //Console.WriteLine("Print Job ID " + theJob.Name);
-            //Console.WriteLine("Print Job ID " + theJob.JobName);
+ 
             theJob.Cancel();
         }
     }

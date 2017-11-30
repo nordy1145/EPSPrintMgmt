@@ -1,0 +1,88 @@
+﻿@model EPSPrintMgmt.Models.JobsSucceededView
+@{
+    ViewBag.Title = "Test";
+}
+
+<h1>Completed Jobs</h1>
+
+<div style="align-items:center;display:flex;justify-content:center;float:right">
+    <button type="button" onclick="location.href='@Url.Action("ProcessingJobs", "Job")'">Processing jobs</button>
+    <button type="button" onclick="location.href='@Url.Action("FailedJobs", "Job")'">Failed jobs</button>
+</div>
+
+<div class="container">
+    <h5> Page automatically reloads every 60 seconds.  Click buttons on right to go to other jobs.</h5>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Start Time</th>
+                <th>Printer</th>
+                <th>Print Server</th>
+                <th>Results</th>
+                <th>User</th>
+                <th>Comments</th>
+                <th>Time to Install</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SucceededJobs)
+            {
+                <tr>
+                    <td>
+                        @item.startTime
+                    </td>
+                    <td>
+                        @item.printer
+                    </td>
+                    <td>
+                        @item.server
+                    </td>
+                    <td>
+                        @item.result
+                    </td>
+                    <td>
+                        @item.userName
+                    </td>
+                    <td>
+                        @item.comment
+                    </td>
+                    <td>
+                        @item.processingTime
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- pager -->
+    @if (Model.Pager.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Pager.CurrentPage > 1)
+                {
+                <li>
+                    <a href="~/Job/SucceededJobs">First</a>
+                </li>
+                <li>
+                    <a href="~/Job/SucceededJobs?page=@(Model.Pager.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+
+            @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+                {
+                <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
+                    <a href="~/Job/SucceededJobs?page=@page">@page</a>
+                </li>
+            }
+
+            @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+                {
+                <li>
+                    <a href="~/Job/SucceededJobs?page=@(Model.Pager.CurrentPage + 1)">Next</a>
+                </li>
+                <li>
+                    <a href="~/Job/SucceededJobs?page=@(Model.Pager.TotalPages)">Last</a>
+                </li>
+            }
+        </ul>}
+</div>

@@ -1,0 +1,89 @@
+﻿@model EPSPrintMgmt.Models.JobsFailedVIew
+@{
+    ViewBag.Title = "Failed Jobs";
+}
+
+<h1>Failed Jobs</h1>
+<div style="align-items:center;display:flex;justify-content:center;float:right">
+    <button type="button" onclick="location.href='@Url.Action("SucceededJobs", "Job")'">Completed jobs</button>
+    <button type="button" onclick="location.href='@Url.Action("ProcessingJobs", "Job")'">Processing jobs</button>
+</div>
+<div class="container">
+    <h5> Page automatically reloads every 60 seconds.  Click buttons on right to go to other jobs.</h5>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Failed Time</th>
+                <th>Printer</th>
+                <th>Driver Name</th>
+                <th>Server</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.FailedJobs)
+            {
+                EPSPrintMgmt.Models.AddPrinterClass i = (EPSPrintMgmt.Models.AddPrinterClass)item.Value.Job.Args[0];
+                string printServer = (string)item.Value.Job.Args[1];
+                string userName = (string)item.Value.Job.Args[2];
+                <tr>
+                    <td>
+                        @item.Value.FailedAt.Value.ToLocalTime()
+                    </td>
+                    <td>
+                        @i.DeviceID
+                    </td>
+                    <td>
+                        @i.DriverName
+                    </td>
+                    <td>
+                        @printServer
+                    </td>
+                    <td>
+                        @userName
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+        <!-- items being paged -->
+        <ul>
+            @foreach (var item in Model.FailedJobs)
+            {
+                <li>@item.Value.Job | @item.Value.Reason</li>
+            }
+        </ul>
+
+        <!-- pager -->
+        @if (Model.Pager.EndPage > 1)
+        {
+            <ul class="pagination">
+                @if (Model.Pager.CurrentPage > 1)
+                {
+                    <li>
+                        <a href="~/Job/FailedJobs">First</a>
+                    </li>
+                    <li>
+                        <a href="~/Job/FailedJobs?page=@(Model.Pager.CurrentPage - 1)">Previous</a>
+                    </li>
+                }
+
+                @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+                {
+                    <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
+                        <a href="~/Job/FailedJobs?page=@page">@page</a>
+                    </li>
+                }
+
+                @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+                {
+                    <li>
+                        <a href="~/Job/FailedJobs?page=@(Model.Pager.CurrentPage + 1)">Next</a>
+                    </li>
+                    <li>
+                        <a href="~/Job/FailedJobs?page=@(Model.Pager.TotalPages)">Last</a>
+                    </li>
+                }
+            </ul>}
+</div>

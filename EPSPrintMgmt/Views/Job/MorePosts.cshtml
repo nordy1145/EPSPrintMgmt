@@ -1,0 +1,11 @@
+﻿@model Hangfire.Storage.Monitoring.JobList<Hangfire.Storage.Monitoring.SucceededJobDto>
+<table>
+   
+@foreach (var i in Model)
+{
+   <tr>
+       <td>@i.Value.Job.ToString()</td>
+       <td>@i.Value.Result.ToString()</td>
+   </tr> 
+}
+</table>

@@ -1,0 +1,21 @@
+﻿@model Hangfire.Storage.Monitoring.JobList<Hangfire.Storage.Monitoring.SucceededJobDto>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@Ajax.ActionLink("Click to Load More","MorePosts",new AjaxOptions()
+{HttpMethod="Get",
+    AllowCache=false,
+    InsertionMode = InsertionMode.InsertAfter,
+    UpdateTargetId ="updates-go-here"
+})
+@foreach(var item in Model)
+{
+    <p>@item.Value.Job</p>
+    <p>@item.Value.Result</p>
+    <p>@item.Value.SucceededAt</p>
+}
+<div id="updates-go-here"></div>
+

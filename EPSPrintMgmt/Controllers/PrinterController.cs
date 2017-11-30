@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Web.Hosting;
 using System.Threading;
 using Microsoft.Win32;
+using Hangfire;
 
 namespace EPSPrintMgmt.Controllers
 {
@@ -168,7 +169,7 @@ namespace EPSPrintMgmt.Controllers
             ViewData["getGold"] = Support.GetEPSGoldPrinters();
             ViewData["useGold"] = Support.UseEPSGoldPrinter();
             ViewData["cloneDevSettings"] = Support.clonePrinterDeviceSettings();
-            return View(new AddPrinterClass{cloneDevSettings=false });
+            return View(new AddPrinterClass { cloneDevSettings = false });
         }
         public ActionResult CreateENT()
         {
@@ -212,7 +213,7 @@ namespace EPSPrintMgmt.Controllers
             ViewData["ENTgetGold"] = Support.GetEntGoldPrinters();
             ViewData["ENTuseGold"] = Support.UseEntGoldPrinter();
             ViewData["ENTcloneDevSettings"] = Support.cloneEntPrinterDeviceSettings();
-            return View(new AddEPSandENTPrinterClass {cloneDevSettings=false,cloneENTDevSettings=false });
+            return View(new AddEPSandENTPrinterClass { cloneDevSettings = false, cloneENTDevSettings = false });
         }
         //Used for parallel and AJAX processing of new EPS printer creation.
         [HttpPost]
@@ -280,7 +281,7 @@ namespace EPSPrintMgmt.Controllers
                                 if (Support.UseEPSGoldPrinter() && theNewPrinter.SourcePrinter != null)
                                 {
                                     var clonePrinterSettings = false;
-                                    if(Support.clonePrinterDeviceSettings()&& theNewPrinter.cloneDevSettings)
+                                    if (Support.clonePrinterDeviceSettings() && theNewPrinter.cloneDevSettings)
                                     {
                                         clonePrinterSettings = true;
                                     }
@@ -390,7 +391,7 @@ namespace EPSPrintMgmt.Controllers
                         {
                             //Try to add the printer now the port is defined on the server.
                             //first setup the props of the printer
-                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false,SourcePrinter=theNewPrinter.SourcePrinter };
+                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.SourcePrinter };
                             PrintServer thePrintServer = new PrintServer(@"\\" + theNewPrinter.PrintServer, PrintSystemDesiredAccess.AdministrateServer);
                             //Use the string return function to determine if the printer was successfully added or not.
                             outcome.Add(AddNewEnterprisePrinterStringReturn(newPrinter, mySession, thePrintServer));
@@ -553,7 +554,7 @@ namespace EPSPrintMgmt.Controllers
                                 {
                                     //Try to add the printer now the port is defined on the server.
                                     //first setup the props of the printer
-                                    AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.ENTDriverName, EnableBIDI = false, PortName = theNewPrinter.ENTPortName, Published = false, Shared = false,SourcePrinter=theNewPrinter.ENTSourcePrinter,SourceServer=Support.GetEntGoldPrintServer() };
+                                    AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.ENTDriverName, EnableBIDI = false, PortName = theNewPrinter.ENTPortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.ENTSourcePrinter, SourceServer = Support.GetEntGoldPrintServer() };
                                     PrintServer thePrintServer = new PrintServer(@"\\" + theNewPrinter.PrintServer, PrintSystemDesiredAccess.AdministrateServer);
                                     //Use the string return function to determine if the printer was successfully added or not.
                                     logger.Debug("Before creation of new ENT Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
@@ -1416,50 +1417,67 @@ namespace EPSPrintMgmt.Controllers
         //Assumes you have verified the print server and ip/dns entries are valid.
         static private void AddNewPrinterPort(AddPrinterPortClass theNewPrinterPort, string thePrintServer)
         {
-            //Uses Powershell and WMI to create the new printer port.
-            string Namespace = @"root\cimv2";
-            string className = "Win32_TCPIPPrinterPort";
+            try
+            {
+                //Uses Powershell and WMI to create the new printer port.
+                string Namespace = @"root\cimv2";
+                string className = "Win32_TCPIPPrinterPort";
 
-            //Create the CimInstance for the new printer port. Items for a WMI query really.
-            CimInstance newPrinter = new CimInstance(className, Namespace);
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("Name", theNewPrinterPort.Name, CimFlags.Any));
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("SNMPEnabled", theNewPrinterPort.SNMPEnabled, CimFlags.Any));
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("Protocol", theNewPrinterPort.Protocol, CimFlags.Any));
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("PortNumber", theNewPrinterPort.PortNumber, CimFlags.Any));
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("HostAddress", theNewPrinterPort.HostAddress, CimFlags.Any));
+                //Create the CimInstance for the new printer port. Items for a WMI query really.
+                CimInstance newPrinter = new CimInstance(className, Namespace);
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("Name", theNewPrinterPort.Name, CimFlags.Any));
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("SNMPEnabled", theNewPrinterPort.SNMPEnabled, CimFlags.Any));
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("Protocol", theNewPrinterPort.Protocol, CimFlags.Any));
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("PortNumber", theNewPrinterPort.PortNumber, CimFlags.Any));
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("HostAddress", theNewPrinterPort.HostAddress, CimFlags.Any));
 
-            //Create the Cimsession to the print server.
-            CimSession Session = CimSession.Create(thePrintServer);
-            //Actually create the printer port on the print server.
-            CimInstance myPrinter = Session.CreateInstance(Namespace, newPrinter);
-            //Cleanup
-            myPrinter.Dispose();
-            Session.Dispose();
+                //Create the Cimsession to the print server.
+                CimSession Session = CimSession.Create(thePrintServer);
+                //Actually create the printer port on the print server.
+                CimInstance myPrinter = Session.CreateInstance(Namespace, newPrinter);
+                //Cleanup
+                myPrinter.Dispose();
+                Session.Dispose();
+
+            }
+            catch
+            {
+
+            }
         }
         //Add a printer port to a server.
         //Assumes you have verified the print server and ip/dns entries are valid.
         //This method reuses an existing CimSession.
         static private void AddNewPrinterPort(AddPrinterPortClass theNewPrinterPort, CimSession session)
         {
-            //Uses Powershell and WMI to create the new printer port.
-            string Namespace = @"root\cimv2";
-            string className = "Win32_TCPIPPrinterPort";
+            try
+            {
+                //Uses Powershell and WMI to create the new printer port.
+                string Namespace = @"root\cimv2";
+                string className = "Win32_TCPIPPrinterPort";
 
-            //Create the CimInstance for the new printer port. Items for a WMI query really.
-            CimInstance newPrinter = new CimInstance(className, Namespace);
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("Name", theNewPrinterPort.Name, CimFlags.Any));
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("SNMPEnabled", theNewPrinterPort.SNMPEnabled, CimFlags.Any));
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("Protocol", theNewPrinterPort.Protocol, CimFlags.Any));
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("PortNumber", theNewPrinterPort.PortNumber, CimFlags.Any));
-            newPrinter.CimInstanceProperties.Add(CimProperty.Create("HostAddress", theNewPrinterPort.HostAddress, CimFlags.Any));
+                //Create the CimInstance for the new printer port. Items for a WMI query really.
+                CimInstance newPrinter = new CimInstance(className, Namespace);
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("Name", theNewPrinterPort.Name, CimFlags.Any));
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("SNMPEnabled", theNewPrinterPort.SNMPEnabled, CimFlags.Any));
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("Protocol", theNewPrinterPort.Protocol, CimFlags.Any));
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("PortNumber", theNewPrinterPort.PortNumber, CimFlags.Any));
+                newPrinter.CimInstanceProperties.Add(CimProperty.Create("HostAddress", theNewPrinterPort.HostAddress, CimFlags.Any));
 
-            //Create the Cimsession to the print server.
-            //CimSession Session = CimSession.Create(thePrintServer);
-            //Actually create the printer port on the print server.
-            CimInstance myPrinter = session.CreateInstance(Namespace, newPrinter);
-            //Cleanup
-            myPrinter.Dispose();
-            //Session.Dispose();
+                //Create the Cimsession to the print server.
+                //CimSession Session = CimSession.Create(thePrintServer);
+                //Actually create the printer port on the print server.
+                CimInstance myPrinter = session.CreateInstance(Namespace, newPrinter);
+                //Cleanup
+                myPrinter.Dispose();
+                //Session.Dispose();
+
+            }
+            catch
+            {
+
+            }
+
         }
         //Add a printer and return success or failure in a string.
         public string AddNewPrinterStringReturn(AddPrinterClass theNewPrinter, string thePrintServer)
@@ -1555,6 +1573,137 @@ namespace EPSPrintMgmt.Controllers
             {
                 //session didn't connect.  Return False
                 return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + thePrintServer);
+            }
+
+            //return (theNewPrinter.DeviceID + " was added successfully on " + thePrintServer);
+
+        }
+        //Add a printer and return success or failure in a string.
+        public PrinterCreation AddNewPrinterBackground(AddPrinterClass theNewPrinter, string thePrintServer, string user)
+        {
+            PrinterCreation outcome = new PrinterCreation { userName = user, printer = theNewPrinter.DeviceID, server = thePrintServer };
+            Stopwatch newwatch = new Stopwatch();
+            newwatch.Start();
+            logger.Debug("Start of Adding New Printer Function : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+            PrintServer printServer = new PrintServer(@"\\" + thePrintServer, PrintSystemDesiredAccess.AdministrateServer);
+            PrintPropertyDictionary printProps = new PrintPropertyDictionary { };
+            // Share the new printer using Remove/Add methods
+            PrintBooleanProperty shared = new PrintBooleanProperty("IsShared", false);
+            PrintBooleanProperty BIDI = new PrintBooleanProperty("EnableBIDI", false);
+            PrintBooleanProperty isBIDI = new PrintBooleanProperty("IsBidiEnabled", false);
+            PrintBooleanProperty published = new PrintBooleanProperty("Published", false);
+            PrintBooleanProperty direct = new PrintBooleanProperty("IsDirect", false);
+            PrintBooleanProperty spoolFirst = new PrintBooleanProperty("ScheduleCompletedJobsFirst", true);
+            PrintBooleanProperty doComplete = new PrintBooleanProperty("DoCompleteFirst", true);
+            printProps.Add("IsShared", shared);
+            printProps.Add("EnableBIDI", BIDI);
+            printProps.Add("IsBidiEnabled", isBIDI);
+            printProps.Add("Published", published);
+            printProps.Add("IsDirect", direct);
+            printProps.Add("DoCompleteFirst", doComplete);
+            printProps.Add("ScheduleCompletedJobsFirst", spoolFirst);
+            String[] port = new String[] { theNewPrinter.PortName };
+
+            try
+            {
+                logger.Debug("Start of Adding Installing Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                PrintQueue AddingPrinterHere = printServer.InstallPrintQueue(theNewPrinter.DeviceID, theNewPrinter.DriverName, port, "WinPrint", printProps);
+                logger.Debug("Installed Print Queue Before Commit : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                printServer.Commit();
+                logger.Debug("After Commit of Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                printServer.Dispose();
+                logger.Debug("After dispose of Print Server : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+            }
+            catch (System.Printing.PrintSystemException e)
+            {
+                outcome.comment = "Failed on adding print queue.  " + e.ToString();
+                outcome.result = "failed";
+                outcome.processingTime = newwatch.ElapsedMilliseconds.ToString();
+                //Send email and return results if DNS does not exist for the printer.
+                Support.SendEmail("Failed to install Print Queue " + theNewPrinter.DeviceID, "Printer: " + theNewPrinter.DeviceID + " failed to install on "+thePrintServer+ "by user "+user+".  Error: "+e.ToString());
+                return (outcome);
+            }
+            logger.Debug("Finished Installing Printer before Sleep for 1000ms : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+            //Have to change some printer properties that are not modified in installation.
+            System.Threading.Thread.Sleep(1000);
+            //This uses PowerShell CimSession and WMI to query the information from the server.
+            //Used to change printer props
+
+            if (Support.UseEPSGoldPrinter() && theNewPrinter.SourcePrinter != null)
+            {
+                var clonePrinterSettings = false;
+                if (Support.clonePrinterDeviceSettings() && theNewPrinter.cloneDevSettings)
+                {
+                    clonePrinterSettings = true;
+                }
+                clonePrintQueue(theNewPrinter, thePrintServer, Support.GetEPSGoldPrintServer(), clonePrinterSettings);
+                logger.Debug("After Print Queue is Cloned : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+            }
+
+            string Namespace = @"root\cimv2";
+            string OSQuery = "SELECT * FROM Win32_Printer";
+            logger.Debug("Before Cimsession creation : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+            CimSession mySession = CimSession.Create(thePrintServer);
+            logger.Debug("After Cimsession creation and before testing connection : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+            //Verify the session created correctly, otherwise it will error out if it fails to connect.
+            var testtheConnection = mySession.TestConnection();
+            logger.Debug("After Cimsession Connection Test : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+            if (testtheConnection == true)
+            {
+                logger.Debug("Before Query Instance Setup : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                //Query WMI for Printer Ports on the server.
+                IEnumerable<CimInstance> queryInstance = mySession.QueryInstances(Namespace, "WQL", OSQuery);
+                logger.Debug("After Query Instance Setup but before Query Instance Where Statement : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                //Check to see if it exists in the query response.
+                CimInstance exist = queryInstance.Where(p => p.CimInstanceProperties["Name"].Value.Equals(theNewPrinter.DeviceID)).FirstOrDefault();
+                logger.Debug("After Query Instance Statement to see if Print Queue exists : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                //If the printer exists, then return true.
+                if (exist != null)
+                {
+                    logger.Debug("Before Modifying the Properties : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                    //return true and exit.
+                    exist.CimInstanceProperties["EnableBIDI"].Value = false;
+                    exist.CimInstanceProperties["DoCompleteFirst"].Value = true;
+                    exist.CimInstanceProperties["RawOnly"].Value = true;
+                    try
+                    {
+                        mySession.ModifyInstance(Namespace, exist);
+                        logger.Debug("After Modifying the WMI Properities and before Disposing of the Session : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                        mySession.Dispose();
+                        logger.Debug("After Disposing of CIM Instance : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
+                        outcome.processingTime = newwatch.ElapsedMilliseconds.ToString();
+                        outcome.result = "Success";
+                        outcome.comment = "Successfully added printer";
+                        return (outcome);
+                    }
+                    catch
+                    {
+                        outcome.processingTime = newwatch.ElapsedMilliseconds.ToString();
+                        outcome.result = "Success";
+                        outcome.comment = "Successfully added but the printer properties were not set";
+                        return (outcome);
+                        //return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + thePrintServer);
+                    }
+                }
+                else
+                {
+                    //item doesn't exist...
+                    mySession.Dispose();
+                    outcome.processingTime = newwatch.ElapsedMilliseconds.ToString();
+                    outcome.result = "Success";
+                    outcome.comment = "Successfully added but the printer properties were not set";
+                    return (outcome);
+                    //return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + thePrintServer);
+                }
+            }
+            else
+            {
+                //session didn't connect.  Return False
+                outcome.processingTime = newwatch.ElapsedMilliseconds.ToString();
+                outcome.result = "Success";
+                outcome.comment = "Successfully added but the printer properties were not set";
+                return (outcome);
+                //return (theNewPrinter.DeviceID + " was added, but the printer properties were not set on " + thePrintServer);
             }
 
             //return (theNewPrinter.DeviceID + " was added successfully on " + thePrintServer);
@@ -1657,13 +1806,13 @@ namespace EPSPrintMgmt.Controllers
             try
             {
 
-            Collection<PSObject> testMailNickName = PowerShell.Create()
-                    .AddCommand("Add-Printer")
-                    .AddParameter("Name", theNewPrinter.DeviceID)
-                    .AddParameter("DriverName", theNewPrinter.DriverName)
-                    .AddParameter("PortName", theNewPrinter.PortName)
-                    .AddParameter("ComputerName", thePrintServer)
-                    .Invoke();
+                Collection<PSObject> testMailNickName = PowerShell.Create()
+                        .AddCommand("Add-Printer")
+                        .AddParameter("Name", theNewPrinter.DeviceID)
+                        .AddParameter("DriverName", theNewPrinter.DriverName)
+                        .AddParameter("PortName", theNewPrinter.PortName)
+                        .AddParameter("ComputerName", thePrintServer)
+                        .Invoke();
             }
             catch (Exception e)
             {
@@ -1765,7 +1914,7 @@ namespace EPSPrintMgmt.Controllers
         }
 
         //Clone a print queue from a source print queue.
-        static private string clonePrintQueue(AddPrinterClass printer, string targetPrintServer, string sourcePrintServer,bool cloneDevSettings)
+        static private string clonePrintQueue(AddPrinterClass printer, string targetPrintServer, string sourcePrintServer, bool cloneDevSettings)
         {
 
             //PrintServer class requires the 2 wacks in the server name.
@@ -1791,7 +1940,7 @@ namespace EPSPrintMgmt.Controllers
             PrintTicket sourcePrintTicket = sourcePrintQueue.DefaultPrintTicket;
             //get the target Queue
             PrintQueue theTargetPrintQueue = theTargetPrintServer.GetPrintQueue(printer.DeviceID);
-            
+
             if (theTargetPrintQueue.QueueDriver.Name != sourcePrintQueue.QueueDriver.Name)
             {
                 return ("Please make sure print drivers are the same for cloning.  Did not clone the Printer Defaults for " + printer.DeviceID + " on print server " + targetPrintServer);
@@ -1813,8 +1962,8 @@ namespace EPSPrintMgmt.Controllers
 
                 if (cloneDevSettings == true)
                 {
-                    var sourceReg= RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine,sourcePrintServer).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Print\Printers\"+printer.SourcePrinter+@"\PrinterDriverData");
-                    var targetReg = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, targetPrintServer).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Print\Printers\" + printer.DeviceID + @"\PrinterDriverData",true);
+                    var sourceReg = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, sourcePrintServer).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Print\Printers\" + printer.SourcePrinter + @"\PrinterDriverData");
+                    var targetReg = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, targetPrintServer).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Print\Printers\" + printer.DeviceID + @"\PrinterDriverData", true);
                     sourceReg.CopyTo(targetReg);
                 }
                 return (printer.DeviceID + " successfully cloned the print queue to " + targetPrintServer + ".");
@@ -1919,6 +2068,157 @@ namespace EPSPrintMgmt.Controllers
             //return (theNewPrinter.DeviceID + " was added successfully on " + thePrintServer);
 
         }
+
+        public PrinterCreation AddNewEnterprisePrinterBackground(AddPrinterClass theNewPrinter, string thePrintServer, string user)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            //PrinterCreation output = new PrinterCreation { printer = theNewPrinter.DeviceID, server = thePrintServer, userName = User.Identity.Name.ToString() };
+            PrinterCreation output = new PrinterCreation() { };
+            output.printer = theNewPrinter.DeviceID;
+            output.server = thePrintServer;
+            output.userName = user;
+            output.comment = "";
+            output.processingTime = "";
+            output.result = "";
+            //setup the props of the new printer
+            PrintPropertyDictionary printProps = new PrintPropertyDictionary { };
+            // Share the new printer using Remove/Add methods
+            PrintBooleanProperty direct = new PrintBooleanProperty("IsDirect", false);
+            PrintBooleanProperty spoolFirst = new PrintBooleanProperty("ScheduleCompletedJobsFirst", true);
+            PrintBooleanProperty doComplete = new PrintBooleanProperty("DoCompleteFirst", true);
+            if (Support.UseEnterprisePrinterBiDirectionalSupport() != true)
+            {
+                PrintBooleanProperty BIDI = new PrintBooleanProperty("EnableBIDI", false);
+                printProps.Add("EnableBIDI", BIDI);
+            }
+            printProps.Add("IsDirect", direct);
+            printProps.Add("DoCompleteFirst", doComplete);
+            printProps.Add("ScheduleCompletedJobsFirst", spoolFirst);
+            String[] port = new String[] { theNewPrinter.PortName };
+            PrintQueueAttributes thePrintAttrs;
+            if (Support.UseEnterprisePrinterBiDirectionalSupport() != true)
+            {
+                thePrintAttrs = PrintQueueAttributes.Shared | PrintQueueAttributes.Published | PrintQueueAttributes.ScheduleCompletedJobsFirst;
+            }
+            else
+            {
+                thePrintAttrs = PrintQueueAttributes.EnableBidi | PrintQueueAttributes.Shared | PrintQueueAttributes.Published | PrintQueueAttributes.ScheduleCompletedJobsFirst;
+            }
+            //thePrintAttrs = PrintQueueAttributes.EnableBidi | PrintQueueAttributes.Shared | PrintQueueAttributes.Published | PrintQueueAttributes.ScheduleCompletedJobsFirst;
+
+            try
+            {
+                PrintServer printServer = new PrintServer(@"\\" + thePrintServer, PrintSystemDesiredAccess.AdministrateServer);
+
+                //PrintQueue AddingPrinterHere = printServer.InstallPrintQueue(theNewPrinter.DeviceID, theNewPrinter.DriverName, port, "WinPrint", printProps);
+                PrintQueue TheNewPrintQueue = printServer.InstallPrintQueue(theNewPrinter.DeviceID, theNewPrinter.DriverName, port, "WinPrint", thePrintAttrs, theNewPrinter.DeviceID, theNewPrinter.Comment, theNewPrinter.Location, "", 1, 1);
+                printServer.Commit();
+                printServer.Dispose();
+            }
+            catch (System.Printing.PrintSystemException e)
+            {
+                //printServer.Dispose();
+                stopWatch.Stop();
+                output.processingTime = stopWatch.ElapsedMilliseconds.ToString();
+                output.result = "failed";
+                output.comment = "Failed adding Enterprise Print Queue.  " + e.Message;
+                //Send email and return results if DNS does not exist for the printer.
+                Support.SendEmail("Failed to install Print Queue " + theNewPrinter.DeviceID, "Printer: " + theNewPrinter.DeviceID + " failed to install on " + thePrintServer + "by user " + user + ".  Error: " + e.ToString());
+                return (output);
+            }
+
+            //Clone the device?
+            if (Support.UseEntGoldPrinter() && theNewPrinter.SourcePrinter != null)
+            {
+                var clonePrinterSettings = false;
+                if (Support.cloneEntPrinterDeviceSettings() && theNewPrinter.cloneDevSettings)
+                {
+                    clonePrinterSettings = true;
+                }
+                clonePrintQueue(theNewPrinter, thePrintServer, Support.GetEntGoldPrintServer(), clonePrinterSettings);
+                //logger.Debug("After Print Queue is Cloned : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+            }
+
+            //Have to change some printer properties that are not modified in installation.
+            System.Threading.Thread.Sleep(1000);
+            //This uses PowerShell CimSession and WMI to query the information from the server.
+            //Used to change printer props
+            string Namespace = @"root\cimv2";
+            string OSQuery = "SELECT * FROM Win32_Printer";
+
+            try
+            {
+                CimSession mySession = CimSession.Create(thePrintServer);
+                var testtheConnection = mySession.TestConnection();
+                if (testtheConnection == true)
+                {
+                    //Query WMI for Printer Ports on the server.
+                    IEnumerable<CimInstance> queryInstance = mySession.QueryInstances(Namespace, "WQL", OSQuery);
+                    //Check to see if it exists in the query response.
+                    CimInstance exist = queryInstance.Where(p => p.CimInstanceProperties["Name"].Value.Equals(theNewPrinter.DeviceID)).FirstOrDefault();
+                    //If the printer exists, then return true.
+                    if (exist != null)
+                    {//return true and exit.
+                        if (Support.UseEnterprisePrinterBiDirectionalSupport() != true)
+                        {
+                            exist.CimInstanceProperties["EnableBIDI"].Value = false;
+                        }
+                        exist.CimInstanceProperties["DoCompleteFirst"].Value = true;
+                        exist.CimInstanceProperties["Published"].Value = true;
+                        try
+                        {
+                            mySession.ModifyInstance(Namespace, exist);
+                            //mySession.Dispose();
+                            stopWatch.Stop();
+                            output.processingTime = stopWatch.ElapsedMilliseconds.ToString();
+                            output.result = "Success";
+                            output.comment = "Successfully added printer";
+                            //return (Newtonsoft.Json.JsonConvert.SerializeObject(output));
+                            return (output);
+                        }
+                        catch
+                        {
+                            //mySession.Dispose();
+                            stopWatch.Stop();
+                            output.processingTime = stopWatch.ElapsedMilliseconds.ToString();
+                            output.result = "Success";
+                            output.comment = "Printer Properities were not set";
+                            return (output);
+                        }
+                    }
+                    else
+                    {
+                        //item doesn't exist...
+                        //mySession.Dispose();
+                        stopWatch.Stop();
+                        output.processingTime = stopWatch.ElapsedMilliseconds.ToString();
+                        output.result = "Success";
+                        output.comment = "Printer Properities were not set";
+                        return (output);
+                    }
+                }
+                else
+                {
+                    //session didn't connect.  Return False
+                    stopWatch.Stop();
+                    output.processingTime = stopWatch.ElapsedMilliseconds.ToString();
+                    output.result = "Success";
+                    output.comment = "Printer Properities were not set";
+                    return (output);
+                }
+
+            }
+            catch
+            {
+                stopWatch.Stop();
+                output.processingTime = stopWatch.ElapsedMilliseconds.ToString();
+                output.result = "Failed";
+                output.comment = "Big Issue somewhere here...";
+                return (output);
+            }
+        }
+
         //Add a printer and return success or failure in a string.
         //Uses existing connections to the print server.
         static private string ClonePrinter(AddPrinterClass theNewPrinter, CimSession session, PrintServer printServer)
@@ -2340,7 +2640,7 @@ namespace EPSPrintMgmt.Controllers
             Stopwatch newwatch = new Stopwatch();
             newwatch.Start();
 
-            
+
 
             //Initialize list to display to end users if it completes or not.
             List<string> outcome = new List<string>();
@@ -2395,7 +2695,7 @@ namespace EPSPrintMgmt.Controllers
                             {
                                 //Try to add the printer now the port is defined on the server.
                                 //first setup the props of the printer
-                                AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.SourcePrinter != null ? theNewPrinter.SourcePrinter:"nothing",SourceServer=theNewPrinter.SourceServer!=null?theNewPrinter.SourceServer:"nothing"  };
+                                AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.SourcePrinter != null ? theNewPrinter.SourcePrinter : "nothing", SourceServer = theNewPrinter.SourceServer != null ? theNewPrinter.SourceServer : "nothing" };
                                 //Use the string return function to determine if the printer was successfully added or not.
                                 string ServerType;
                                 if (Support.GetEnterprisePrintServers().Contains(server))
@@ -2409,10 +2709,10 @@ namespace EPSPrintMgmt.Controllers
 
                                 if (Support.UseEXEForPrinterCreation() == true)
                                 {
-   
+
                                     Process cmd = new Process();
                                     cmd.StartInfo.FileName = HostingEnvironment.MapPath("~/ExternalReferences/EPSPrintMgmtConsole.exe");  //@"C:\Users\hm3307\Documents\Visual Studio 2015\Projects\EPSPrintMgmt\EPSPrintMgmtConsole\bin\Debug\EPSPrintMgmtConsole.exe";
-                                    cmd.StartInfo.Arguments = "-n " + newPrinter.DeviceID + " -d \"" + newPrinter.DriverName + "\" -p " + newPrinter.PortName + " -t " + ServerType + " -w " + server +" -g " + Support.UseEPSGoldPrinter() + " -h " + newPrinter.SourcePrinter+ " -i " + newPrinter.SourcePrinter;
+                                    cmd.StartInfo.Arguments = "-n " + newPrinter.DeviceID + " -d \"" + newPrinter.DriverName + "\" -p " + newPrinter.PortName + " -t " + ServerType + " -w " + server + " -g " + Support.UseEPSGoldPrinter() + " -h " + newPrinter.SourcePrinter + " -i " + newPrinter.SourcePrinter;
                                     cmd.StartInfo.CreateNoWindow = true;
                                     cmd.StartInfo.UseShellExecute = false;
                                     //cmd.StartInfo.WorkingDirectory = HostingEnvironment.MapPath("~/ExternalReferences/" + server.ToString() + "/");
@@ -2424,7 +2724,7 @@ namespace EPSPrintMgmt.Controllers
                                 else
                                 {
                                     //outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
-                                   var theoutcomehere= AddNewPrinterStringReturn(newPrinter, server);
+                                    var theoutcomehere = AddNewPrinterStringReturn(newPrinter, server);
                                     outcome.Add(theoutcomehere);
                                 }
 
@@ -2643,9 +2943,9 @@ namespace EPSPrintMgmt.Controllers
                                     }
                                     else
                                     {
-                                    outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
-                                    logger.Debug("After creation of new EPS Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
-                                    logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
+                                        outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                                        logger.Debug("After creation of new EPS Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                        logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
                                     }
 
                                     //if (Support.UseEPSGoldPrinter() && theNewPrinter.SourcePrinter != null)
@@ -2697,5 +2997,650 @@ namespace EPSPrintMgmt.Controllers
             return Json(outcome, JsonRequestBehavior.AllowGet);
 
         }
+
+        //Used for AJAX processing of new EPS and Enterprise printer creation.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult CreateAnyPrinterBackgroundJSON([Bind(Include = "DeviceID,DriverName,PortName,Tray,Comments,Location,PrintServer,SourceServer,SourcePrinter,ENTDriverName,ENTPortName,ENTSourcePrinter,ENTSourceServer,ENTShared,ENTPublished,ENTEnableBIDI,ENTTray,cloneDevSettings,cloneEntDevSettings,IsEPS,IsEnterprise")]AddEPSandENTPrinterClass theNewPrinter)
+        {
+            //Initialize list to display to end users if it completes or not.
+            List<string> outcome = new List<string>();
+
+            //Used to determine if user has correct access to create a printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanAddEPSPrinter()) || !Support.IsUserAuthorized(Support.ADGroupCanAddEnterprisePrinter()))
+            {
+                outcome.Add("You are not authorized to add EPS and Enterprise printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to create EPS and Enterprise printer: " + theNewPrinter.DeviceID);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+
+            //Make sure incoming data is good to go.
+            if (ModelState.IsValid)
+            {
+                //Validate the printer exists in DNS or Valid IP Address
+                //Web.Config determines if it is really used or not.
+                if (!Support.ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
+                {
+                    if (theNewPrinter.IsEPS == true)
+                    {
+                        foreach (var server in Support.GetEPSServers())
+                        {
+                            NewPrinterInfoClass thePrinter = new NewPrinterInfoClass { name = theNewPrinter.DeviceID, printServer = server, driver = theNewPrinter.DriverName, enableBIDI = false, port = theNewPrinter.PortName, comment = theNewPrinter.Comment, location = theNewPrinter.Location };
+                            AddPrinterPortClass thePort = new AddPrinterPortClass { Name = theNewPrinter.ENTPortName, HostAddress = theNewPrinter.ENTPortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                            NewClonedPrinterClass clonedInfo = new NewClonedPrinterClass { sourcePrinter = theNewPrinter.SourcePrinter, sourceServer = Support.GetEPSGoldPrintServer(), cloneDeviceSettings = theNewPrinter.cloneDevSettings };
+                            //BackgroundJob.Enqueue(()=> createPrinter(new NewPrinterClass {printer=thePrinter,port=thePort,clonePrinterInfo=clonedInfo })) ;
+
+                        }
+
+
+                    }
+                    if (theNewPrinter.IsEnterprise == true)
+                    {
+
+                    }
+                }
+                //Send email and return results if DNS does not exist for the printer.
+                Support.SendEmail("Failed EPS and Enterprise Print Server Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
+                TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.";
+                outcome.Add("Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.");
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+            //Invalid Model and should error out.
+            //Return error message that 
+            TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
+            outcome.Add("Something went wrong with the Model.  Please try again.");
+            logger.Error("Failed to initialize the model");
+            return Json(outcome, JsonRequestBehavior.AllowGet);
+
+        }
+
+        private void createPrinter(AddEPSandENTPrinterClass theNewPrinter, string server)
+        {
+
+            PrinterCreation output = new PrinterCreation { result = "failed", userName = User.Identity.Name };
+
+            //Initialize list to display to end users if it completes or not.
+            List<string> outcome = new List<string>();
+
+            //Do some timing on the whole process.
+            Stopwatch newwatch = new Stopwatch();
+            newwatch.Start();
+
+            logger.Debug("Before 1st CimSession creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+            //Used to test if it can connect via Cim first.  If it cannot it skips that server.
+            CimSession mySession = CimSession.Create(server);
+            var testtheConnection = mySession.TestConnection();
+            if (testtheConnection == true)
+            {
+                logger.Debug("CimSession creation completed Successfully: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                //Start the process of installing a printer.
+                //Checks to see if the Printer port already exists on the server.
+
+                //Start with Enterprise Print Servers.  Have different parameters passed for Enterprise Print Servers.
+                //Checks the Printer Port info
+                if (Support.GetEnterprisePrintServers().Contains(server))
+                {
+                    logger.Debug("Before ENT Port Creation.  Testing port : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                    if (ExistingPrinterPort(theNewPrinter.ENTPortName, server) == false)
+                    {
+                        logger.Debug("After ENT Port Check and Before Port Creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        //Adds printer port, currently just using the name of the printer for the port name.  So DNS must be setup first in order to add printer port.
+                        AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.ENTPortName, HostAddress = theNewPrinter.ENTPortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                        AddNewPrinterPort(AddThePort, server);
+                        logger.Debug("After ENT Port Creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        logger.Info("New Port added.  Port Name : " + theNewPrinter.ENTPortName + " on server " + server + " by user " + User.Identity.Name);
+                    }
+                    else
+                    {
+                        logger.Debug("After ENT Port Check with No Ports to add : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        logger.Info("New Port attempted to be added but already exists.  Port Name : " + theNewPrinter.ENTPortName + " on server " + server + " by user " + User.Identity.Name);
+                        //If printer port already exists, don't do anything!
+                    }
+                }
+                //Check the EPS Print Servers Port Info
+                else
+                {
+                    logger.Debug("Before EPS Port Creation.  Testing port : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                    if (ExistingPrinterPort(theNewPrinter.PortName, server) == false)
+                    {
+                        logger.Debug("After EPS Port Check and Before Port Creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        //Adds printer port, currently just using the name of the printer for the port name.  So DNS must be setup first in order to add printer port.
+                        AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                        AddNewPrinterPort(AddThePort, server);
+                        logger.Debug("After EPS Port Creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        logger.Info("New Port added.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
+                    }
+                    else
+                    {
+                        logger.Debug("After EPS Port Check with No Ports to add : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        logger.Info("New Port attempted to be added but already exists.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
+                        //If printer port already exists, don't do anything!
+                    }
+                }
+
+                logger.Debug("Before Testing if printer exists : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                if (CheckCurrentPrinter(theNewPrinter.DeviceID, server))
+                {
+                    logger.Debug("After Testing if printer exists and nothing to do: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                    outcome.Add(theNewPrinter.DeviceID + " already exists on " + server);
+                    logger.Info("New Printer attempted to be added but already exists.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
+                }
+                else
+                {
+                    //determine if this is an EPS or Enterprise Print Server
+                    //Add Enterprise Print Queue First.
+                    if (Support.GetEnterprisePrintServers().Contains(server))
+                    {
+                        //Try to add the printer now the port is defined on the server.
+                        //first setup the props of the printer
+                        AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.ENTDriverName, EnableBIDI = false, PortName = theNewPrinter.ENTPortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.ENTSourcePrinter, SourceServer = Support.GetEntGoldPrintServer() };
+                        PrintServer thePrintServer = new PrintServer(@"\\" + theNewPrinter.PrintServer, PrintSystemDesiredAccess.AdministrateServer);
+                        //Use the string return function to determine if the printer was successfully added or not.
+                        logger.Debug("Before creation of new ENT Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        outcome.Add(AddNewEnterprisePrinterStringReturn(newPrinter, mySession, thePrintServer));
+                        logger.Debug("After creation of new ENT Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name);
+                        //Clone the device?
+                        if (Support.UseEntGoldPrinter() && theNewPrinter.ENTSourcePrinter != null)
+                        {
+                            var clonePrinterSettings = false;
+                            if (Support.cloneEntPrinterDeviceSettings() && theNewPrinter.cloneENTDevSettings)
+                            {
+                                clonePrinterSettings = true;
+                            }
+                            outcome.Add(clonePrintQueue(newPrinter, server, Support.GetEntGoldPrintServer(), clonePrinterSettings));
+                            logger.Debug("After Print Queue is Cloned : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        }
+
+                        //if (Support.UseEnterprisePrintTrays())
+                        //{
+                        //    outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, theNewPrinter.PrintServer, theNewPrinter.Tray));
+                        //    logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
+                        //}
+                        thePrintServer.Dispose();
+                    }
+                    //Add EPS Print Queue here.
+                    else
+                    {
+                        //Try to add the printer now the port is defined on the server.
+                        //first setup the props of the printer
+                        AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.SourcePrinter };
+                        //Use the string return function to determine if the printer was successfully added or not.
+                        logger.Debug("Before creation of new EPS Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                        logger.Debug("After creation of new EPS Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
+                        if (Support.UseEPSGoldPrinter() && theNewPrinter.SourcePrinter != null)
+                        {
+                            var clonePrinterSettings = false;
+                            if (Support.clonePrinterDeviceSettings() && theNewPrinter.cloneDevSettings)
+                            {
+                                clonePrinterSettings = true;
+                            }
+                            outcome.Add(clonePrintQueue(newPrinter, server, Support.GetEPSGoldPrintServer(), clonePrinterSettings));
+                            logger.Debug("After Print Queue is Cloned : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        }
+                        //if (Support.UsePrintTrays())
+                        //{
+                        //    outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, server, theNewPrinter.Tray));
+                        //    logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + server + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
+                        //}
+
+                    }
+                }
+            }
+            //Cannot connect to the server, so send a message back to the user about it.
+            else
+            {
+                outcome.Add(server + " is not an active or a valid server.  Please verify the server is up or configured correctly in the web.config file.");
+                logger.Info("Current Print Server is not active or invalid.  Print Server: " + server + " by user " + User.Identity.Name);
+            }
+            mySession.Dispose();
+            //End the parallel processing.
+            output.processingTime = newwatch.ElapsedMilliseconds.ToString();
+            return;// (output);
+        }
+
+        //Used for parallel and AJAX processing of new EPS and Enterprise printer creation.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult CreateEPSAndEnterprisePrinterBackgroundJSON([Bind(Include = "DeviceID,DriverName,PortName,Tray,Comments,Location,PrintServer,SourceServer,SourcePrinter,ENTDriverName,ENTPortName,ENTSourcePrinter,ENTSourceServer,ENTShared,ENTPublished,ENTEnableBIDI,ENTTray,cloneDevSettings,cloneENTDevSettings")]AddEPSandENTPrinterClass theNewPrinter)
+        {
+            //Do some timing on the whole process.
+            Stopwatch newwatch = new Stopwatch();
+            newwatch.Start();
+
+            //Initialize list to display to end users if it completes or not.
+            List<string> outcome = new List<string>();
+
+            //Used to determine if user has correct access to create a printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanAddEPSPrinter()) || !Support.IsUserAuthorized(Support.ADGroupCanAddEnterprisePrinter()))
+            {
+                outcome.Add("You are not authorized to add EPS and Enterprise printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to create EPS and Enterprise printer: " + theNewPrinter.DeviceID);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+
+            //Make sure incoming data is good to go.
+            if (ModelState.IsValid)
+            {
+                //Validate the printer exists in DNS or Valid IP Address
+                //Web.Config determines if it is really used or not.
+                if (!Support.ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
+                {
+                    logger.Debug(newwatch.ElapsedMilliseconds + " ms has passed.  Before Parallel foreach");
+                    var allPrintServers = Support.GetEPSServers();
+                    allPrintServers.Add(theNewPrinter.PrintServer);
+                    //kick off multiple threads to install printers quickly for EPS Print Servers.
+                    Parallel.ForEach(allPrintServers, server =>
+                    {
+                        logger.Debug("Before 1st CimSession creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                        //Used to test if it can connect via Cim first.  If it cannot it skips that server.
+                        CimSession mySession = CimSession.Create(server);
+                        var testtheConnection = mySession.TestConnection();
+                        if (testtheConnection == true)
+                        {
+                            logger.Debug("CimSession creation completed Successfully: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                            //Start the process of installing a printer.
+                            //Checks to see if the Printer port already exists on the server.
+
+                            //Start with Enterprise Print Servers.  Have different parameters passed for Enterprise Print Servers.
+                            //Checks the Printer Port info
+                            if (Support.GetEnterprisePrintServers().Contains(server))
+                            {
+                                logger.Debug("Before ENT Port Creation.  Testing port : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                if (ExistingPrinterPort(theNewPrinter.ENTPortName, server) == false)
+                                {
+                                    logger.Debug("After ENT Port Check and Before Port Creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    //Adds printer port, currently just using the name of the printer for the port name.  So DNS must be setup first in order to add printer port.
+                                    AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.ENTPortName, HostAddress = theNewPrinter.ENTPortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                                    AddNewPrinterPort(AddThePort, server);
+                                    logger.Debug("After ENT Port Creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    logger.Info("New Port added.  Port Name : " + theNewPrinter.ENTPortName + " on server " + server + " by user " + User.Identity.Name);
+                                }
+                                else
+                                {
+                                    logger.Debug("After ENT Port Check with No Ports to add : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    logger.Info("New Port attempted to be added but already exists.  Port Name : " + theNewPrinter.ENTPortName + " on server " + server + " by user " + User.Identity.Name);
+                                    //If printer port already exists, don't do anything!
+                                }
+                            }
+                            //Check the EPS Print Servers Port Info
+                            else
+                            {
+                                logger.Debug("Before EPS Port Creation.  Testing port : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                if (ExistingPrinterPort(theNewPrinter.PortName, server) == false)
+                                {
+                                    logger.Debug("After EPS Port Check and Before Port Creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    //Adds printer port, currently just using the name of the printer for the port name.  So DNS must be setup first in order to add printer port.
+                                    AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                                    AddNewPrinterPort(AddThePort, server);
+                                    logger.Debug("After EPS Port Creation: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    logger.Info("New Port added.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
+                                }
+                                else
+                                {
+                                    logger.Debug("After EPS Port Check with No Ports to add : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    logger.Info("New Port attempted to be added but already exists.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
+                                    //If printer port already exists, don't do anything!
+                                }
+                            }
+
+                            logger.Debug("Before Testing if printer exists : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                            if (CheckCurrentPrinter(theNewPrinter.DeviceID, server))
+                            {
+                                logger.Debug("After Testing if printer exists and nothing to do: " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                outcome.Add(theNewPrinter.DeviceID + " already exists on " + server);
+                                logger.Info("New Printer attempted to be added but already exists.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
+                            }
+                            else
+                            {
+                                //determine if this is an EPS or Enterprise Print Server
+                                //Add Enterprise Print Queue First.
+                                if (Support.GetEnterprisePrintServers().Contains(server))
+                                {
+                                    //Try to add the printer now the port is defined on the server.
+                                    //first setup the props of the printer
+                                    AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.ENTDriverName, EnableBIDI = false, PortName = theNewPrinter.ENTPortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.ENTSourcePrinter, SourceServer = Support.GetEntGoldPrintServer(), PrintServer = server, cloneDevSettings = theNewPrinter.cloneENTDevSettings };
+                                    //PrintServer thePrintServer = new PrintServer(@"\\" + theNewPrinter.PrintServer, PrintSystemDesiredAccess.AdministrateServer);
+                                    //Use the string return function to determine if the printer was successfully added or not.
+                                    logger.Debug("Before creation of new ENT Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    //outcome.Add(AddNewEnterprisePrinterStringReturn(newPrinter, mySession, thePrintServer));
+                                    BackgroundJob.Enqueue(() => AddNewEnterprisePrinterBackground(newPrinter, server, User.Identity.Name));
+                                    //AddNewEnterprisePrinterBackground(newPrinter, server);
+                                    logger.Debug("After creation of new ENT Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name);
+
+
+                                    ////Clone the device?
+                                    //if (Support.UseEntGoldPrinter() && theNewPrinter.ENTSourcePrinter != null)
+                                    //{
+                                    //    var clonePrinterSettings = false;
+                                    //    if (Support.cloneEntPrinterDeviceSettings() && theNewPrinter.cloneENTDevSettings)
+                                    //    {
+                                    //        clonePrinterSettings = true;
+                                    //    }
+                                    //    outcome.Add(clonePrintQueue(newPrinter, server, Support.GetEntGoldPrintServer(), clonePrinterSettings));
+                                    //    logger.Debug("After Print Queue is Cloned : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    //}
+
+                                    //if (Support.UseEnterprisePrintTrays())
+                                    //{
+                                    //    outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, theNewPrinter.PrintServer, theNewPrinter.Tray));
+                                    //    logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
+                                    //}
+                                    //thePrintServer.Dispose();
+                                }
+                                //Add EPS Print Queue here.
+                                else
+                                {
+                                    //Try to add the printer now the port is defined on the server.
+                                    //first setup the props of the printer
+                                    AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.SourcePrinter,cloneDevSettings=theNewPrinter.cloneDevSettings };
+                                    //Use the string return function to determine if the printer was successfully added or not.
+                                    logger.Debug("Before creation of new EPS Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    BackgroundJob.Enqueue(() => AddNewPrinterBackground(newPrinter, server, User.Identity.Name));
+                                    //BackgroundJob.Enqueue(() => AddNewPrinterStringReturn(newPrinter, server));
+                                    //outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                                    logger.Debug("After creation of new EPS Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
+                                    //if (Support.UseEPSGoldPrinter() && theNewPrinter.SourcePrinter != null)
+                                    //{
+                                    //    var clonePrinterSettings = false;
+                                    //    if (Support.clonePrinterDeviceSettings() && theNewPrinter.cloneDevSettings)
+                                    //    {
+                                    //        clonePrinterSettings = true;
+                                    //    }
+                                    //    outcome.Add(clonePrintQueue(newPrinter, server, Support.GetEPSGoldPrintServer(), clonePrinterSettings));
+                                    //    logger.Debug("After Print Queue is Cloned : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + server);
+                                    //}
+
+                                    //if (Support.UsePrintTrays())
+                                    //{
+                                    //    outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, server, theNewPrinter.Tray));
+                                    //    logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + server + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
+                                    //}
+
+                                }
+                            }
+                        }
+                        //Cannot connect to the server, so send a message back to the user about it.
+                        else
+                        {
+                            outcome.Add(server + " is not an active or a valid server.  Please verify the server is up or configured correctly in the web.config file.");
+                            logger.Info("Current Print Server is not active or invalid.  Print Server: " + server + " by user " + User.Identity.Name);
+                        }
+                        mySession.Dispose();
+                        //End the parallel processing.
+                    });
+                    newwatch.Stop();
+                    //Email users from Web.Config to confirm everything went well!
+                    Support.SendEmail("New Printer Added to EPS and Enterprise Print Server", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    //Send a success message the Success View.
+                    TempData["SuccessMessage"] = "Congrats, the printer installed correctly!  Enjoy your day.";
+                    //return JSON results to the AJAX request of the view.
+                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to add to a background job.  Please review the Background Jobs to check on the status.</h5>");
+                    return Json(outcome, JsonRequestBehavior.AllowGet);
+                }
+                newwatch.Stop();
+                //Send email and return results if DNS does not exist for the printer.
+                Support.SendEmail("Failed EPS and Enterprise Print Server Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
+                TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.";
+                outcome.Add("Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.");
+                outcome.Add("<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install." + @"</h5>");
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+            newwatch.Stop();
+            outcome.Add("`r`n" + newwatch.ElapsedMilliseconds + " ms to install.");
+            //Return error message that 
+            TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
+            outcome.Add("Something went wrong with the Model.  Please try again.");
+            logger.Error("Failed to initialize the model");
+            return Json(outcome, JsonRequestBehavior.AllowGet);
+        }
+        //Used for parallel and AJAX processing of new EPS printer creation.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult CreatePrinterBackgroundJSON([Bind(Include = "DeviceID,DriverName,PortName,Tray,Comments,Location,SourcePrinter,cloneDevSettings")]AddPrinterClass theNewPrinter)
+        {
+            //Do some timing on the whole process.
+            Stopwatch newwatch = new Stopwatch();
+            newwatch.Start();
+
+            //Initialize list to display to end users if it completes or not.
+            List<string> outcome = new List<string>();
+
+            //Used to determine if user has correct access to create a printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanAddEPSPrinter()))
+            {
+                outcome.Add("You are not authorized to add printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to create EPS printer: " + theNewPrinter.DeviceID);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+
+            //Make sure incoming data is good to go.
+            if (ModelState.IsValid)
+            {
+                //Validate the printer exists in DNS or Valid IP Address
+                //Web.Config determines if it is really used or not.
+                if (!Support.ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
+                {
+                    //kick off multiple threads to install printers quickly
+                    Parallel.ForEach(Support.GetEPSServers(), server =>
+                    {
+                        //Used to test if it can connect via Cim first.  If it cannot it skips that server.
+                        CimSession mySession = CimSession.Create(server);
+                        var testtheConnection = mySession.TestConnection();
+                        if (testtheConnection == true)
+                        {
+                            //Start the process of installing a printer.
+                            //Checks to see if the Printer port already exists on the server.
+                            if (ExistingPrinterPort(theNewPrinter.PortName, server) == false)
+                            {
+                                //Adds printer port, currently just using the name of the printer for the port name.  So DNS must be setup first in order to add printer port.
+                                AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                                AddNewPrinterPort(AddThePort, server);
+                                logger.Info("New Port added.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
+                            }
+                            else
+                            {
+                                logger.Info("New Port attempted to be added but already exists.  Port Name : " + theNewPrinter.PortName + " on server " + server + " by user " + User.Identity.Name);
+                                //If printer port already exists, don't do anything!
+                            }
+                            if (CheckCurrentPrinter(theNewPrinter.DeviceID, server))
+                            {
+                                outcome.Add(theNewPrinter.DeviceID + " already exists on " + server);
+                                logger.Info("New Printer attempted to be added but already exists.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
+                            }
+                            else
+                            {
+                                //Try to add the printer now the port is defined on the server.
+                                //first setup the props of the printer
+                                AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.SourcePrinter,cloneDevSettings=theNewPrinter.cloneDevSettings };
+                                //Use the string return function to determine if the printer was successfully added or not.
+                                BackgroundJob.Enqueue(() => AddNewPrinterBackground(newPrinter, server, User.Identity.Name));
+                                //outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
+                                logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + server + " by user " + User.Identity.Name);
+                                //if (Support.UseEPSGoldPrinter() && theNewPrinter.SourcePrinter != null)
+                                //{
+                                //    var clonePrinterSettings = false;
+                                //    if (Support.clonePrinterDeviceSettings() && theNewPrinter.cloneDevSettings)
+                                //    {
+                                //        clonePrinterSettings = true;
+                                //    }
+                                //    var cloneOutcome = clonePrintQueue(newPrinter, server, Support.GetEPSGoldPrintServer(), clonePrinterSettings);
+                                //    outcome.Add(cloneOutcome);
+                                //    logger.Info("Printer Name: " + theNewPrinter.DeviceID + " print settings outcome: " + cloneOutcome);
+                                //}
+
+                                //Commented out the following items since changing print trays is really a bad idea this way.....
+
+                                //if (Support.UsePrintTrays())
+                                //{
+                                //    outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, server, theNewPrinter.Tray));
+                                //    logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + server + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
+                                //}
+                            }
+                        }
+                        //Cannot connect to the server, so send a message back to the user about it.
+                        else
+                        {
+                            outcome.Add(server + " is not an active or a valid server.  Please verify the server is up or configured correctly in the web.config file.");
+                            logger.Info("Current Print Server is not active or invalid.  Print Server: " + server + " by user " + User.Identity.Name);
+                        }
+                        mySession.Dispose();
+                        //End the parallel processing.
+                    });
+                    logger.Info("Finished Adding and going to send email out now.  Milliseconds taken: " + newwatch.ElapsedMilliseconds);
+                    newwatch.Stop();
+                    //Email users from Web.Config to confirm everything went well!
+                    Support.SendEmail("New Printer Added to EPS as a background job.", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    //Send a success message the Success View.
+                    TempData["SuccessMessage"] = "Congrats, the printer installed correctly!  Enjoy your day.";
+                    //return JSON results to the AJAX request of the view.
+                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to add to a background job.  Please review the Background Jobs to check on the status.</h5>");
+                    return Json(outcome, JsonRequestBehavior.AllowGet);
+                }
+                newwatch.Stop();
+                //Send email and return results if DNS does not exist for the printer.
+                Support.SendEmail("Failed EPS Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
+                TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.";
+                outcome.Add("Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.");
+                outcome.Add("<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install." + @"</h5>");
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+            newwatch.Stop();
+            outcome.Add("`r`n" + newwatch.ElapsedMilliseconds + " ms to install.");
+            //Return error message that 
+            TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
+            outcome.Add("Something went wrong with the Model.  Please try again.");
+            logger.Error("Failed to initialize the model");
+            return Json(outcome, JsonRequestBehavior.AllowGet);
+
+        }
+
+        //Used for parallel and AJAX processing of new Enterprise printer creation.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult CreateEnterprisePrinterBackgroundJSON([Bind(Include = "DeviceID,DriverName,PortName,Tray,Comments,Location,PrintServer,SourcePrinter,cloneDevSettings")]AddPrinterClass theNewPrinter)
+        {
+            //Do some timing on the whole process.
+            Stopwatch newwatch = new Stopwatch();
+            newwatch.Start();
+
+            //Initialize list to display to end users if it completes or not.
+            List<string> outcome = new List<string>();
+
+            //Used to determine if user has correct access to create a printer.
+            //If they don't then it returns an error message for them.
+            if (!Support.IsUserAuthorized(Support.ADGroupCanAddEnterprisePrinter()))
+            {
+                outcome.Add("You are not authorized to add enterprise printers.");
+                logger.Info("User " + User.Identity.Name + " attempted to create Enterprise printer: " + theNewPrinter.DeviceID);
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+
+            //Make sure incoming data is good to go.
+            if (ModelState.IsValid)
+            {
+                //Validate the printer exists in DNS or Valid IP Address
+                //Web.Config determines if it is really used or not.
+                if (!Support.ValidatePrinterDNS() || Support.ValidHostname(theNewPrinter.PortName) == true)
+                {
+                    //Used to test if it can connect via Cim first.  If it cannot it skips that server.
+                    CimSession mySession = CimSession.Create(theNewPrinter.PrintServer);
+                    var testtheConnection = mySession.TestConnection();
+                    if (testtheConnection == true)
+                    {
+                        //Start the process of installing a printer.
+                        //Checks to see if the Printer port already exists on the server.
+                        if (ExistingPrinterPort(theNewPrinter.PortName, theNewPrinter.PrintServer) == false)
+                        {
+                            //Adds printer port, currently just using the name of the printer for the port name.  So DNS must be setup first in order to add printer port.
+                            AddPrinterPortClass AddThePort = new AddPrinterPortClass { Name = theNewPrinter.PortName, HostAddress = theNewPrinter.PortName, PortNumber = 9100, Protocol = 1, SNMPEnabled = false };
+                            AddNewPrinterPort(AddThePort, theNewPrinter.PrintServer);
+                            logger.Info("New Port added.  Port Name : " + theNewPrinter.PortName + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name);
+                        }
+                        else
+                        {
+                            logger.Info("New Port attempted to be added but already exists.  Port Name : " + theNewPrinter.PortName + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name);
+                            //If printer port already exists, don't do anything!
+                        }
+                        if (CheckCurrentPrinter(theNewPrinter.DeviceID, theNewPrinter.PrintServer))
+                        {
+                            outcome.Add(theNewPrinter.DeviceID + " already exists on " + theNewPrinter.PrintServer);
+                            logger.Info("New Printer attempted to be added but already exists.  Printer Name : " + theNewPrinter.DeviceID + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name);
+                        }
+                        else
+                        {
+                            //Try to add the printer now the port is defined on the server.
+                            //first setup the props of the printer
+                            AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.SourcePrinter,cloneDevSettings=theNewPrinter.cloneDevSettings };
+                            //PrintServer thePrintServer = new PrintServer(@"\\" + theNewPrinter.PrintServer, PrintSystemDesiredAccess.AdministrateServer);
+                            //Use the string return function to determine if the printer was successfully added or not.
+                            BackgroundJob.Enqueue(() => AddNewEnterprisePrinterBackground(newPrinter, theNewPrinter.PrintServer, User.Identity.Name));
+
+                            //outcome.Add(AddNewEnterprisePrinterStringReturn(newPrinter, mySession, thePrintServer));
+                            logger.Info("New Printer added.  Printer Name : " + theNewPrinter.DeviceID + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name);
+
+                            //if (Support.UseEntGoldPrinter() && theNewPrinter.SourcePrinter != null)
+                            //{
+                            //    var clonePrinterSettings = false;
+                            //    if (Support.cloneEntPrinterDeviceSettings() && theNewPrinter.cloneDevSettings)
+                            //    {
+                            //        clonePrinterSettings = true;
+                            //    }
+                            //    var cloneOutcome = clonePrintQueue(newPrinter, theNewPrinter.PrintServer, Support.GetEntGoldPrintServer(), clonePrinterSettings);
+                            //    outcome.Add(cloneOutcome);
+                            //    logger.Info("Printer Name: " + theNewPrinter.DeviceID + " print settings outcome: " + cloneOutcome);
+                            //}
+
+                            //if (Support.UsePrintTrays())
+                            //{
+                            //    outcome.Add(SetPrinterTray(theNewPrinter.DeviceID, theNewPrinter.PrintServer, theNewPrinter.Tray));
+                            //    logger.Info("Print Tray Set for Printer Name : " + theNewPrinter.DeviceID + " Tray Info: " + theNewPrinter.Tray + " on server " + theNewPrinter.PrintServer + " by user " + User.Identity.Name + " time to install" + newwatch.ElapsedMilliseconds + "ms");
+                            //}
+                            //thePrintServer.Dispose();
+                        }
+                    }
+                    //Cannot connect to the server, so send a message back to the user about it.
+                    else
+                    {
+                        outcome.Add(theNewPrinter.PrintServer + " is not an active or a valid server.  Please verify the server is up or configured correctly in the web.config file.");
+                        logger.Info("Current Print Server is not active or invalid.  Print Server: " + theNewPrinter.PrintServer + " by user " + User.Identity.Name);
+                    }
+                    mySession.Dispose();
+                    //End the parallel processing.
+
+                    newwatch.Stop();
+                    //Email users from Web.Config to confirm everything went well!
+                    Support.SendEnterpriseEmail("New Printer Added to Enterprise Print Server.", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    //Send a success message the Success View.
+                    TempData["SuccessMessage"] = "Congrats, the printer installed correctly!  Enjoy your day.";
+                    //return JSON results to the AJAX request of the view.
+                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to install.</h5>");
+                    return Json(outcome, JsonRequestBehavior.AllowGet);
+                }
+                newwatch.Stop();
+                //Send email and return results if DNS does not exist for the printer.
+                Support.SendEnterpriseEmail("Failed EPS Install", "Printer: " + theNewPrinter.DeviceID + " failed the DNS lookup or IP Address validation." + Environment.NewLine + "By user: " + User.Identity.Name);
+                TempData["RedirectToError"] = "Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.";
+                outcome.Add("Hostname of the Printer does not exist or it is an invalid IP Address.  Please try again.");
+                outcome.Add("<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to attempt to install." + @"</h5>");
+                return Json(outcome, JsonRequestBehavior.AllowGet);
+            }
+            newwatch.Stop();
+            outcome.Add("`r`n" + newwatch.ElapsedMilliseconds + " ms to install.");
+            //Return error message that 
+            TempData["RedirectToError"] = "Something went wrong with the Model.  Please try again.";
+            outcome.Add("Something went wrong with the Model.  Please try again.");
+            logger.Error("Failed to initialize the model");
+            return Json(outcome, JsonRequestBehavior.AllowGet);
+
+        }
+
     }
 }

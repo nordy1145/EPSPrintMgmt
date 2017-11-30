@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Printing;
 using System.ComponentModel;
-
+using Newtonsoft.Json.Linq;
 
 namespace EPSPrintMgmt.Models
 {
@@ -63,6 +63,11 @@ namespace EPSPrintMgmt.Models
         public string SourceServer { get; set; }
         [DisplayName("Copy Printer Device Settings")]
         public bool cloneDevSettings { get; set; }
+
+        public static implicit operator AddPrinterClass(JToken v)
+        {
+            throw new NotImplementedException();
+        }
     }
     public class AddEPSandENTPrinterClass : AddPrinterClass
     {
@@ -88,4 +93,31 @@ namespace EPSPrintMgmt.Models
         public int PortNumber { get; set; }
         public string HostAddress { get; set; }
     }
+    public class NewPrinterClass
+    {
+        public NewPrinterInfoClass printer { get; set; }
+        public AddPrinterPortClass port { get; set; }
+        public NewClonedPrinterClass clonePrinterInfo { get; set; }
+
+    }
+    public class NewPrinterInfoClass
+    {
+        public string name { get; set; }
+        public string driver { get; set; }
+        public string printServer { get; set; }
+        public string port { get; set; }
+        public string location { get; set; }
+        public string comment { get; set; }
+        public bool shared { get; set; }
+        public bool enableBIDI { get; set; }
+        public bool isEPS { get; set; }
+        public bool clonePrinter { get; set; }
+    }
+    public class NewClonedPrinterClass : NewPrinterClass
+    {
+        public string sourcePrinter { get; set; }
+        public string sourceServer { get; set; }
+        public bool cloneDeviceSettings { get; set; }
+    }
+
 }
