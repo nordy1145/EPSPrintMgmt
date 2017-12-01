@@ -1,7 +1,7 @@
 # EPSPrintMgmt
 
 ##UPDATE:
--v1.1.0.1 Adds functionality to proccess jobs in the background now.  The following items need to be set in order for the site to work now.
+-v1.1.0.1 Adds functionality to proccess jobs in the background now.  Jobs are currently stored for 30 days by default.  The following items need to be set in order for the site to work now.
 SQL Express LocalDB 2016 installation from the External_Resources folder (SqlLocalDB.msi) needs to be installed.
 "C:\Windows\System32\inetsrv\config\applicationHost.config" needs to be altered.  In the ApplicationPools section, the ApplicationPoolDefaults needs to have the loadUserProfile="true" and setProfileEnvironment="true" settings added.
             <applicationPoolDefaults managedRuntimeVersion="v4.0">
@@ -21,6 +21,7 @@ https://support.microsoft.com/en-us/help/2954953/some-apis-do-not-work-when-they
 -The lastest update pushed 9/13/2016 requires an updated web.config file.  Please copy your appSettings section in your web.config and replace the section in the web.config.template file.  Then rename it to just web.config.
 ###If you have issues with the drop down for looking up printers, refresh your browser cache by pressing ctrl+F5.
 
+##Install Instructions:
 
 Download the "Compiled (date)".zip found in the Downloads folder if you would like the precompiled version. Replace all content except the web.config file.
 
@@ -52,7 +53,10 @@ SQL Express LocalDB 2016 installation from the External_Resources folder (SqlLoc
                 <processModel identityType="ApplicationPoolIdentity" loadUserProfile="true" setProfileEnvironment="true" />
             </applicationPoolDefaults>
             
-In the App_Data folder, the Hangfire.mdf and Hangfire_lod.ldf files need modify access for the service account running the application.
+In the App_Data folder, the Hangfire.mdf and Hangfire_lod.ldf files need modify access for the service account running the application. With updates, please do not overwrite these files as it would wipe out your history.
+
+If you want to clone a EPS Print queue, you need the following update installed on the web server in order to do this
+https://support.microsoft.com/en-us/help/2954953/some-apis-do-not-work-when-they-are-called-in-services-in-windows
 
 Can bind a certificate to port 443 if you'd like.
 
