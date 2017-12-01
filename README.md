@@ -1,6 +1,6 @@
 # EPSPrintMgmt
 
-##UPDATE:
+## UPDATE:
 -v1.1.0.1 Adds functionality to proccess jobs in the background now.  Jobs are currently stored for 30 days by default.  The following items need to be set in order for the site to work now.
 SQL Express LocalDB 2016 installation from the External_Resources folder (SqlLocalDB.msi) needs to be installed.
 "C:\Windows\System32\inetsrv\config\applicationHost.config" needs to be altered.  In the ApplicationPools section, the ApplicationPoolDefaults needs to have the loadUserProfile="true" and setProfileEnvironment="true" settings added.
@@ -21,7 +21,7 @@ https://support.microsoft.com/en-us/help/2954953/some-apis-do-not-work-when-they
 -The lastest update pushed 9/13/2016 requires an updated web.config file.  Please copy your appSettings section in your web.config and replace the section in the web.config.template file.  Then rename it to just web.config.
 ###If you have issues with the drop down for looking up printers, refresh your browser cache by pressing ctrl+F5.
 
-##Install Instructions:
+## Install Instructions:
 
 Download the "Compiled (date)".zip found in the Downloads folder if you would like the precompiled version. Replace all content except the web.config file.
 
