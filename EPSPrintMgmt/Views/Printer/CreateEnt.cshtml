@@ -6,7 +6,7 @@
 
 <h2>Add Enterprise Printer</h2>
 
-@using (Html.BeginForm("CreateEnterprisePrinterJSON", "Printer", FormMethod.Post, new { encType = "multipart/form-data", id = "myform", name = "myform" }))
+@using (Html.BeginForm("CreateEnterprisePrinterBackgroundJSON", "Printer", FormMethod.Post, new { encType = "multipart/form-data", id = "myform", name = "myform" }))
 {
     @Html.AntiForgeryToken()
 

@@ -3617,11 +3617,11 @@ namespace EPSPrintMgmt.Controllers
 
                     newwatch.Stop();
                     //Email users from Web.Config to confirm everything went well!
-                    Support.SendEnterpriseEmail("New Printer Added to Enterprise Print Server.", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to install." + Environment.NewLine + "Created by user: " + User.Identity.Name);
+                    Support.SendEnterpriseEmail("New Printer Added to Enterprise Print Background Job for installation.", string.Join(Environment.NewLine, outcome) + Environment.NewLine + newwatch.ElapsedMilliseconds + "ms to add to the background queue." + Environment.NewLine + "Created by user: " + User.Identity.Name);
                     //Send a success message the Success View.
                     TempData["SuccessMessage"] = "Congrats, the printer installed correctly!  Enjoy your day.";
                     //return JSON results to the AJAX request of the view.
-                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to install.</h5>");
+                    outcome.Add(@"<h5>" + Environment.NewLine + newwatch.ElapsedMilliseconds + @" ms to add to a background job.  Please review the Background Jobs to check on the status.</h5>");
                     return Json(outcome, JsonRequestBehavior.AllowGet);
                 }
                 newwatch.Stop();

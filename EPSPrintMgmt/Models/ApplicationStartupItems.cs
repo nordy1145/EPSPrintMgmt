@@ -14,9 +14,57 @@ namespace EPSPrintMgmt.Models
 
         public override void OnResultExecuting(ResultExecutingContext filterContext)
         {
-            filterContext.Controller.ViewBag.IsAbleAddEPSandENTPrinters = (Support.IsUserAuthorized(Support.ADGroupCanAddEPSAndEnterprisePrinter()));
+            bool canAddEntAndEps;
+            if (Support.AddEPSAndEnterprisePrinters() == true)
+            {
+                if (Support.AdditionalSecurity())
+                {
+                    if (Support.IsUserAuthorized(Support.ADGroupCanAddEPSAndEnterprisePrinter()))
+                    {
+                        canAddEntAndEps = true;
+                    }
+                    else
+                    {
+                        canAddEntAndEps = false;
+                    }
+                }
+                else
+                {
+                    canAddEntAndEps = true;
+                }
+            }
+            else
+            {
+                canAddEntAndEps = false;
+            }
+            //filterContext.Controller.ViewBag.IsAbleAddEPSandENTPrinters = (Support.IsUserAuthorized(Support.ADGroupCanAddEPSAndEnterprisePrinter()));
+            filterContext.Controller.ViewBag.IsAbleAddEPSandENTPrinters = (canAddEntAndEps);
             //filterContext.Controller.ViewBag.IsAbleAddEPSandENTPrinters = Support.AddEPSAndEnterprisePrinters();
-            filterContext.Controller.ViewBag.IsAbleAddENTPrinters = (Support.IsUserAuthorized(Support.ADGroupCanAddEnterprisePrinter()));
+            bool canAddENT;
+            if (Support.AddEnterprisePrinters() == true)
+            {
+                if (Support.AdditionalSecurity())
+                {
+                    if (Support.IsUserAuthorized(Support.ADGroupCanAddEnterprisePrinter()))
+                        {
+                        canAddENT = true;
+                    }
+                    else
+                    {
+                        canAddENT = false;
+                    }
+                }
+                else
+                {
+                    canAddENT = true;
+                }
+            }else
+            {
+                canAddENT = false;
+            }
+            //filterContext.Controller.ViewBag.IsAbleAddENTPrinters = (Support.IsUserAuthorized(Support.ADGroupCanAddEnterprisePrinter())&&Support.AddEnterprisePrinters());
+            filterContext.Controller.ViewBag.IsAbleAddENTPrinters = (canAddENT);
+
             //filterContext.Controller.ViewBag.IsAbleAddENTPrinters = Support.AddEnterprisePrinters();
             filterContext.Controller.ViewBag.IsAbleAddEPSPrinters = (Support.IsUserAuthorized(Support.ADGroupCanAddEPSPrinter()));
 
