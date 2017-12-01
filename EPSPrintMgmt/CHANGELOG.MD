@@ -3,11 +3,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- Background jobs for adding/remove printers
 - Ability to create a static IP address within InfoBlox.
 
 ### Changed
 - Change the search option to choose either a EPS or Enterprise option, versus having to choose an individual server.
+
+## [1.0.1.2] - 2017-11-30
+### Fixed
+- The Layout where buttons to add Enterprise printers would always show even if settings were set to false.
+- New Enterprise printers were not being added in the background.
+
+## [1.1.0.1] - 2017-11-30
+### Added
+- Moved new printer creation to a background job.
+- Requires a database and SQL Express LocalDB install
+### Changed
+- The Layout now adds/removes menu options based upon the security you have access to.
 
 ## [1.0.9.11] - 2017-11-18
 ### Added
