@@ -18,13 +18,13 @@ namespace EPSPrintMgmt.Models
         public string PrintJobName { get; set; }
         [DisplayName("Print Driver")]
         public string PrintDriver { get; set; }
-        [DisplayName("Time Job Submitted")]
+        [DisplayName("Time Submitted")]
         public DateTime? TimeSubmitted { get; set; }
         [DisplayName("Pages Printed")]
         public int PagesPrinted { get; set; }
         [DisplayName("Total Pages")]
         public int TotalPages { get; set; }
-        [DisplayName("Source of Print Job")]
+        [DisplayName("Source")]
         public string HostPrintQueue { get; set; }
         [DisplayName("User")]
         public string Owner { get; set; }

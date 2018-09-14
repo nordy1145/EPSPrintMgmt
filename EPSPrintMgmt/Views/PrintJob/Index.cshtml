@@ -19,99 +19,105 @@
             <div class="col-md-10">
                 <input type="submit" value="Delete Select Print Jobs" class="btn btn-default" />
             </div>
-                <tr>
-            <th>Delete</th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().Server)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().Printer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().PrintJobName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().PrintDriver)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().TimeSubmitted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().PagesPrinted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().TotalPages)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().HostPrintQueue)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().Owner)
-            </th>
-            <th>
-
-            </th>
-        </tr>
-        @for (int i = 0; i < Model.Count(); i++)
-        {
+        <thead>
             <tr>
-                <td>
-                    @Html.HiddenFor(x=>x[i].PrintJobID)
-                    @Html.EditorFor(x=>x[i].ToDelete)
-                </td>
-                <td>
-                    @Html.DisplayFor(x=>x[i].Server)
-                    @Html.HiddenFor(x => x[i].Server)
-                </td>
-                <td>
-                    <a href="http://@Html.DisplayFor(x => x[i].Printer)" target="_blank">@Html.DisplayFor(x => x[i].Printer)</a>
-                    @Html.HiddenFor(x => x[i].Printer)
-                </td>
-                <td>
-                    @Html.DisplayFor(x => x[i].Status)
-                    @Html.HiddenFor(x => x[i].Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(x => x[i].PrintJobName)
-                    @Html.HiddenFor(x => x[i].PrintJobName)
-                </td>
-                <td>
-                    @Html.DisplayFor(x => x[i].PrintDriver)
-                    @Html.HiddenFor(x => x[i].PrintDriver)
-                </td>
-                <td>
-                    @Html.DisplayFor(x => x[i].TimeSubmitted)
-                    @Html.HiddenFor(x => x[i].TimeSubmitted)
-                </td>
-                <td>
-                    @Html.DisplayFor(x => x[i].PagesPrinted)
-                    @Html.HiddenFor(x => x[i].PagesPrinted)
-                </td>
-                <td>
-                    @Html.DisplayFor(x => x[i].TotalPages)
-                    @Html.HiddenFor(x => x[i].TotalPages)
-                </td>
-                <td>
-                    @Html.DisplayFor(x => x[i].HostPrintQueue)
-                    @Html.HiddenFor(x => x[i].HostPrintQueue)
-                </td>
-                <td>
-                    @Html.DisplayFor(x => x[i].Owner)
-                    @Html.HiddenFor(x => x[i].Owner)
-                </td>
-                <td>
-                    @Html.ActionLink("Printer", "Details","Printer", new { printServer = Model[i].Server, printer = Model[i].Printer }, new { @class = "btn btn-default" })
+                <th>Delete</th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().Server)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().Printer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().PrintJobName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().PrintDriver)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().TimeSubmitted)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().PagesPrinted)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().TotalPages)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().HostPrintQueue)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().Owner)
+                </th>
+                <th>
 
-                </td>
+                </th>
             </tr>
-        }
+        </thead>
+        <tbody>
 
+
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                <tr>
+                    <td>
+                        @Html.HiddenFor(x => x[i].PrintJobID)
+                        @Html.EditorFor(x => x[i].ToDelete)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].Server)
+                        @Html.HiddenFor(x => x[i].Server)
+                    </td>
+                    <td>
+                        <a href="http://@Html.DisplayFor(x => x[i].Printer)" target="_blank">@Html.DisplayFor(x => x[i].Printer)</a>
+                        @Html.HiddenFor(x => x[i].Printer)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].Status)
+                        @Html.HiddenFor(x => x[i].Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].PrintJobName)
+                        @Html.HiddenFor(x => x[i].PrintJobName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].PrintDriver)
+                        @Html.HiddenFor(x => x[i].PrintDriver)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].TimeSubmitted)
+                        @Html.HiddenFor(x => x[i].TimeSubmitted)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].PagesPrinted)
+                        @Html.HiddenFor(x => x[i].PagesPrinted)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].TotalPages)
+                        @Html.HiddenFor(x => x[i].TotalPages)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].HostPrintQueue)
+                        @Html.HiddenFor(x => x[i].HostPrintQueue)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => x[i].Owner)
+                        @Html.HiddenFor(x => x[i].Owner)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Printer", "Details", "Printer", new { printServer = Model[i].Server, printer = Model[i].Printer }, new { @class = "btn btn-default" })
+
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 }
 
+<link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
 @section Scripts {
 <script>
     $("tr").click(function (e) {
@@ -122,4 +128,13 @@
         }
     });
     </script>
+
+<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+<script>
+        $(document).ready(function () {
+            $('#AllPrintJobs').DataTable({
+                "pageLength":25
+            });
+        });
+</script>
 }

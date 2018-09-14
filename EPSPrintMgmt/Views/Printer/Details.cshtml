@@ -110,6 +110,11 @@
             </tr>
         }
     </table>
+<div class="row">
+    <div id="InfobloxIPInfo" class="col-md-4"></div>
+    <div id="InfobloxLeaseInfo" class="col-md-4"></div>
+    <div id="InfobloxAdvancedInfo" class="col-md-4"></div>
+</div>
     <div>
         @Html.ActionLink("Back to List", "Index")
     </div>
@@ -255,4 +260,75 @@
                 $("#dialog").dialog("open")
             });
         </script>
+        @if (ViewData["viewInfobloxInfo"].ToString()=="True")
+        {
+            <script>
+                $(document).ready(function () {
+                    //var customerId = $(this).closest("tr").find("td").eq(0).html();
+                    $("#InfobloxIPInfo").html('<img src="@Url.Content("~/Content/ajax-loader.gif")" style="display:block;margin:auto">')
+                    $.ajax({
+                        type: "POST",
+                        url: "/Printer/InfobloxIPLookup",
+                        data: '{HostName: "' + "@Model.FirstOrDefault().Name.ToString()" + '" }',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            $('#InfobloxIPInfo').html(response.PartialView);
+                            //$('#dialog').dialog('open');
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+
+                $(document).ready(function () {
+                    //var customerId = $(this).closest("tr").find("td").eq(0).html();
+                    $("#InfobloxLeaseInfo").html('<img src="@Url.Content("~/Content/ajax-loader.gif")" style="display:block;margin:auto">')
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Printer/InfobloxLeaseLookup",
+                        data: '{HostName: "' + "@Model.FirstOrDefault().Name.ToString()" + '" }',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            $('#InfobloxLeaseInfo').html(response.PartialView);
+                            //$('#dialog').dialog('open');
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+
+                $(document).ready(function () {
+                    $("#InfobloxAdvancedInfo").html('<img src="@Url.Content("~/Content/ajax-loader.gif")" style="display:block;margin:auto">')
+                    //var customerId = $(this).closest("tr").find("td").eq(0).html();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Printer/InfobloxAdvancedLookup",
+                        data: '{HostName: "' + "@Model.FirstOrDefault().Name.ToString()" + '" }',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            $('#InfobloxAdvancedInfo').html(response.PartialView);
+                            //$('#dialog').dialog('open');
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+            </script>
+        }
     }

@@ -1,0 +1,14 @@
+﻿@model EPSPrintMgmt.Models.InfobloxAdvancedInfo
+<h4>Infoblox Advanced IP Info</h4>
+<h6>Shows all related items with the printer name</h6>
+<table class="table">
+    <tbody>
+        @foreach (var i in Model.Result)
+        {
+            <tr>
+                <td>IP Address</td>
+                <td>@i.Ipv4addr</td>
+            </tr>
+        }
+    </tbody>
+</table>

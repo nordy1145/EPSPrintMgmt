@@ -1,0 +1,39 @@
+﻿@model EPSPrintMgmt.Models.InfobloxIPInformation
+<h4>Infoblox IP Info</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Props</td>
+            <td>Value</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var i in Model.Result)
+        {
+            <tr>
+                <td>Name</td>
+                <td>@foreach(var IPname in i.Names){ @Html.Raw( IPname.ToString()+ " " ); }</td>
+            </tr>
+            <tr>
+                <td>IP Address</td>
+                <td>@i.IpAddress</td>
+            </tr>
+            <tr>
+                <td>IP Conflict</td>
+                <td>@i.IsConflict</td>
+            </tr>
+            <tr>
+                <td>Lease State</td>
+                <td>@i.LeaseState</td>
+            </tr>
+            <tr>
+                <td>MAC Address</td>
+                <td>@i.MacAddress</td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>@i.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>

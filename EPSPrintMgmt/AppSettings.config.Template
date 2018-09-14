@@ -88,10 +88,8 @@
   <!--Following key is used to determine if a user can delete printers from an EPS server -->
   <add key="AllowEPSPrinterDeletion" value="true" />
 
-  <!--Important Key Here!!!!-->
-  <!--Offload Printer Creation to internal exe.  Speeds up the process but unsure of local security policies -->
-  <!--DO NOT USE YET!!!!!!!!!!! For future use.-->
-  <add key="UseEXEForPrinterCreation" value="false" />
+  <!--Automatically print a Windows Test page after printer install? -->
+  <add key="AutoPrintWindowsTestPage" value="true" />
   
   <!--Security Section -->
   <!--Following key is used to determine if additional security roles will be used to segment access to different parts of the web page. -->

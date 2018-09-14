@@ -9,91 +9,107 @@
     @Html.DropDownList("PrintServer", new SelectList((System.Collections.IEnumerable)ViewData["printServers"]),"-- Select Print Server --", new { @class = "pull-right", @onchange = "CallChangeFunc(this.value)" })
     @*@Html.ActionLink("Create New EPS Printer", "Create", "", new { @class = "btn btn-default pull-left" })*@
 </div>
-<table id="allPrinters"class="table table-condensed table-responsive table-hover">
+<table id="allPrinters" class="table table-condensed table-responsive table-hover">
+    <thead>
+        <tr>
+            @*<th>
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+                @*@Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm, printServer = Session["currentPrintServerLookup"] })*@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PortName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Driver)
+                @*@Html.ActionLink("Print Driver", "Index", new { sortOrder = ViewBag.DriverSortParm, printServer = Session["currentPrintServerLookup"] })*@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrintServer)
+            </th>
+
+            @if (ViewData["ShowPrintJobs"].ToString() == "True")
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.NumberJobs)
+                    @*@Html.ActionLink("Number of Jobs", "Index", new { sortOrder = ViewBag.JobsSortParm, printServer = Session["currentPrintServerLookup"] })*@
+                </th>
+            }
+            else
+            {
+            }
+
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @{ int theCount = 0;}
+        @foreach (var item in Model)
+            {
             <tr>
-                <th>
-                </th>
-                <th>
-                    @*@Html.DisplayNameFor(model => model.Name)*@
-                    @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm, printServer = Session["currentPrintServerLookup"] })
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PortName)
-                </th>
-                <th>
-                    @*@Html.DisplayNameFor(model => model.Driver)*@
-                    @Html.ActionLink("Print Driver", "Index", new { sortOrder = ViewBag.DriverSortParm, printServer = Session["currentPrintServerLookup"] })
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PrintServer)
-                </th>
+                @*<td>@(theCount += 1)</td>*@
+                <td>
+                    @if (ViewData["useIP"].ToString() == "True")
+                {
+                        @Html.DisplayFor(modelItem => item.Name)
+                    }
+                    else
+                    {
+                        <a href="http://@Html.DisplayFor(modelItem => item.Name)" target="_blank">@Html.DisplayFor(modelItem => item.Name)</a>
+                    }
+                </td>
+                <td>
+                    @if (ViewData["useIP"].ToString() == "True")
+                {
+                        <a href="http://@Html.DisplayFor(modelItem => item.PortName)" target="_blank">@Html.DisplayFor(modelItem => item.PortName)</a>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.PortName)
+
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Driver)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrintServer)
+                </td>
 
                 @if (ViewData["ShowPrintJobs"].ToString() == "True")
-            {
-                    <th>
-                        @*@Html.DisplayNameFor(model => model.NumberJobs)*@
-                        @Html.ActionLink("Number of Jobs", "Index", new { sortOrder = ViewBag.JobsSortParm, printServer = Session["currentPrintServerLookup"] })
-                    </th>
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumberJobs)
+                    </td>
                 }
                 else
                 {
                 }
 
-                <th></th>
-
+                <td>
+                    @*@Html.ActionLink("Options", "Options", new { printer = item.Name, printServer = item.PrintServer }) |*@
+                    @Html.ActionLink("Details", "Details", new { printer = item.Name, printServer = item.PrintServer })
+                </td>
             </tr>
-            @{ int theCount = 0;}
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@(theCount += 1)</td>
-                    <td>
-                        @if (ViewData["useIP"].ToString() == "True")
-                {
-                            @Html.DisplayFor(modelItem => item.Name)
-                        }
-                        else
-                        {
-                            <a href="http://@Html.DisplayFor(modelItem => item.Name)" target="_blank">@Html.DisplayFor(modelItem => item.Name)</a>
-                        }
-                    </td>
-                    <td>
-                        @if (ViewData["useIP"].ToString() == "True")
-                {
-                            <a href="http://@Html.DisplayFor(modelItem => item.PortName)" target="_blank">@Html.DisplayFor(modelItem => item.PortName)</a>
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.PortName)
+        }
+    </tbody>
 
-                        }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Driver)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PrintServer)
-                    </td>
-
-                    @if (ViewData["ShowPrintJobs"].ToString() == "True")
-                {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.NumberJobs)
-                        </td>
-                    }
-                    else
-                    {
-                    }
-
-                    <td>
-                        @*@Html.ActionLink("Options", "Options", new { printer = item.Name, printServer = item.PrintServer }) |*@
-                        @Html.ActionLink("Details", "Details", new { printer = item.Name, printServer = item.PrintServer })
-                    </td>
-                </tr>
-            }
     </table>
 <script>
     function CallChangeFunc(val) {
         window.location.href = "@Url.Action("Index", "Printer")" + "?printServer=" + val;
     }
 </script>
+<link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+@section Scripts{
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#allPrinters').DataTable({
+                "pageLength":100
+            });
+        });
+    </script>
+}

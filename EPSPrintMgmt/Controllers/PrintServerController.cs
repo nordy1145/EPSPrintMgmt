@@ -82,7 +82,7 @@ namespace EPSPrintMgmt.Controllers
             return RedirectToAction("Error");
         }
 
-        static private bool FlushDNSCache(string myPrintServer)
+        static public bool FlushDNSCache(string myPrintServer)
         {
             object[] theProcessToRun = { "cmd.exe /C ipconfig /flushdns" };
             //object[] theProcessToRun = { "notepad.exe" };

@@ -1,0 +1,25 @@
+﻿@model EPSPrintMgmt.Models.InfobloxLeaseInfo
+<h4>Infoblox Lease Info</h4>
+<table class="table">
+    <tbody>
+        @foreach (var i in Model.Result)
+        {
+            <tr>
+                <td>Name</td>
+                <td>@i.ClientHostname</td>
+            </tr>
+            <tr>
+                <td>State</td>
+                <td>@i.BindingState</td>
+            </tr>
+            <tr>
+                <td>Fingerprint</td>
+                <td>@i.Fingerprint</td>
+            </tr>
+            <tr>
+                <td>Hardware</td>
+                <td>@i.Hardware</td>
+            </tr>
+        }
+    </tbody>
+</table>

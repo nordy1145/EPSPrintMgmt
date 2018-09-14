@@ -63,6 +63,10 @@ namespace EPSPrintMgmt.Models
         public string SourceServer { get; set; }
         [DisplayName("Copy Printer Device Settings")]
         public bool cloneDevSettings { get; set; }
+        [DisplayName("Reserve IP in Infoblox")]
+        public bool reserveDHCPIP { get; set; }
+        [DisplayName("Print a Test Page?")]
+        public bool printTestPage { get; set; }
 
         public static implicit operator AddPrinterClass(JToken v)
         {
@@ -84,6 +88,7 @@ namespace EPSPrintMgmt.Models
         public string ENTTray { get; set; }
         [DisplayName("Copy Enterprise Printer Device Settings")]
         public bool cloneENTDevSettings { get; set; }
+      
     }
     public class AddPrinterPortClass
     {

@@ -1,10 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Mail;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 
@@ -194,16 +200,6 @@ namespace EPSPrintMgmt.Models
             return false;
 
         }
-        static public bool UseEXEForPrinterCreation()
-        {
-            string useExe = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UseEXEForPrinterCreation")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
-            if (string.Compare(useExe.ToLower(), "true", true) == 0)
-            {
-                return true;
-            }
-            return false;
-
-        }
         static public List<string> GetTrays()
         {
             List<string> trays = new List<string>(new string[] { "AutoSelect", "Tray1", "Tray2", "Tray3", "Tray4", "Tray5", "Tray6" });
@@ -213,6 +209,16 @@ namespace EPSPrintMgmt.Models
         {
             string usePrintTrays = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("UsePrintTrays")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
             if (string.Compare(usePrintTrays.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        static public bool AutoPrintWindowsTestPage()
+        {
+            string printTest = ConfigurationManager.AppSettings.AllKeys.Where(k => k.Contains("AutoPrintWindowsTestPage")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(printTest.ToLower(), "true", true) == 0)
             {
                 return true;
             }
@@ -686,6 +692,189 @@ namespace EPSPrintMgmt.Models
 
             }
             
+        }
+
+        //Infoblox Specific items
+        static public bool ReserverInfobloxIP()
+        {
+            string reservewInfobloxIP = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("AbilityToReserveDHCPinInfoblox")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(reservewInfobloxIP.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        //Auto Reserver IP after adding Enterprise Print queue
+        static public bool AutoAddIPInfoblox()
+        {
+            string autoAdd = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("AutoReserveDHCPinInfoblox")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            if (string.Compare(autoAdd.ToLower(), "true", true) == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        //Get Infoblox Server Name
+        static public string GetInfobloxServerName()
+        {
+            string ServerName = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("InfobloxServerName")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return (ServerName);
+        }
+        //Get Infoblox User Name
+        static public string GetInfobloxUserName()
+        {
+            string UserName = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("InfobloxUsername")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return (UserName);
+        }
+        //Get Infoblox Password Name
+        static public string GetInfobloxPassword()
+        {
+            string userPassword = ConfigurationManager.AppSettings.AllKeys.Where(k => k.StartsWith("InfobloxPassword")).Select(k => ConfigurationManager.AppSettings[k]).FirstOrDefault();
+            return (userPassword);
+        }
+        public static async Task<InfobloxIPInformation> getIPInfo(string ipAddress)
+        {
+            using (var client = new HttpClient())
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                InfobloxIPInformation theIP = null;
+                var byteArray = Encoding.ASCII.GetBytes(GetInfobloxUserName()+":"+GetInfobloxPassword());
+                client.BaseAddress = new Uri("https://"+GetInfobloxServerName()+"/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                HttpResponseMessage response = await client.GetAsync("wapi/v2.5/ipv4address?ip_address="+ipAddress+"&_return_as_object=1").ConfigureAwait(false);
+                if (response.IsSuccessStatusCode)
+                {
+                    theIP = await response.Content.ReadAsAsync<InfobloxIPInformation>();
+                }
+                //var contents = await response.Content.ReadAsStringAsync();
+
+                return (theIP);
+            }
+        }
+
+        public static async Task<string> updateInfoblox(InfobloxReservedIPInfo theAddress)
+        {
+            using (var client = new HttpClient())
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Tls12;
+                //ServicePointManager.UseNagleAlgorithm = true;
+                string theIP = null;
+                var byteArray = Encoding.ASCII.GetBytes(GetInfobloxUserName() + ":" + GetInfobloxPassword());
+                client.BaseAddress = new Uri("https://"+GetInfobloxServerName()+"/");
+
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                var testinstdsf = JsonConvert.SerializeObject(theAddress);
+                var yesplease = JToken.Parse(testinstdsf).ToString();
+                var content = new StringContent(JsonConvert.SerializeObject(theAddress), Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync("wapi/v2.5/fixedaddress", content).ConfigureAwait(false);
+                //var response = await client.PostAsJsonAsync(new Uri("https://infoblox_a/wapi/v2.5/fixedaddress"), testinstdsf);
+                if (response.IsSuccessStatusCode)
+                {
+                    theIP = await response.Content.ReadAsStringAsync();
+                }
+                //var contents = await response.Content.ReadAsStringAsync();
+
+                return (theIP);
+            }
+        }
+        public static async Task<string> RestartInfobloxGrid()
+        {
+            using (var client = new HttpClient())
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Tls12;
+                string theIP = null;
+                var byteArray = Encoding.ASCII.GetBytes(GetInfobloxUserName()+":"+GetInfobloxPassword());
+                client.BaseAddress = new Uri("https://"+GetInfobloxServerName()+"/");
+
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                var restartOptions = new InfobloxGridRestartClass { restart_option = "RESTART_IF_NEEDED" };
+                var somejson = JsonConvert.SerializeObject(restartOptions);
+                var content = new StringContent(JsonConvert.SerializeObject(restartOptions), Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(new Uri("https://"+Support.GetInfobloxServerName()+ "/wapi/v2.5/grid/b25lLmNsdXN0ZXIkMA:HCMC-Infoblox?_function=restartservices"), content);
+                if (response.IsSuccessStatusCode)
+                {
+                    theIP = await response.Content.ReadAsStringAsync();
+                }
+
+                return (theIP);
+            }
+        }
+        public static async Task<string> GetInfobloxAdvancedInfo(string theAddress)
+        {
+            using (var client = new HttpClient())
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                string theIP = null;
+                var byteArray = Encoding.ASCII.GetBytes(GetInfobloxUserName() + ":" + GetInfobloxPassword());
+                client.BaseAddress = new Uri("https://" + GetInfobloxServerName() + "/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                HttpResponseMessage response = await client.GetAsync("wapi/v2.5/search?search_string:~=" + theAddress + "&_return_as_object=1").ConfigureAwait(false);
+                if (response.IsSuccessStatusCode)
+                {
+                    theIP = await response.Content.ReadAsStringAsync();
+                }
+                //var contents = await response.Content.ReadAsStringAsync();
+
+                return (theIP);
+            }
+        }
+        public static async Task<string> GetInfobloxLeaseInfo(string theAddress)
+        {
+            using (var client = new HttpClient())
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                string theIP = null;
+                var byteArray = Encoding.ASCII.GetBytes(GetInfobloxUserName() + ":" + GetInfobloxPassword());
+                client.BaseAddress = new Uri("https://" + GetInfobloxServerName() + "/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                HttpResponseMessage response = await client.GetAsync("wapi/v2.5/lease?address=" + theAddress + "&_return_fields=binding_state,hardware,client_hostname,fingerprint&_return_as_object=1").ConfigureAwait(false);
+                if (response.IsSuccessStatusCode)
+                {
+                    theIP = await response.Content.ReadAsStringAsync();
+                }
+                //var contents = await response.Content.ReadAsStringAsync();
+
+                return (theIP);
+            }
+        }
+        public static async Task<string> GetInfobloxIPInfo(string theAddress)
+        {
+            using (var client = new HttpClient())
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                string theIP = null;
+                var byteArray = Encoding.ASCII.GetBytes(GetInfobloxUserName() + ":" + GetInfobloxPassword());
+                client.BaseAddress = new Uri("https://" + GetInfobloxServerName() + "/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                HttpResponseMessage response = await client.GetAsync("wapi/v2.5/ipv4address?status=USED&ip_address=" + theAddress + "&_return_as_object=1").ConfigureAwait(false);
+                if (response.IsSuccessStatusCode)
+                {
+                    theIP = await response.Content.ReadAsStringAsync();
+                }
+                //var contents = await response.Content.ReadAsStringAsync();
+
+                return (theIP);
+            }
         }
     }
 }
