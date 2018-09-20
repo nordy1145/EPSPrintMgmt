@@ -1494,6 +1494,46 @@ namespace EPSPrintMgmt.Controllers
             }
 
         }
+
+        //Update Printer Port for Printer.
+        //Assumes you have verified the print server and ip/dns entries are valid.
+        static public void UpdatePrinterPort(string Printer, string thePrintServer,string newPrinterPort)
+        {
+            //Get Current Printer Port Name
+            PrintServer theTargetPrintServer = new PrintServer(@"\\" + thePrintServer, PrintSystemDesiredAccess.AdministrateServer);
+            var printerInfo = new PrintQueue(theTargetPrintServer, Printer);
+            var currentPrinterPort = printerInfo.QueuePort;
+            //currentPrinterPort.PropertiesCollection.
+
+            try
+            {
+                ////Uses Powershell and WMI to create the new printer port.
+                //string Namespace = @"root\cimv2";
+                //string className = "Win32_TCPIPPrinterPort";
+
+                ////Create the CimInstance for the new printer port. Items for a WMI query really.
+                //CimInstance newPrinter = new CimInstance(className, Namespace);
+                //newPrinter.CimInstanceProperties.Add(CimProperty.Create("Name", oldPrinterPort.Name, CimFlags.Any));
+                //newPrinter.CimInstanceProperties.Add(CimProperty.Create("SNMPEnabled", oldPrinterPort.SNMPEnabled, CimFlags.Any));
+                //newPrinter.CimInstanceProperties.Add(CimProperty.Create("Protocol", oldPrinterPort.Protocol, CimFlags.Any));
+                //newPrinter.CimInstanceProperties.Add(CimProperty.Create("PortNumber", oldPrinterPort.PortNumber, CimFlags.Any));
+                //newPrinter.CimInstanceProperties.Add(CimProperty.Create("HostAddress", oldPrinterPort.HostAddress, CimFlags.Any));
+
+                ////Create the Cimsession to the print server.
+                //CimSession Session = CimSession.Create(thePrintServer);
+                ////Actually create the printer port on the print server.
+                //CimInstance myPrinter = Session.CreateInstance(Namespace, newPrinter);
+                ////Cleanup
+                //myPrinter.Dispose();
+                //Session.Dispose();
+
+            }
+            catch
+            {
+
+            }
+        }
+
         //Add a printer and return success or failure in a string.
         public string AddNewPrinterStringReturn(AddPrinterClass theNewPrinter, string thePrintServer)
         {
@@ -1618,7 +1658,7 @@ namespace EPSPrintMgmt.Controllers
             printProps.Add("DoCompleteFirst", doComplete);
             printProps.Add("ScheduleCompletedJobsFirst", spoolFirst);
             String[] port = new String[] { theNewPrinter.PortName };
-
+            logger.Debug("Printer Properties" + printProps.ToString());
             try
             {
                 logger.Debug("Start of Adding Installing Print Queue : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
@@ -1634,6 +1674,9 @@ namespace EPSPrintMgmt.Controllers
                 outcome.comment = "Failed on adding print queue.  " + e.ToString();
                 outcome.result = "failed";
                 outcome.processingTime = newwatch.ElapsedMilliseconds.ToString();
+
+                logger.Debug("Failed on adding print queue.  "+thePrintServer+ "Printer "+theNewPrinter.DeviceID +" Error message" + e.ToString());
+
                 //Send email and return results if DNS does not exist for the printer.
                 Support.SendEmail("Failed to install Print Queue " + theNewPrinter.DeviceID, "Printer: " + theNewPrinter.DeviceID + " failed to install on " + thePrintServer + "by user " + user + ".  Error: " + e.ToString());
                 return (outcome);
@@ -1644,6 +1687,7 @@ namespace EPSPrintMgmt.Controllers
             //This uses PowerShell CimSession and WMI to query the information from the server.
             //Used to change printer props
 
+            logger.Debug("Support.UseEPSGoldPrinter() value: " + Support.UseEPSGoldPrinter() + "theNewPrinter.SourcePrinter = " + theNewPrinter.SourcePrinter);
             if (Support.UseEPSGoldPrinter() && theNewPrinter.SourcePrinter != null)
             {
                 var clonePrinterSettings = false;
@@ -1651,6 +1695,8 @@ namespace EPSPrintMgmt.Controllers
                 {
                     clonePrinterSettings = true;
                 }
+                logger.Debug("Starting Clone Print Queue Process " + theNewPrinter.SourcePrinter+" Server " +thePrintServer);
+                logger.Debug("Clone Printer Settings Variable" + clonePrinterSettings);
                 clonePrintQueue(theNewPrinter, thePrintServer, Support.GetEPSGoldPrintServer(), clonePrinterSettings);
                 logger.Debug("After Print Queue is Cloned : " + newwatch.ElapsedMilliseconds + " ms has passed on server: " + thePrintServer);
             }
@@ -1847,13 +1893,14 @@ namespace EPSPrintMgmt.Controllers
         //Clone a print queue from a source print queue.
         public string clonePrintQueue(AddPrinterClass printer, string targetPrintServer, string sourcePrintServer, bool cloneDevSettings)
         {
-
+            logger.Debug("Clone PrintQueue Function for " +printer.DeviceID + " on server "+ targetPrintServer);
             //PrintServer class requires the 2 wacks in the server name.
             //Define both source and target print servers to make the changes on.
             PrintServer theTargetPrintServer = new PrintServer(@"\\" + targetPrintServer, PrintSystemDesiredAccess.AdministrateServer);
             PrintServer theSourcePrinterServer = new PrintServer(@"\\" + sourcePrintServer, PrintSystemDesiredAccess.AdministrateServer);
             //LocalPrintServer theSourcePrinterServer = new LocalPrintServer(PrintSystemDesiredAccess.AdministrateServer);
 
+            logger.Debug("Attempting to connect to source and target Print Queues" + targetPrintServer + sourcePrintServer);
             //verify we can connect to the source/target print queues.  Otherwise it just hangs here if there is an error.
             try
             {
@@ -1862,32 +1909,40 @@ namespace EPSPrintMgmt.Controllers
             }
             catch (Exception e)
             {
+                logger.Debug(e.ToString());
                 return ("Source Print Queue does not exist for cloning.  Error: " + e.Message.ToString());
             }
-
+            logger.Debug("Getting Source Print Queue Defaults " + sourcePrintServer + " Printer: " + printer.DeviceID);
             //Get the source print queue printer defaults.
             PrintQueue sourcePrintQueue = theSourcePrinterServer.GetPrintQueue(printer.SourcePrinter);
+            logger.Debug("Getting Source Print Ticket " + sourcePrintServer + " Printer: " + printer.DeviceID);
             //Get the source print ticket
             PrintTicket sourcePrintTicket = sourcePrintQueue.DefaultPrintTicket;
+            logger.Debug("Getting Target Print Queue Defaults " + targetPrintServer + " Printer: " + printer.DeviceID);
             //get the target Queue
             PrintQueue theTargetPrintQueue = theTargetPrintServer.GetPrintQueue(printer.DeviceID);
 
             if (theTargetPrintQueue.QueueDriver.Name != sourcePrintQueue.QueueDriver.Name)
             {
+                logger.Debug("Please make sure print drivers are the same for cloning.  Did not clone the Printer Defaults for " + printer.DeviceID + " on print server " + targetPrintServer);
                 return ("Please make sure print drivers are the same for cloning.  Did not clone the Printer Defaults for " + printer.DeviceID + " on print server " + targetPrintServer);
             }
 
-
+            logger.Debug("Trying to clone default print ticket" + targetPrintServer + " Printer " + printer.DeviceID);
             try
             {
-
+                logger.Debug("Trying to copy Print Ticket on server "+targetPrintServer + " Printer: "+printer.DeviceID);
                 using (PrintServer ps = theTargetPrintServer)
                 {
+                    logger.Debug("Inside Printer Server using Statement to copy Print Ticket " + targetPrintServer + " Printer: " + printer.DeviceID);
                     using (PrintQueue pq = new PrintQueue(ps, printer.DeviceID, PrintSystemDesiredAccess.AdministratePrinter))
                     {
+                        logger.Debug("Inside Print Queue using Statement to Copy Print Ticket " + targetPrintServer + " Printer: " + printer.DeviceID);
                         pq.DefaultPrintTicket = sourcePrintTicket;
+                        logger.Debug(pq.ToString());
+                        logger.Debug("About to commit print ticket "+ targetPrintServer + "Printer: " + printer.DeviceID);
                         pq.Commit();
-
+                        logger.Debug("Committed cloned print ticket for "+ targetPrintServer +printer.DeviceID);
                     }
                 }
                 logger.Debug("Clone Print Queue: "+ theTargetPrintQueue.Name+ " Source: "+ printer.DeviceID + " on Print Server: "+targetPrintServer+" Clone Device Settings option: "+cloneDevSettings);
@@ -1909,6 +1964,7 @@ namespace EPSPrintMgmt.Controllers
                         return (printer.DeviceID + " successfully cloned the print queue to " + targetPrintServer + ", but did not clone Device Settings.");
                     }
                 }
+                logger.Debug(printer.DeviceID + " successfully cloned the print queue to " + targetPrintServer + ".");
                 return (printer.DeviceID + " successfully cloned the print queue to " + targetPrintServer + ".");
             }
             catch(Exception ex)
@@ -3098,6 +3154,7 @@ namespace EPSPrintMgmt.Controllers
                                 //Try to add the printer now the port is defined on the server.
                                 //first setup the props of the printer
                                 AddPrinterClass newPrinter = new AddPrinterClass { DeviceID = theNewPrinter.DeviceID, DriverName = theNewPrinter.DriverName, EnableBIDI = false, PortName = theNewPrinter.PortName, Published = false, Shared = false, SourcePrinter = theNewPrinter.SourcePrinter, cloneDevSettings = theNewPrinter.cloneDevSettings };
+                                logger.Debug("Adding Printer " +theNewPrinter.DeviceID + " On server "+ server);
                                 //Use the string return function to determine if the printer was successfully added or not.
                                 BackgroundJob.Enqueue(() => AddNewPrinterBackground(newPrinter, server, User.Identity.Name));
                                 //outcome.Add(AddNewPrinterStringReturn(newPrinter, server));
